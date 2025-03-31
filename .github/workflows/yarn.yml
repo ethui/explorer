@@ -1,0 +1,33 @@
+name: nodejs
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "*"
+  pull_request:
+    types: [opened, synchronize]
+    paths-ignore:
+      - "*.toml"
+      - "*.contracts"
+      - "*.md"
+      - "LICENSE"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  node-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: corepack enable yarn
+      - uses: actions/setup-node@v4
+        with:
+          cache: "yarn"
+          node-version: "22"
+
+      - run: yarn install --immutable
+      - run: yarn lint

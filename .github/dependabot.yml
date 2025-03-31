@@ -1,0 +1,37 @@
+# To get started with Dependabot version updates, you'll need to specify which
+# package ecosystems to update and where the package manifests are located.
+# Please see the documentation for all configuration options:
+# https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    open-pull-requests-limit: 20
+    schedule:
+      interval: "weekly"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-patch"]
+    groups:
+      tanstack-start:
+        patterns:
+          - "@tanstack/react-start"
+          - "@tanstack/router-devtools"
+          - "@tanstack/router-plugin"
+          - "@tanstack/react-router"
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
+      wevm:
+        patterns:
+          - "*wagmi*"
+          - "*viem*"
+      css:
+        patterns:
+          - "*tailwind*"
+          - "*postcss*"
+          - "*autoprefixer*"

@@ -1,0 +1,3 @@
+@import "@ethui/ui/tailwind.css";
+@plugin "@tailwindcss/typography";
+@source "../node_modules/@ethui/ui";

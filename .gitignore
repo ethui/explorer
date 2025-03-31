@@ -1,0 +1,25 @@
+node_modules
+dist
+.yarn/install-state.gz
+tsconfig.tsbuildinfo
+app.config.timestamp_*
+
+.DS_Store
+.cache
+.env
+.vercel
+.output
+.vinxi
+
+/build/
+/api/
+/server/build
+/public/build
+.vinxi
+# Sentry Config File
+.env.sentry-build-plugin
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+.aider*
