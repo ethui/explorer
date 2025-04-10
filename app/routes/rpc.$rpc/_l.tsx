@@ -1,11 +1,11 @@
-import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
 import { Form } from "@ethui/ui/components/form";
-import { type FieldValues, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { Button } from "@ethui/ui/components/shadcn/button";
-import { webSocket, createConfig, WagmiProvider, http } from "wagmi";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Outlet, createFileRoute, useNavigate } from "@tanstack/react-router";
+import { type FieldValues, useForm } from "react-hook-form";
+import { http, WagmiProvider, createConfig, webSocket } from "wagmi";
 import { foundry } from "wagmi/chains";
+import { z } from "zod";
 import { useConnectionState } from "#/hooks/useConnectionState";
 
 export const Route = createFileRoute("/rpc/$rpc/_l")({
