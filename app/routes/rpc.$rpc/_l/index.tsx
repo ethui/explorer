@@ -1,12 +1,13 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useBlock, useBlockNumber, useWatchBlockNumber } from "wagmi";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
 } from "@ethui/ui/components/shadcn/card";
+import { Link, createFileRoute } from "@tanstack/react-router";
+import { useBlock } from "wagmi";
 import { useLatest } from "#/hooks/useLatest";
+import { truncateHex } from "#/utils/hash";
 
 export const Route = createFileRoute("/rpc/$rpc/_l/")({
   loader: ({ params }) => decodeURIComponent(params.rpc),
@@ -58,7 +59,6 @@ function LatestTxs() {
 
 function Block({ blockNumber }: { blockNumber: bigint }) {
   const rpc = Route.useParams().rpc;
-  console.log(rpc);
   const { data: block } = useBlock({ blockNumber });
 
   if (!block) return null;
@@ -73,8 +73,4 @@ function Block({ blockNumber }: { blockNumber: bigint }) {
       <span>{truncateHex(block?.hash)}</span>
     </Link>
   );
-}
-
-export function truncateHex(hash: string | undefined): string {
-  return hash && `${hash.slice(0, 6)}…${hash.slice(-4)}`;
 }

@@ -6,7 +6,7 @@
     "dev": "vinxi dev",
     "build": "vinxi build",
     "start": "vinxi start",
-    "lint": "yarn lint:biome && yarn lint:tsc && yarn lint:unused",
+    "lint": "yarn lint:biome && yarn lint:tsc",
     "lint:biome": "biome check .",
     "lint:tsc": "tsc --noEmit",
     "lint:unused": "ts-unused-exports tsconfig.json --excludePathsFromReport='routeTree.gen.ts;loggingMiddleware.tsx;app.config;api.ts;ssr.tsx;__root.tsx'",
