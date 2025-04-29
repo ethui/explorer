@@ -4,10 +4,14 @@ import tsConfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
   server: {
+    routeRules: {
+      "/*": { cors: true },
+    },
     preset: "vercel",
     esbuild: { options: { supported: { "top-level-await": true } } },
   },
   vite: {
+    server: { allowedHosts: ["lvh.me"] },
     plugins: [
       tailwindcss(),
       tsConfigPaths({
