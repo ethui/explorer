@@ -75,11 +75,6 @@ export const Route = createRootRouteWithContext<RouteContext>()({
     );
   },
   notFoundComponent: () => <NotFound />,
-  pendingComponent: () => (
-    <RootDocument>
-      <LoadingSpinner />
-    </RootDocument>
-  ),
   component: RootComponent,
 });
 

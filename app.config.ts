@@ -11,7 +11,6 @@ export default defineConfig({
     esbuild: { options: { supported: { "top-level-await": true } } },
   },
   vite: {
-    server: { allowedHosts: ["lvh.me"] },
     plugins: [
       tailwindcss(),
       tsConfigPaths({
