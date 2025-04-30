@@ -7,17 +7,6 @@ import { LoadingSpinner } from "#/components/LoadingSpinner";
 export const Route = createFileRoute("/rpc/$rpc/_l")({
   loader: async ({ params }) => {
     const rpc = decodeURIComponent(params.rpc);
-    if (rpc.startsWith("http")) {
-      try {
-        const client = createPublicClient({
-          chain: foundry,
-          transport: http(rpc),
-        });
-        await client.getChainId();
-      } catch (_err) {
-        throw new Error(`Invalid HTTP RPC on ${rpc}`);
-      }
-    }
 
     if (rpc.startsWith("ws")) {
       const isValid = await new Promise<boolean>((resolve) => {
@@ -41,6 +30,16 @@ export const Route = createFileRoute("/rpc/$rpc/_l")({
 
       if (!isValid) {
         throw new Error(`Invalid WebSocket RPC on ${rpc}`);
+      }
+    } else {
+      try {
+        const client = createPublicClient({
+          chain: foundry,
+          transport: http(rpc),
+        });
+        await client.getChainId();
+      } catch (_err) {
+        throw new Error(`Invalid RPC on ${rpc}`);
       }
     }
 
