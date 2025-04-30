@@ -15,7 +15,6 @@ import { type FieldValues, useForm } from "react-hook-form";
 import { z } from "zod";
 import appCss from "#/app.css?url";
 import { DefaultCatchBoundary } from "#/components/DefaultCatchBoundary";
-import { LoadingSpinner } from "#/components/LoadingSpinner";
 import { NotFound } from "#/components/NotFound";
 import { seo } from "#/utils/seo";
 
