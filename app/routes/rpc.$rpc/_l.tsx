@@ -1,33 +1,57 @@
-import { Form } from "@ethui/ui/components/form";
-import { Button } from "@ethui/ui/components/shadcn/button";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Outlet, createFileRoute, useNavigate } from "@tanstack/react-router";
-import { type FieldValues, useForm } from "react-hook-form";
+import { Outlet, createFileRoute, useLoaderData } from "@tanstack/react-router";
+import { createPublicClient } from "viem";
 import { http, WagmiProvider, createConfig, webSocket } from "wagmi";
 import { foundry } from "wagmi/chains";
-import { z } from "zod";
-import { useConnectionState } from "#/hooks/useConnectionState";
+import { LoadingSpinner } from "#/components/LoadingSpinner";
 
 export const Route = createFileRoute("/rpc/$rpc/_l")({
-  loader: ({ params }) => decodeURIComponent(params.rpc),
+  loader: async ({ params }) => {
+    const rpc = decodeURIComponent(params.rpc);
+    if (rpc.startsWith("http")) {
+      try {
+        const client = createPublicClient({
+          chain: foundry,
+          transport: http(rpc),
+        });
+        await client.getChainId();
+      } catch (_err) {
+        throw new Error(`Invalid HTTP RPC on ${rpc}`);
+      }
+    }
+
+    if (rpc.startsWith("ws")) {
+      const isValid = await new Promise<boolean>((resolve) => {
+        const timeout = setTimeout(() => resolve(false), 5000);
+        try {
+          const ws = new WebSocket(rpc);
+          ws.onopen = () => {
+            clearTimeout(timeout);
+            ws.close();
+            resolve(true);
+          };
+          ws.onerror = () => {
+            clearTimeout(timeout);
+            resolve(false);
+          };
+        } catch {
+          clearTimeout(timeout);
+          resolve(false);
+        }
+      });
+
+      if (!isValid) {
+        throw new Error(`Invalid WebSocket RPC on ${rpc}`);
+      }
+    }
+
+    return rpc;
+  },
   component: RouteComponent,
+  pendingComponent: () => <LoadingSpinner />,
 });
 
 function RouteComponent() {
-  const rpc = Route.useLoaderData();
-  const navigate = useNavigate();
-
-  const schema = z.object({
-    url: z.string(),
-  });
-
-  const form = useForm({
-    mode: "onBlur",
-    resolver: zodResolver(schema),
-    defaultValues: {
-      url: "ws://localhost:8545",
-    },
-  });
+  const rpc = useLoaderData({ from: Route.id });
 
   const transport = rpc.startsWith("ws://") ? webSocket(rpc) : http(rpc);
   const wagmi = createConfig({
@@ -37,44 +61,13 @@ function RouteComponent() {
     },
   });
 
-  const handleSubmit = (data: FieldValues) => {
-    navigate({ to: `/rpc/${encodeURIComponent(data.url)}` });
-  };
-
   return (
     <WagmiProvider config={wagmi}>
       <div className="flex flex-col justify-center gap-2">
-        <div className="flex w-full flex-row items-baseline justify-between gap-[0] bg-accent p-2">
-          <Form
-            form={form}
-            onSubmit={handleSubmit}
-            className="flex-row gap-[0]"
-          >
-            <Form.Text
-              name="url"
-              placeholder="Enter URL (e.g. localhost:8545)"
-              className="inline"
-            />
-            <Button type="submit">Go</Button>
-          </Form>
-          <ConnectionState />
-        </div>
         <div className="flex-grow overflow-hidden">
           <Outlet />
         </div>
       </div>
     </WagmiProvider>
-  );
-}
-
-function ConnectionState() {
-  const { connected, blockNumber, rpc } = useConnectionState();
-
-  return (
-    connected && (
-      <div>
-        Connected to: {rpc} at block {blockNumber}
-      </div>
-    )
   );
 }

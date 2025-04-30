@@ -1,13 +1,21 @@
+import { Form } from "@ethui/ui/components/form";
+import { Button } from "@ethui/ui/components/shadcn/button";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   HeadContent,
   Outlet,
   Scripts,
   createRootRouteWithContext,
+  useNavigate,
+  useParams,
 } from "@tanstack/react-router";
 import { Suspense, lazy } from "react";
+import { type FieldValues, useForm } from "react-hook-form";
+import { z } from "zod";
 import appCss from "#/app.css?url";
 import { DefaultCatchBoundary } from "#/components/DefaultCatchBoundary";
+import { LoadingSpinner } from "#/components/LoadingSpinner";
 import { NotFound } from "#/components/NotFound";
 import { seo } from "#/utils/seo";
 
@@ -67,6 +75,11 @@ export const Route = createRootRouteWithContext<RouteContext>()({
     );
   },
   notFoundComponent: () => <NotFound />,
+  pendingComponent: () => (
+    <RootDocument>
+      <LoadingSpinner />
+    </RootDocument>
+  ),
   component: RootComponent,
 });
 
@@ -76,6 +89,7 @@ function RootComponent() {
   return (
     <RootDocument>
       <QueryClientProvider client={queryClient}>
+        <RpcForm />
         <Outlet />
       </QueryClientProvider>
     </RootDocument>
@@ -96,5 +110,45 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <Scripts />
       </body>
     </html>
+  );
+}
+
+function RpcForm() {
+  const navigate = useNavigate();
+  const params = useParams({ from: "/rpc/$rpc" });
+  const currentRpc = params?.rpc
+    ? decodeURIComponent(params.rpc)
+    : "ws://localhost:8545";
+
+  const schema = z.object({
+    url: z.string(),
+  });
+
+  const form = useForm({
+    mode: "onBlur",
+    resolver: zodResolver(schema),
+    defaultValues: {
+      url: currentRpc,
+    },
+  });
+
+  const handleSubmit = (data: FieldValues) => {
+    navigate({ to: `/rpc/${encodeURIComponent(data.url)}` });
+  };
+
+  return (
+    <nav>
+      <div className="flex w-full flex-row items-baseline justify-between gap-[0] bg-accent p-2">
+        <Form form={form} onSubmit={handleSubmit} className="flex-row gap-[0]">
+          <Form.Text
+            name="url"
+            placeholder="Enter URL (e.g. localhost:8545)"
+            className="inline"
+            onSubmit={handleSubmit}
+          />
+          <Button type="submit">Go</Button>
+        </Form>
+      </div>
+    </nav>
   );
 }
