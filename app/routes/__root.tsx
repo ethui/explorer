@@ -16,6 +16,7 @@ import { z } from "zod";
 import appCss from "#/app.css?url";
 import { DefaultCatchBoundary } from "#/components/DefaultCatchBoundary";
 import { NotFound } from "#/components/NotFound";
+import { useConnectionStore } from "#/store/connection";
 import { seo } from "#/utils/seo";
 
 const TanStackRouterDevtools =
@@ -32,6 +33,11 @@ const TanStackRouterDevtools =
 
 export interface RouteContext {
   breadcrumb?: string;
+  connectionState?: {
+    connected: boolean;
+    blockNumber: bigint | null;
+    rpc: string;
+  };
 }
 
 export const Route = createRootRouteWithContext<RouteContext>()({
@@ -109,10 +115,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 
 function RpcForm() {
   const navigate = useNavigate();
-  const params = useParams({ from: "/rpc/$rpc" });
-  const currentRpc = params?.rpc
-    ? decodeURIComponent(params.rpc)
-    : "ws://localhost:8545";
+  const { rpc } = useParams({ strict: false });
+  const { connected, blockNumber, reset } = useConnectionStore();
+  const currentRpc = rpc ? decodeURIComponent(rpc) : "ws://localhost:8545";
 
   const schema = z.object({
     url: z.string(),
@@ -127,7 +132,11 @@ function RpcForm() {
   });
 
   const handleSubmit = (data: FieldValues) => {
-    navigate({ to: `/rpc/${encodeURIComponent(data.url)}` });
+    const newRpc = data.url;
+    if (newRpc !== currentRpc) {
+      reset();
+    }
+    navigate({ to: `/rpc/${encodeURIComponent(newRpc)}`, replace: true });
   };
 
   return (
@@ -142,6 +151,17 @@ function RpcForm() {
           />
           <Button type="submit">Go</Button>
         </Form>
+        <div className="ml-2">
+          {connected === undefined ? (
+            <span className="text-gray-500">No connection</span>
+          ) : connected ? (
+            <span className="text-green-500">
+              Connected to {currentRpc} (Block: {blockNumber?.toString()})
+            </span>
+          ) : (
+            <span className="text-red-500">Disconnected</span>
+          )}
+        </div>
       </div>
     </nav>
   );
