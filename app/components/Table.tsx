@@ -1,5 +1,5 @@
 import {
-  ColumnDef,
+  type ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
@@ -21,7 +21,7 @@ export function Table<T>({ data, columns }: TableProps<T>) {
     <table className="w-full table-fixed">
       <tbody className="px-2">
         {table.getRowModel().rows.map((row) => (
-          <tr key={row.id} className="border-b border-gray-400 py-6">
+          <tr key={row.id} className="border-gray-400 border-b py-6">
             {row.getVisibleCells().map((cell) => (
               <td key={cell.id}>
                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
