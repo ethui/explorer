@@ -18,5 +18,5 @@ export default defineConfig({
         projects: ["./tsconfig.json"],
       }),
     ],
-  },
+  } as any,
 });

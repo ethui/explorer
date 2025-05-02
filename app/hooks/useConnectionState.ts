@@ -1,23 +1,27 @@
-import { useState } from "react";
-import { useConfig, useWatchBlockNumber } from "wagmi";
+import { useCallback } from "react";
+import { useWatchBlockNumber } from "wagmi";
+import { useConnectionStore } from "#/store/connection";
 
-export function useConnectionState() {
-  const [blockNumber, setBlockNumber] = useState<bigint | null>(null);
-  const config = useConfig();
+export function useConnectionState({ rpc }: { rpc: string }) {
+  const { setState } = useConnectionStore();
 
-  const interval = blockNumber ? 10000 : 1000;
+  const onBlockNumber = useCallback(
+    (b: bigint) => {
+      console.log("onblocknumber", b);
+      setState({ connected: true, blockNumber: b, rpc });
+    },
+    [rpc, setState],
+  );
+
+  const onError = useCallback(() => {
+    setState({ connected: false, blockNumber: null, rpc });
+  }, [rpc, setState]);
 
   useWatchBlockNumber({
     emitOnBegin: true,
     poll: true,
-    pollingInterval: interval,
-    onBlockNumber: (b) => setBlockNumber(b),
-    onError: () => setBlockNumber(null),
+    pollingInterval: 1000,
+    onBlockNumber,
+    onError,
   });
-
-  return {
-    connected: blockNumber !== null,
-    blockNumber,
-    rpc: config.chains[0].rpcUrls.default.http,
-  };
 }
