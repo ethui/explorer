@@ -33,11 +33,6 @@ const TanStackRouterDevtools =
 
 export interface RouteContext {
   breadcrumb?: string;
-  connectionState?: {
-    connected: boolean;
-    blockNumber: bigint | null;
-    rpc: string;
-  };
 }
 
 export const Route = createRootRouteWithContext<RouteContext>()({
