@@ -1062,7 +1062,7 @@ __metadata:
     postcss: "npm:^8.5.3"
     react: "npm:^19.0.0"
     react-dom: "npm:^19.0.0"
-    react-hook-form: "npm:^7.54.2"
+    react-hook-form: "npm:^7.56.2"
     rollup: "npm:^4.34.8"
     simple-icons: "npm:^14.9.0"
     tailwind-merge: "npm:^3.0.2"
@@ -10177,6 +10177,15 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17 || ^18 || ^19
   checksum: 10c0/6eebead2900e3d369a989e7a20429f390dc75b3897142aa3107f1f6dabb9ae64fed201ea98cdcd8676e40466c97748aeb0c0d83264f5bd3a84dbc0b8e4863415
+  languageName: node
+  linkType: hard
+
+"react-hook-form@npm:^7.56.2":
+  version: 7.56.2
+  resolution: "react-hook-form@npm:7.56.2"
+  peerDependencies:
+    react: ^16.8.0 || ^17 || ^18 || ^19
+  checksum: 10c0/9eeca7525c5c0b1356670e7cc77687298c7280a31c99bca396596124371467c310cad22f2c10efd9c75b4570d07740ee1c6ad481d59c1b725c7600767f0a35af
   languageName: node
   linkType: hard
 
