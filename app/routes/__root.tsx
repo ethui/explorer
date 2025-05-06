@@ -1,5 +1,6 @@
 import { Form } from "@ethui/ui/components/form";
 import { Button } from "@ethui/ui/components/shadcn/button";
+import { TooltipProvider } from "@ethui/ui/components/shadcn/tooltip";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
@@ -84,8 +85,10 @@ function RootComponent() {
   return (
     <RootDocument>
       <QueryClientProvider client={queryClient}>
-        <RpcForm />
-        <Outlet />
+        <TooltipProvider>
+          <RpcForm />
+          <Outlet />
+        </TooltipProvider>
       </QueryClientProvider>
     </RootDocument>
   );
@@ -98,7 +101,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        {children}
+        <main className="min-h-screen bg-accent">{children}</main>
         <Suspense>
           <TanStackRouterDevtools position="bottom-right" />
         </Suspense>
@@ -135,28 +138,26 @@ function RpcForm() {
   };
 
   return (
-    <nav>
-      <div className="flex w-full flex-row items-baseline justify-between gap-[0] bg-accent p-2">
-        <Form form={form} onSubmit={handleSubmit} className="flex-row gap-[0]">
-          <Form.Text
-            name="url"
-            placeholder="Enter URL (e.g. localhost:8545)"
-            className="inline"
-            onSubmit={handleSubmit}
-          />
-          <Button type="submit">Go</Button>
-        </Form>
-        <div className="ml-2">
-          {connected === undefined ? (
-            <span className="text-gray-500">No connection</span>
-          ) : connected ? (
-            <span className="text-green-500">
-              Connected to {currentRpc} (Block: {blockNumber?.toString()})
-            </span>
-          ) : (
-            <span className="text-red-500">Disconnected</span>
-          )}
-        </div>
+    <nav className="flex w-full flex-row items-baseline justify-between border-b bg-accent p-5">
+      <Form form={form} onSubmit={handleSubmit} className="flex-row gap-[0]">
+        <Form.Text
+          name="url"
+          placeholder="Enter URL (e.g. localhost:8545)"
+          className="inline space-y-0"
+          onSubmit={handleSubmit}
+        />
+        <Button type="submit">Go</Button>
+      </Form>
+      <div className="ml-2">
+        {connected === undefined ? (
+          <span className="text-highlight">No connection</span>
+        ) : connected ? (
+          <span className="text-success">
+            Connected to {currentRpc} (Block: {blockNumber?.toString()})
+          </span>
+        ) : (
+          <span className="text-error">Disconnected</span>
+        )}
       </div>
     </nav>
   );

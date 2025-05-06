@@ -23,7 +23,6 @@ export const Route = createFileRoute("/rpc/$rpc/_l")({
 
 function RouteComponent() {
   const rpc = Route.useLoaderData();
-
   const transport = rpc.startsWith("ws://") ? webSocket(rpc) : http(rpc);
 
   const wagmi = createConfig({
