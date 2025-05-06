@@ -1,76 +1,43 @@
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@ethui/ui/components/shadcn/card";
-import { Link, createFileRoute } from "@tanstack/react-router";
-import { useBlock } from "wagmi";
+import { createFileRoute } from "@tanstack/react-router";
 import { useLatest } from "#/hooks/useLatest";
-import { truncateHex } from "#/utils/hash";
+import { Card } from "../-components/Card";
+import { LatestBlocks } from "../-components/LatestBlocks";
+import { LatestTransactions } from "../-components/LatestTransactions";
+
+const ITEMS_TO_SHOW = 6;
 
 export const Route = createFileRoute("/rpc/$rpc/_l/")({
-  loader: ({ params }) => decodeURIComponent(params.rpc),
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  return (
-    <div className="grid md:grid-cols-2">
-      <LatestBlocks />
-      <LatestTxs />
-    </div>
-  );
-}
-
-function LatestBlocks() {
+  const rpc = Route.useParams().rpc;
   const latest = useLatest();
 
-  if (!latest) {
-    return <Card>Loading...</Card>;
-  }
+  if (!latest) return null;
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Latest Blocks</CardTitle>
-      </CardHeader>
-      <CardContent>
-        {[...Array(10).keys()].map((b) => {
-          if (latest - BigInt(b) >= 0n) {
-            return <Block key={b} blockNumber={latest - BigInt(b)} />;
-          }
-        })}
-      </CardContent>
-    </Card>
-  );
-}
-
-function LatestTxs() {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Latest Transactions</CardTitle>
-      </CardHeader>
-      <CardContent>foo</CardContent>
-    </Card>
-  );
-}
-
-function Block({ blockNumber }: { blockNumber: bigint }) {
-  const rpc = Route.useParams().rpc;
-  const { data: block } = useBlock({ blockNumber });
-
-  if (!block) return null;
-
-  return (
-    <Link
-      className="flex gap-2"
-      to="/rpc/$rpc/block-by-hash/$blockHash"
-      params={{ rpc, blockHash: block?.hash }}
-    >
-      <span className="font-bold">{blockNumber}</span>
-      <span>{truncateHex(block?.hash)}</span>
-    </Link>
+    <div className="flex flex-1 items-center justify-center p-10">
+      <div className="grid w-full max-w-[1800px] grid-cols-1 gap-4 lg:grid-cols-2">
+        <Card
+          title="Latest Blocks"
+          footerLink={{
+            text: "VIEW ALL BLOCKS",
+            to: "/rpc/$rpc/blocks",
+          }}
+        >
+          <LatestBlocks rpc={rpc} latest={latest} itemsToShow={ITEMS_TO_SHOW} />
+        </Card>
+        <Card
+          title="Latest Transactions"
+          footerLink={{
+            text: "VIEW ALL TRANSACTIONS",
+            to: "/rpc/$rpc/transactions",
+          }}
+        >
+          <LatestTransactions />
+        </Card>
+      </div>
+    </div>
   );
 }
