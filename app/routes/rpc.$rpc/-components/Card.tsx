@@ -5,6 +5,7 @@ import {
   CardTitle,
   Card as ShadcnCard,
 } from "@ethui/ui/components/shadcn/card";
+import { clsx } from "clsx";
 import { ArrowRight } from "lucide-react";
 import { LinkText } from "#/components/LinkText";
 
@@ -33,5 +34,67 @@ export function Card({ title, children, footerLink }: CardProps) {
         </LinkText>
       </CardFooter>
     </ShadcnCard>
+  );
+}
+
+export function CardContentItem({
+  variant = "loading",
+}: {
+  variant?: "loading" | "empty";
+}) {
+  const isLoading = variant === "loading";
+
+  return (
+    <li
+      className={clsx(
+        "flex flex-row gap-4 border-b py-4 last:border-b-0",
+        isLoading && "animate-pulse",
+      )}
+    >
+      <div className="flex w-1/3 flex-row items-center gap-2">
+        <div
+          className={clsx(
+            "block h-12 w-12 flex-shrink-0 rounded-lg border",
+            isLoading && "bg-accent/50",
+          )}
+        />
+        <div className="flex flex-col gap-1">
+          <div
+            className={clsx(
+              "h-4 w-16 rounded border",
+              isLoading ? "bg-accent/50" : "border-dashed",
+            )}
+          />
+          <div
+            className={clsx(
+              "h-3 w-24 rounded border",
+              isLoading ? "bg-accent/50" : "border-dashed",
+            )}
+          />
+        </div>
+      </div>
+      <div className="flex w-2/3 flex-row items-center justify-between gap-4">
+        <div className="flex flex-col gap-1">
+          <div
+            className={clsx(
+              "h-4 w-32 rounded border",
+              isLoading ? "bg-accent/50" : "border-dashed",
+            )}
+          />
+          <div
+            className={clsx(
+              "h-3 w-40 rounded border",
+              isLoading ? "bg-accent/50" : "border-dashed",
+            )}
+          />
+        </div>
+        <div
+          className={clsx(
+            "h-6 w-20 rounded-lg border",
+            isLoading ? "bg-accent/50" : "border-dashed",
+          )}
+        />
+      </div>
+    </li>
   );
 }
