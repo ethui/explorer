@@ -33,7 +33,7 @@ function RouteComponent() {
   });
 
   return (
-    <WagmiProvider config={wagmi}>
+    <WagmiProvider key={rpc} config={wagmi}>
       <ConnectionStateUpdater rpc={rpc} />
       <div className="flex flex-col justify-center gap-2">
         <div className="flex-grow overflow-hidden">

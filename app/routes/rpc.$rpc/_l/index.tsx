@@ -14,7 +14,7 @@ function RouteComponent() {
   const rpc = Route.useParams().rpc;
   const latest = useLatest();
 
-  if (!latest) return null;
+  if (latest === null) return null;
 
   return (
     <div className="flex flex-1 items-center justify-center p-10">

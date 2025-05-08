@@ -3,21 +3,20 @@ import { formatEther } from "viem";
 import { useBlock } from "wagmi";
 import { LinkText } from "#/components/LinkText";
 import { Tooltip } from "#/components/Tooltip";
+import { useBlockNumbers } from "#/hooks/useBlockNumbers";
 import { truncateHex } from "#/utils/hash";
 import { formatBlockTime, formatRelativeTime } from "#/utils/time";
+import { CardContentItem } from "./Card";
 
 interface LatestBlocksProps {
   rpc: string;
-  latest: bigint | null;
+  latest: bigint;
   itemsToShow: number;
 }
 
 export function LatestBlocks({ rpc, latest, itemsToShow }: LatestBlocksProps) {
-  if (!latest) return null;
-
-  const blockNumbers = [...Array(itemsToShow).keys()]
-    .map((b) => latest - BigInt(b))
-    .filter((n) => n >= 0n);
+  const blockNumbers = useBlockNumbers(latest, itemsToShow);
+  const numEmptyBlocks = Math.max(0, itemsToShow - blockNumbers.length);
 
   return (
     <ul>
@@ -28,15 +27,28 @@ export function LatestBlocks({ rpc, latest, itemsToShow }: LatestBlocksProps) {
           rpc={rpc}
         />
       ))}
+      {Array(numEmptyBlocks)
+        .fill(null)
+        .map((_, i) => (
+          <CardContentItem key={`empty-${i}`} variant="empty" />
+        ))}
     </ul>
   );
 }
 
 function Block({ blockNumber, rpc }: { blockNumber: bigint; rpc: string }) {
-  const { data: block } = useBlock({ blockNumber });
-  const { data: prevBlock } = useBlock({ blockNumber: blockNumber - 1n });
+  const { data: block, isLoading: isBlockLoading } = useBlock({
+    blockNumber,
+  });
+  const shouldFetchPrev = blockNumber > 0n;
+  const prevBlockResult = shouldFetchPrev
+    ? useBlock({ blockNumber: blockNumber - 1n })
+    : { data: undefined, isLoading: false };
 
-  if (!block) return null;
+  if (isBlockLoading || prevBlockResult.isLoading)
+    return <CardContentItem variant="loading" />;
+
+  if (!block) return <CardContentItem variant="empty" />;
 
   const baseFeeBurned = block.baseFeePerGas
     ? formatEther(block.baseFeePerGas * block.gasUsed)
@@ -77,7 +89,11 @@ function Block({ blockNumber, rpc }: { blockNumber: bigint; rpc: string }) {
             >
               {block.transactions.length} txns
             </LinkText>{" "}
-            in {formatBlockTime(block.timestamp, prevBlock?.timestamp)}
+            in{" "}
+            {formatBlockTime(
+              block.timestamp,
+              prevBlockResult.data?.timestamp ?? block.timestamp,
+            )}
           </span>
         </div>
         <BaseFeeBurned value={baseFeeBurned} />
@@ -87,10 +103,12 @@ function Block({ blockNumber, rpc }: { blockNumber: bigint; rpc: string }) {
 }
 
 function BaseFeeBurned({ value }: { value: string }) {
+  const formatted = (Math.round(Number(value) * 100000) / 100000).toString();
+
   return (
     <Tooltip content="Base fee burned">
       <div className="flex items-center rounded-lg border px-2 py-[6px]">
-        <span className="block text-xs leading-none">{value} Eth</span>
+        <span className="block text-xs leading-none">{formatted} Eth</span>
       </div>
     </Tooltip>
   );
