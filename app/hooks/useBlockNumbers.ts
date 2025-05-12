@@ -6,14 +6,14 @@ export function useBlockNumbers(latest: bigint, itemsToShow: number) {
   const [blockNumbers, setBlockNumbers] = useState<bigint[]>([]);
 
   useEffect(() => {
-    if (!block) return;
+    if (!block?.number) return;
 
     const newNumbers = [...Array(itemsToShow).keys()]
       .map((i) => block.number - BigInt(i))
       .filter((n) => n >= 0n);
 
     setBlockNumbers(newNumbers);
-  }, [block, itemsToShow]);
+  }, [block?.number, itemsToShow]);
 
   return blockNumbers;
 }

@@ -37,6 +37,26 @@ export function Card({ title, children, footerLink }: CardProps) {
   );
 }
 
+export function LoadingCardContentList({ numItems }: { numItems: number }) {
+  return (
+    <>
+      {Array.from({ length: numItems }).map((_, i) => (
+        <CardContentItem key={`loading-${i}`} variant="loading" />
+      ))}
+    </>
+  );
+}
+
+export function EmptyCardContentList({ numItems }: { numItems: number }) {
+  return (
+    <>
+      {Array.from({ length: numItems }).map((_, i) => (
+        <CardContentItem key={`empty-${i}`} variant="empty" />
+      ))}
+    </>
+  );
+}
+
 export function CardContentItem({
   variant = "loading",
 }: {
@@ -47,28 +67,28 @@ export function CardContentItem({
   return (
     <li
       className={clsx(
-        "flex flex-row gap-4 border-b py-4 last:border-b-0",
+        "flex flex-row gap-4 border-b py-4 last:border-b-0 lg:h-[85px]",
         isLoading && "animate-pulse",
       )}
     >
       <div className="flex w-1/3 flex-row items-center gap-2">
         <div
           className={clsx(
-            "block h-12 w-12 flex-shrink-0 rounded-lg border",
-            isLoading && "bg-accent/50",
+            "block h-12 w-12 flex-shrink-0 rounded-lg",
+            isLoading && "border bg-accent/50",
           )}
         />
         <div className="flex flex-col gap-1">
           <div
             className={clsx(
-              "h-4 w-16 rounded border",
-              isLoading ? "bg-accent/50" : "border-dashed",
+              "h-4 w-16 rounded",
+              isLoading && "border bg-accent/50",
             )}
           />
           <div
             className={clsx(
-              "h-3 w-24 rounded border",
-              isLoading ? "bg-accent/50" : "border-dashed",
+              "h-3 w-24 rounded",
+              isLoading && "border bg-accent/50",
             )}
           />
         </div>
@@ -77,21 +97,21 @@ export function CardContentItem({
         <div className="flex flex-col gap-1">
           <div
             className={clsx(
-              "h-4 w-32 rounded border",
-              isLoading ? "bg-accent/50" : "border-dashed",
+              "h-4 w-32 rounded",
+              isLoading && "border bg-accent/50",
             )}
           />
           <div
             className={clsx(
-              "h-3 w-40 rounded border",
-              isLoading ? "bg-accent/50" : "border-dashed",
+              "h-3 w-40 rounded",
+              isLoading && "border bg-accent/50",
             )}
           />
         </div>
         <div
           className={clsx(
-            "h-6 w-20 rounded-lg border",
-            isLoading ? "bg-accent/50" : "border-dashed",
+            "h-6 w-20 rounded-lg",
+            isLoading && "border bg-accent/50",
           )}
         />
       </div>

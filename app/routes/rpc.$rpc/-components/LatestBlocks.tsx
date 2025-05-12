@@ -6,8 +6,7 @@ import { Tooltip } from "#/components/Tooltip";
 import { useBlockNumbers } from "#/hooks/useBlockNumbers";
 import { truncateHex } from "#/utils/hash";
 import { formatBlockTime, formatRelativeTime } from "#/utils/time";
-import { CardContentItem } from "./Card";
-
+import { CardContentItem, EmptyCardContentList } from "./Card";
 interface LatestBlocksProps {
   rpc: string;
   latest: bigint;
@@ -27,11 +26,7 @@ export function LatestBlocks({ rpc, latest, itemsToShow }: LatestBlocksProps) {
           rpc={rpc}
         />
       ))}
-      {Array(numEmptyBlocks)
-        .fill(null)
-        .map((_, i) => (
-          <CardContentItem key={`empty-${i}`} variant="empty" />
-        ))}
+      <EmptyCardContentList numItems={numEmptyBlocks} />
     </ul>
   );
 }
@@ -40,13 +35,13 @@ function Block({ blockNumber, rpc }: { blockNumber: bigint; rpc: string }) {
   const { data: block, isLoading: isBlockLoading } = useBlock({
     blockNumber,
   });
+
   const shouldFetchPrev = blockNumber > 0n;
   const prevBlockResult = shouldFetchPrev
     ? useBlock({ blockNumber: blockNumber - 1n })
     : { data: undefined, isLoading: false };
 
-  if (isBlockLoading || prevBlockResult.isLoading)
-    return <CardContentItem variant="loading" />;
+  if (isBlockLoading) return <CardContentItem variant="loading" />;
 
   if (!block) return <CardContentItem variant="empty" />;
 
@@ -55,7 +50,7 @@ function Block({ blockNumber, rpc }: { blockNumber: bigint; rpc: string }) {
     : "0";
 
   return (
-    <li className="flex flex-row gap-4 border-b py-4 last:border-b-0">
+    <li className="flex flex-row gap-4 border-b py-4 last:border-b-0 lg:h-[85px]">
       <div className="flex w-1/3 flex-row items-center gap-2">
         <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-accent">
           <BoxIcon className="h-5 w-5" />
@@ -79,7 +74,7 @@ function Block({ blockNumber, rpc }: { blockNumber: bigint; rpc: string }) {
             params={{ rpc, blockHash: block.hash }}
             tooltip={block.hash}
           >
-            {truncateHex(block.hash)}
+            {truncateHex(block.hash, 8)}
           </LinkText>
           <span className="text-muted-foreground text-xs">
             <LinkText
