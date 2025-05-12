@@ -1,3 +1,4 @@
+import { ReceiptText } from "lucide-react";
 import { useMemo } from "react";
 import type { Transaction } from "viem";
 import { formatEther } from "viem";
@@ -7,7 +8,6 @@ import { useLatestTransactions } from "#/hooks/useLatestTransactions";
 import { truncateHex } from "#/utils/hash";
 import { formatRelativeTime } from "#/utils/time";
 import { EmptyCardContentList, LoadingCardContentList } from "./Card";
-import { ReceiptText } from "lucide-react";
 
 interface LatestTransactionsProps {
   latestBlock: bigint;
