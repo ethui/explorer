@@ -115,7 +115,7 @@ function RpcForm() {
   const navigate = useNavigate();
   const { rpc } = useParams({ strict: false });
   const { connected, blockNumber, reset } = useConnectionStore();
-  const currentRpc = rpc ? decodeURIComponent(rpc) : "ws://localhost:8545";
+  const currRpc = rpc ? decodeURIComponent(rpc) : "ws://localhost:8545";
 
   const schema = z.object({
     url: z.string(),
@@ -125,13 +125,13 @@ function RpcForm() {
     mode: "onBlur",
     resolver: zodResolver(schema),
     defaultValues: {
-      url: currentRpc,
+      url: currRpc,
     },
   });
 
   const handleSubmit = (data: FieldValues) => {
     const newRpc = data.url;
-    if (newRpc !== currentRpc) {
+    if (newRpc !== currRpc) {
       reset();
     }
     navigate({ to: `/rpc/${encodeURIComponent(newRpc)}`, replace: true });
@@ -153,7 +153,7 @@ function RpcForm() {
           <span className="text-highlight">No connection</span>
         ) : connected ? (
           <span className="text-success">
-            Connected to {currentRpc} (Block: {blockNumber?.toString()})
+            Connected to {currRpc} (Block: {blockNumber?.toString()})
           </span>
         ) : (
           <span className="text-error">Disconnected</span>

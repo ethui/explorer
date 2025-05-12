@@ -35,7 +35,10 @@ function RouteComponent() {
             to: "/rpc/$rpc/transactions",
           }}
         >
-          <LatestTransactions />
+          <LatestTransactions
+            latestBlock={latest}
+            numberOfTransactions={ITEMS_TO_SHOW}
+          />
         </Card>
       </div>
     </div>

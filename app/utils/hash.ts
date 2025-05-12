@@ -1,3 +1,3 @@
-export function truncateHex(hash: string | undefined): string {
-  return hash ? `${hash.slice(0, 6)}…${hash.slice(-4)}` : "";
+export function truncateHex(hash: string | undefined, length = 4): string {
+  return hash ? `${hash.slice(0, 2 + length)}…${hash.slice(-length)}` : "";
 }

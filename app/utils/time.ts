@@ -18,14 +18,14 @@ export function formatRelativeTime(timestamp: bigint): string {
 }
 
 export function formatBlockTime(
-  currentTimestamp: bigint,
+  currTimestamp: bigint,
   prevTimestamp?: bigint,
 ): string {
   if (!prevTimestamp) return "0s";
 
   const duration = intervalToDuration({
     start: Number(prevTimestamp) * 1000,
-    end: Number(currentTimestamp) * 1000,
+    end: Number(currTimestamp) * 1000,
   });
 
   return isEmpty(duration) ? "0s" : formatDuration(duration);
