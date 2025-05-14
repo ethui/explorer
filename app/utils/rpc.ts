@@ -1,4 +1,4 @@
-import { createPublicClient, http, webSocket } from "viem";
+import { http, createPublicClient, webSocket } from "viem";
 import { foundry } from "wagmi/chains";
 
 export async function validateRpcConnection(rpc: string): Promise<string> {
