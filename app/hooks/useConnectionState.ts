@@ -7,7 +7,6 @@ export function useConnectionState({ rpc }: { rpc: string }) {
 
   const onBlockNumber = useCallback(
     (b: bigint) => {
-      console.log("onblocknumber", b);
       setState({ connected: true, blockNumber: b, rpc });
     },
     [rpc, setState],
@@ -19,8 +18,8 @@ export function useConnectionState({ rpc }: { rpc: string }) {
 
   useWatchBlockNumber({
     emitOnBegin: true,
+    emitMissed: true,
     poll: true,
-    pollingInterval: 1000,
     onBlockNumber,
     onError,
   });
