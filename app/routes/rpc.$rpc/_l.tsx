@@ -1,21 +1,15 @@
 import { Outlet, createFileRoute } from "@tanstack/react-router";
-import { createServerFn } from "@tanstack/react-start";
 import { http, WagmiProvider, createConfig, webSocket } from "wagmi";
 import { foundry } from "wagmi/chains";
 import { LoadingSpinner } from "#/components/LoadingSpinner";
 import { useConnectionState } from "#/hooks/useConnectionState";
 import { validateRpcConnection } from "#/utils/rpc";
 
-const validateRpc = createServerFn({
-  method: "GET",
-})
-  .validator((rpc: string) => rpc)
-  .handler(async ({ data: rpc }) => validateRpcConnection(rpc));
-
 export const Route = createFileRoute("/rpc/$rpc/_l")({
   loader: async ({ params }) => {
     const rpc = decodeURIComponent(params.rpc);
-    return validateRpc({ data: rpc });
+    await validateRpcConnection(rpc);
+    return rpc;
   },
   component: RouteComponent,
   pendingComponent: () => <LoadingSpinner />,
