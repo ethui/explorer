@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useLatest } from "#/hooks/useLatest";
+import { useConnectionStore } from "#/store/connection";
 import { Card } from "../-components/Card";
 import { LatestBlocks } from "../-components/LatestBlocks";
 import { LatestTransactions } from "../-components/LatestTransactions";
@@ -12,9 +12,9 @@ export const Route = createFileRoute("/rpc/$rpc/_l/")({
 
 function RouteComponent() {
   const rpc = Route.useParams().rpc;
-  const latest = useLatest();
+  const { blockNumber } = useConnectionStore();
 
-  if (latest === null) return null;
+  if (blockNumber === null) return null;
 
   return (
     <div className="flex flex-1 items-center justify-center p-10">
@@ -26,7 +26,11 @@ function RouteComponent() {
             to: "/rpc/$rpc/blocks",
           }}
         >
-          <LatestBlocks rpc={rpc} latest={latest} itemsToShow={ITEMS_TO_SHOW} />
+          <LatestBlocks
+            rpc={rpc}
+            latest={blockNumber}
+            itemsToShow={ITEMS_TO_SHOW}
+          />
         </Card>
         <Card
           title="Latest Transactions"
@@ -36,7 +40,7 @@ function RouteComponent() {
           }}
         >
           <LatestTransactions
-            latestBlock={latest}
+            latestBlock={blockNumber}
             numberOfTransactions={ITEMS_TO_SHOW}
           />
         </Card>
