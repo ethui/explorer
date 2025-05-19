@@ -1280,14 +1280,17 @@ __metadata:
     "@tanstack/react-query": "npm:^5.71.1"
     "@tanstack/react-router": "npm:^1.112.17"
     "@tanstack/react-start": "npm:^1.112.17"
+    "@tanstack/react-table": "npm:^8.21.3"
     "@tanstack/router-devtools": "npm:^1.112.17"
     "@tanstack/router-plugin": "npm:^1.112.17"
+    "@types/big.js": "npm:^6.2.2"
     "@types/cheerio": "npm:^0.22.35"
     "@types/lodash-es": "npm:^4.17.12"
     "@types/node": "npm:^22.13.9"
     "@types/react": "npm:^19.0.10"
     "@types/react-dom": "npm:^19.0.4"
     autoprefixer: "npm:^10.4.20"
+    big.js: "npm:^7.0.1"
     cheerio: "npm:^1.0.0"
     clsx: "npm:^2.1.1"
     csstype: "npm:^3.1.3"
@@ -4404,6 +4407,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tanstack/react-table@npm:^8.21.3":
+  version: 8.21.3
+  resolution: "@tanstack/react-table@npm:8.21.3"
+  dependencies:
+    "@tanstack/table-core": "npm:8.21.3"
+  peerDependencies:
+    react: ">=16.8"
+    react-dom: ">=16.8"
+  checksum: 10c0/85d1d0fcb690ecc011f68a5a61c96f82142e31a0270dcf9cbc699a6f36715b1653fe6ff1518302a6d08b7093351fc4cabefd055a7db3cd8ac01e068956b0f944
+  languageName: node
+  linkType: hard
+
 "@tanstack/router-core@npm:1.119.0, @tanstack/router-core@npm:^1.119.0":
   version: 1.119.0
   resolution: "@tanstack/router-core@npm:1.119.0"
@@ -4643,6 +4658,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tanstack/table-core@npm:8.21.3":
+  version: 8.21.3
+  resolution: "@tanstack/table-core@npm:8.21.3"
+  checksum: 10c0/40e3560e6d55e07cc047024aa7f83bd47a9323d21920d4adabba8071fd2d21230c48460b26cedf392588f8265b9edc133abb1b0d6d0adf4dae0970032900a8c9
+  languageName: node
+  linkType: hard
+
 "@tanstack/virtual-file-routes@npm:^1.115.0":
   version: 1.115.0
   resolution: "@tanstack/virtual-file-routes@npm:1.115.0"
@@ -4697,6 +4719,13 @@ __metadata:
   dependencies:
     "@babel/types": "npm:^7.20.7"
   checksum: 10c0/5386f0af44f8746b063b87418f06129a814e16bb2686965a575e9d7376b360b088b89177778d8c426012abc43dd1a2d8ec3218bfc382280c898682746ce2ffbd
+  languageName: node
+  linkType: hard
+
+"@types/big.js@npm:^6.2.2":
+  version: 6.2.2
+  resolution: "@types/big.js@npm:6.2.2"
+  checksum: 10c0/8f8472dfc1ef61c492e6841e86f8b9b97e5b024136bf7964e582a6a80ba73d4dbfd6cc23ed3b9d8fea69c7f30834fffd1c88e7fb981811f5c6ca608380b5ad67
   languageName: node
   linkType: hard
 
@@ -5925,6 +5954,13 @@ __metadata:
   version: 6.2.2
   resolution: "big.js@npm:6.2.2"
   checksum: 10c0/58d204f6a1a92508dc2eb98d964e2cc6dabb37a3d9fc8a1f0b77a34dead7c11e17b173d9a6df2d5a7a0f78d5c80853a9ce6df29852da59ab10b088e981195165
+  languageName: node
+  linkType: hard
+
+"big.js@npm:^7.0.1":
+  version: 7.0.1
+  resolution: "big.js@npm:7.0.1"
+  checksum: 10c0/2ea2c2e263db37b2d5c6ad6246408eabf13ba07776cfd92bf464db201ef9aa9aa1712accbfe97f4aba5d358567ebefe768e8a50102cde11f35ef3497ddc2747c
   languageName: node
   linkType: hard
 

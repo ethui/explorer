@@ -1,3 +1,4 @@
+import Big from "big.js";
 import { Box as BoxIcon } from "lucide-react";
 import { formatEther } from "viem";
 import { useBlock } from "wagmi";
@@ -5,7 +6,7 @@ import { LinkText } from "#/components/LinkText";
 import { Tooltip } from "#/components/Tooltip";
 import { useBlockNumbers } from "#/hooks/useBlockNumbers";
 import { truncateHex } from "#/utils/hash";
-import { formatBlockTime, formatRelativeTime } from "#/utils/time";
+import { formatRelativeTime, formatTimeInterval } from "#/utils/time";
 import { CardContentItem, EmptyCardContentList } from "./Card";
 interface LatestBlocksProps {
   rpc: string;
@@ -57,8 +58,8 @@ function Block({ blockNumber, rpc }: { blockNumber: bigint; rpc: string }) {
         </div>
         <div className="flex flex-col gap-1">
           <LinkText
-            to="/rpc/$rpc/block-by-hash/$blockHash"
-            params={{ rpc, blockHash: block.hash }}
+            to="/rpc/$rpc/block/$blockNumber"
+            params={{ rpc, blockNumber: blockNumber.toString() }}
           >
             {blockNumber.toString()}
           </LinkText>
@@ -70,24 +71,24 @@ function Block({ blockNumber, rpc }: { blockNumber: bigint; rpc: string }) {
       <div className="flex w-2/3 flex-row items-center justify-between gap-4">
         <div className="flex flex-col gap-1">
           <LinkText
-            to="/rpc/$rpc/block-by-hash/$blockHash"
-            params={{ rpc, blockHash: block.hash }}
+            to="/rpc/$rpc/block/$blockNumber"
+            params={{ rpc, blockNumber: blockNumber.toString() }}
             tooltip={block.hash}
           >
-            {truncateHex(block.hash, 8)}
+            {truncateHex(block.hash, 11, false)}
           </LinkText>
           <span className="text-muted-foreground text-xs">
             <LinkText
-              to="/rpc/$rpc/block-by-hash/$blockHash"
-              params={{ rpc, blockHash: block.hash }}
+              to="/rpc/$rpc/block/$blockNumber"
+              params={{ rpc, blockNumber: blockNumber.toString() }}
               tooltip={"Transactions in this Block"}
             >
               {block.transactions.length} txns
             </LinkText>{" "}
             in{" "}
-            {formatBlockTime(
-              block.timestamp,
+            {formatTimeInterval(
               prevBlockResult.data?.timestamp ?? block.timestamp,
+              block.timestamp,
             )}
           </span>
         </div>
@@ -98,7 +99,7 @@ function Block({ blockNumber, rpc }: { blockNumber: bigint; rpc: string }) {
 }
 
 function BaseFeeBurned({ value }: { value: string }) {
-  const formatted = (Math.round(Number(value) * 100000) / 100000).toString();
+  const formatted = new Big(value).toFixed(5);
 
   return (
     <Tooltip content="Base fee burned">
