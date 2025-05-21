@@ -16,7 +16,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
 import { Route as RpcRpcLImport } from './routes/rpc.$rpc/_l'
 import { Route as RpcRpcLIndexImport } from './routes/rpc.$rpc/_l/index'
-import { Route as RpcRpcLBlockByHashBlockHashImport } from './routes/rpc.$rpc/_l/block-by-hash.$blockHash'
+import { Route as RpcRpcLBlockBlockNumberImport } from './routes/rpc.$rpc/_l/block.$blockNumber'
 
 // Create Virtual Routes
 
@@ -47,12 +47,11 @@ const RpcRpcLIndexRoute = RpcRpcLIndexImport.update({
   getParentRoute: () => RpcRpcLRoute,
 } as any)
 
-const RpcRpcLBlockByHashBlockHashRoute =
-  RpcRpcLBlockByHashBlockHashImport.update({
-    id: '/block-by-hash/$blockHash',
-    path: '/block-by-hash/$blockHash',
-    getParentRoute: () => RpcRpcLRoute,
-  } as any)
+const RpcRpcLBlockBlockNumberRoute = RpcRpcLBlockBlockNumberImport.update({
+  id: '/block/$blockNumber',
+  path: '/block/$blockNumber',
+  getParentRoute: () => RpcRpcLRoute,
+} as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -86,11 +85,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RpcRpcLIndexImport
       parentRoute: typeof RpcRpcLImport
     }
-    '/rpc/$rpc/_l/block-by-hash/$blockHash': {
-      id: '/rpc/$rpc/_l/block-by-hash/$blockHash'
-      path: '/block-by-hash/$blockHash'
-      fullPath: '/rpc/$rpc/block-by-hash/$blockHash'
-      preLoaderRoute: typeof RpcRpcLBlockByHashBlockHashImport
+    '/rpc/$rpc/_l/block/$blockNumber': {
+      id: '/rpc/$rpc/_l/block/$blockNumber'
+      path: '/block/$blockNumber'
+      fullPath: '/rpc/$rpc/block/$blockNumber'
+      preLoaderRoute: typeof RpcRpcLBlockBlockNumberImport
       parentRoute: typeof RpcRpcLImport
     }
   }
@@ -100,12 +99,12 @@ declare module '@tanstack/react-router' {
 
 interface RpcRpcLRouteChildren {
   RpcRpcLIndexRoute: typeof RpcRpcLIndexRoute
-  RpcRpcLBlockByHashBlockHashRoute: typeof RpcRpcLBlockByHashBlockHashRoute
+  RpcRpcLBlockBlockNumberRoute: typeof RpcRpcLBlockBlockNumberRoute
 }
 
 const RpcRpcLRouteChildren: RpcRpcLRouteChildren = {
   RpcRpcLIndexRoute: RpcRpcLIndexRoute,
-  RpcRpcLBlockByHashBlockHashRoute: RpcRpcLBlockByHashBlockHashRoute,
+  RpcRpcLBlockBlockNumberRoute: RpcRpcLBlockBlockNumberRoute,
 }
 
 const RpcRpcLRouteWithChildren =
@@ -126,13 +125,13 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/rpc/$rpc': typeof RpcRpcLRouteWithChildren
   '/rpc/$rpc/': typeof RpcRpcLIndexRoute
-  '/rpc/$rpc/block-by-hash/$blockHash': typeof RpcRpcLBlockByHashBlockHashRoute
+  '/rpc/$rpc/block/$blockNumber': typeof RpcRpcLBlockBlockNumberRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/rpc/$rpc': typeof RpcRpcLIndexRoute
-  '/rpc/$rpc/block-by-hash/$blockHash': typeof RpcRpcLBlockByHashBlockHashRoute
+  '/rpc/$rpc/block/$blockNumber': typeof RpcRpcLBlockBlockNumberRoute
 }
 
 export interface FileRoutesById {
@@ -141,25 +140,21 @@ export interface FileRoutesById {
   '/rpc/$rpc': typeof RpcRpcRouteWithChildren
   '/rpc/$rpc/_l': typeof RpcRpcLRouteWithChildren
   '/rpc/$rpc/_l/': typeof RpcRpcLIndexRoute
-  '/rpc/$rpc/_l/block-by-hash/$blockHash': typeof RpcRpcLBlockByHashBlockHashRoute
+  '/rpc/$rpc/_l/block/$blockNumber': typeof RpcRpcLBlockBlockNumberRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/rpc/$rpc'
-    | '/rpc/$rpc/'
-    | '/rpc/$rpc/block-by-hash/$blockHash'
+  fullPaths: '/' | '/rpc/$rpc' | '/rpc/$rpc/' | '/rpc/$rpc/block/$blockNumber'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/rpc/$rpc' | '/rpc/$rpc/block-by-hash/$blockHash'
+  to: '/' | '/rpc/$rpc' | '/rpc/$rpc/block/$blockNumber'
   id:
     | '__root__'
     | '/'
     | '/rpc/$rpc'
     | '/rpc/$rpc/_l'
     | '/rpc/$rpc/_l/'
-    | '/rpc/$rpc/_l/block-by-hash/$blockHash'
+    | '/rpc/$rpc/_l/block/$blockNumber'
   fileRoutesById: FileRoutesById
 }
 
@@ -201,15 +196,15 @@ export const routeTree = rootRoute
       "parent": "/rpc/$rpc",
       "children": [
         "/rpc/$rpc/_l/",
-        "/rpc/$rpc/_l/block-by-hash/$blockHash"
+        "/rpc/$rpc/_l/block/$blockNumber"
       ]
     },
     "/rpc/$rpc/_l/": {
       "filePath": "rpc.$rpc/_l/index.tsx",
       "parent": "/rpc/$rpc/_l"
     },
-    "/rpc/$rpc/_l/block-by-hash/$blockHash": {
-      "filePath": "rpc.$rpc/_l/block-by-hash.$blockHash.tsx",
+    "/rpc/$rpc/_l/block/$blockNumber": {
+      "filePath": "rpc.$rpc/_l/block.$blockNumber.tsx",
       "parent": "/rpc/$rpc/_l"
     }
   }

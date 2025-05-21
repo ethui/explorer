@@ -17,15 +17,12 @@ export function formatRelativeTime(timestamp: bigint): string {
   return formatDistanceToNow(date, { addSuffix: true });
 }
 
-export function formatBlockTime(
-  currTimestamp: bigint,
-  prevTimestamp?: bigint,
-): string {
-  if (!prevTimestamp) return "0s";
+export function formatTimeInterval(start: bigint, end: bigint): string {
+  if (!start || !end) return "0s";
 
   const duration = intervalToDuration({
-    start: Number(prevTimestamp) * 1000,
-    end: Number(currTimestamp) * 1000,
+    start: Number(start) * 1000,
+    end: Number(end) * 1000,
   });
 
   return isEmpty(duration) ? "0s" : formatDuration(duration);

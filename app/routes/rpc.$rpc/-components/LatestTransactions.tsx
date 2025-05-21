@@ -1,3 +1,4 @@
+import Big from "big.js";
 import { ReceiptText } from "lucide-react";
 import { useMemo } from "react";
 import type { Transaction } from "viem";
@@ -74,7 +75,7 @@ export function TransactionRow({
             params={{ hash: transaction.hash }}
             tooltip={transaction.hash}
           >
-            {truncateHex(transaction.hash)}
+            {truncateHex(transaction.hash, 11, false)}
           </LinkText>
           <span className="text-muted-foreground text-xs">{formattedTime}</span>
         </div>
@@ -88,7 +89,7 @@ export function TransactionRow({
               params={{ hash: transaction.hash }}
               tooltip={transaction.from}
             >
-              {truncateHex(transaction.from, 8)}
+              {truncateHex(transaction.from)}
             </LinkText>
           </div>
           {transaction.to && (
@@ -111,7 +112,7 @@ export function TransactionRow({
 }
 
 function TransactionValue({ value }: { value: string }) {
-  const formatted = (Math.round(Number(value) * 100000) / 100000).toString();
+  const formatted = new Big(value).toFixed(5);
 
   return (
     <Tooltip content="Amount">
