@@ -81,7 +81,7 @@ const columns = [
 
       return (
         <span className="text-muted-foreground text-xs">
-          {Big(formatEther(fee)).round(8).toString()} ETH
+          {Big(formatEther(fee)).round(8).toString()}
         </span>
       );
     },
