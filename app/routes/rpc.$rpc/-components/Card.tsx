@@ -8,6 +8,8 @@ import {
 import { clsx } from "clsx";
 import { ArrowRight } from "lucide-react";
 import { LinkText } from "#/components/LinkText";
+import { Tooltip } from "#/components/Tooltip";
+import { formatEth } from "#/utils/formatters";
 
 interface CardProps {
   title: string;
@@ -34,6 +36,24 @@ export function Card({ title, children, footerLink }: CardProps) {
         </LinkText>
       </CardFooter>
     </ShadcnCard>
+  );
+}
+
+export function AmountWrapper({
+  value,
+  title,
+}: {
+  value: bigint;
+  title: string;
+}) {
+  return (
+    <Tooltip content={title}>
+      <div className="flex items-center rounded-lg border px-2 py-[6px]">
+        <span className="block text-xs leading-none">
+          {formatEth(value, 5)} Eth
+        </span>
+      </div>
+    </Tooltip>
   );
 }
 

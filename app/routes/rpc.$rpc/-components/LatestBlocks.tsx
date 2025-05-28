@@ -1,13 +1,10 @@
-import Big from "big.js";
 import { Box as BoxIcon } from "lucide-react";
-import { formatEther } from "viem";
 import { useBlock } from "wagmi";
 import { LinkText } from "#/components/LinkText";
-import { Tooltip } from "#/components/Tooltip";
 import { useBlockNumbers } from "#/hooks/useBlockNumbers";
 import { truncateHex } from "#/utils/hash";
 import { formatRelativeTime, formatTimeInterval } from "#/utils/time";
-import { CardContentItem, EmptyCardContentList } from "./Card";
+import { AmountWrapper, CardContentItem, EmptyCardContentList } from "./Card";
 interface LatestBlocksProps {
   rpc: string;
   latest: bigint;
@@ -47,8 +44,8 @@ function Block({ blockNumber, rpc }: { blockNumber: bigint; rpc: string }) {
   if (!block) return <CardContentItem variant="empty" />;
 
   const baseFeeBurned = block.baseFeePerGas
-    ? formatEther(block.baseFeePerGas * block.gasUsed)
-    : "0";
+    ? block.baseFeePerGas * block.gasUsed
+    : 0n;
 
   return (
     <li className="flex flex-row gap-4 border-b py-4 last:border-b-0 lg:h-[85px]">
@@ -92,20 +89,8 @@ function Block({ blockNumber, rpc }: { blockNumber: bigint; rpc: string }) {
             )}
           </span>
         </div>
-        <BaseFeeBurned value={baseFeeBurned} />
+        <AmountWrapper value={baseFeeBurned} title="Base Fee Burned" />
       </div>
     </li>
-  );
-}
-
-function BaseFeeBurned({ value }: { value: string }) {
-  const formatted = new Big(value).toFixed(5);
-
-  return (
-    <Tooltip content="Base fee burned">
-      <div className="flex items-center rounded-lg border px-2 py-[6px]">
-        <span className="block text-xs leading-none">{formatted} Eth</span>
-      </div>
-    </Tooltip>
   );
 }
