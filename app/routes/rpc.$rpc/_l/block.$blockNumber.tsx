@@ -16,6 +16,7 @@ function RouteComponent() {
   });
 
   const transactions = block?.transactions;
+
   if (isLoading) return <LoadingSpinner />;
   if (!transactions) return <div>Block not found</div>;
 

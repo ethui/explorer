@@ -1,8 +1,8 @@
 import { createColumnHelper } from "@tanstack/react-table";
-import Big from "big.js";
-import { type Transaction, formatEther } from "viem";
+import type { Transaction } from "viem";
 import { LinkText } from "#/components/LinkText";
 import Table from "#/components/Tables/Table";
+import { formatEth } from "#/utils/formatters";
 import { truncateHex } from "#/utils/hash";
 
 interface TransactionsTableProps {
@@ -26,16 +26,21 @@ const columns = [
   }),
   columnHelper.accessor("blockNumber", {
     header: "Block",
-    cell: ({ row }) => (
-      <LinkText
-        to="/rpc/$rpc/block/$blockNumber"
-        params={{
-          blockNumber: row.original.blockNumber?.toString() ?? "",
-        }}
-      >
-        {row.original.blockNumber}
-      </LinkText>
-    ),
+    cell: ({ row }) => {
+      const blockNumber = BigInt(
+        row.original.blockNumber?.toString() ?? "0",
+      ).toString();
+      return (
+        <LinkText
+          to="/rpc/$rpc/block/$blockNumber"
+          params={{
+            blockNumber,
+          }}
+        >
+          {blockNumber}
+        </LinkText>
+      );
+    },
   }),
   columnHelper.accessor("from", {
     header: "From",
@@ -45,7 +50,7 @@ const columns = [
         params={{ address: row.original.from }}
         tooltip={row.original.from}
       >
-        {truncateHex(row.original.from, 8)}
+        {truncateHex(row.original.from)}
       </LinkText>
     ),
   }),
@@ -58,17 +63,13 @@ const columns = [
           params={{ address: row.original.to }}
           tooltip={row.original.to}
         >
-          {truncateHex(row.original.to, 8)}
+          {truncateHex(row.original.to)}
         </LinkText>
       ),
   }),
   columnHelper.accessor("value", {
     header: "Amount",
-    cell: ({ row }) => (
-      <span>
-        {Big(formatEther(row.original.value)).round(9).toString()} ETH
-      </span>
-    ),
+    cell: ({ row }) => <span>{formatEth(row.original.value, 9)} ETH</span>,
   }),
   columnHelper.display({
     id: "fee",
@@ -81,7 +82,7 @@ const columns = [
 
       return (
         <span className="text-muted-foreground text-xs">
-          {Big(formatEther(fee)).round(8).toString()}
+          {formatEth(fee)} ETH
         </span>
       );
     },

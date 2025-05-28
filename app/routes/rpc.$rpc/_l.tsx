@@ -1,7 +1,6 @@
 import { Outlet, createFileRoute } from "@tanstack/react-router";
 import { http, WagmiProvider, createConfig, webSocket } from "wagmi";
 import { foundry } from "wagmi/chains";
-import { LoadingSpinner } from "#/components/LoadingSpinner";
 import { useConnectionState } from "#/hooks/useConnectionState";
 
 export const Route = createFileRoute("/rpc/$rpc/_l")({
@@ -9,7 +8,6 @@ export const Route = createFileRoute("/rpc/$rpc/_l")({
     return decodeURIComponent(params.rpc);
   },
   component: RouteComponent,
-  pendingComponent: () => <LoadingSpinner />,
 });
 
 function RouteComponent() {

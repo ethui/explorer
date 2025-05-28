@@ -8,169 +8,198 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router";
 
 // Import Routes
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as IndexImport } from './routes/index'
-import { Route as RpcRpcLImport } from './routes/rpc.$rpc/_l'
-import { Route as RpcRpcLIndexImport } from './routes/rpc.$rpc/_l/index'
-import { Route as RpcRpcLBlockBlockNumberImport } from './routes/rpc.$rpc/_l/block.$blockNumber'
+import { Route as rootRoute } from "./routes/__root";
+import { Route as IndexImport } from "./routes/index";
+import { Route as RpcRpcLImport } from "./routes/rpc.$rpc/_l";
+import { Route as RpcRpcLIndexImport } from "./routes/rpc.$rpc/_l/index";
+import { Route as RpcRpcLBlockBlockNumberImport } from "./routes/rpc.$rpc/_l/block.$blockNumber";
+import { Route as RpcRpcLAddressAddressImport } from "./routes/rpc.$rpc/_l/address.$address";
 
 // Create Virtual Routes
 
-const RpcRpcImport = createFileRoute('/rpc/$rpc')()
+const RpcRpcImport = createFileRoute("/rpc/$rpc")();
 
 // Create/Update Routes
 
 const IndexRoute = IndexImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
 const RpcRpcRoute = RpcRpcImport.update({
-  id: '/rpc/$rpc',
-  path: '/rpc/$rpc',
+  id: "/rpc/$rpc",
+  path: "/rpc/$rpc",
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
 const RpcRpcLRoute = RpcRpcLImport.update({
-  id: '/_l',
+  id: "/_l",
   getParentRoute: () => RpcRpcRoute,
-} as any)
+} as any);
 
 const RpcRpcLIndexRoute = RpcRpcLIndexImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => RpcRpcLRoute,
-} as any)
+} as any);
 
 const RpcRpcLBlockBlockNumberRoute = RpcRpcLBlockBlockNumberImport.update({
-  id: '/block/$blockNumber',
-  path: '/block/$blockNumber',
+  id: "/block/$blockNumber",
+  path: "/block/$blockNumber",
   getParentRoute: () => RpcRpcLRoute,
-} as any)
+} as any);
+
+const RpcRpcLAddressAddressRoute = RpcRpcLAddressAddressImport.update({
+  id: "/address/$address",
+  path: "/address/$address",
+  getParentRoute: () => RpcRpcLRoute,
+} as any);
 
 // Populate the FileRoutesByPath interface
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/rpc/$rpc': {
-      id: '/rpc/$rpc'
-      path: '/rpc/$rpc'
-      fullPath: '/rpc/$rpc'
-      preLoaderRoute: typeof RpcRpcImport
-      parentRoute: typeof rootRoute
-    }
-    '/rpc/$rpc/_l': {
-      id: '/rpc/$rpc/_l'
-      path: '/rpc/$rpc'
-      fullPath: '/rpc/$rpc'
-      preLoaderRoute: typeof RpcRpcLImport
-      parentRoute: typeof RpcRpcRoute
-    }
-    '/rpc/$rpc/_l/': {
-      id: '/rpc/$rpc/_l/'
-      path: '/'
-      fullPath: '/rpc/$rpc/'
-      preLoaderRoute: typeof RpcRpcLIndexImport
-      parentRoute: typeof RpcRpcLImport
-    }
-    '/rpc/$rpc/_l/block/$blockNumber': {
-      id: '/rpc/$rpc/_l/block/$blockNumber'
-      path: '/block/$blockNumber'
-      fullPath: '/rpc/$rpc/block/$blockNumber'
-      preLoaderRoute: typeof RpcRpcLBlockBlockNumberImport
-      parentRoute: typeof RpcRpcLImport
-    }
+    "/": {
+      id: "/";
+      path: "/";
+      fullPath: "/";
+      preLoaderRoute: typeof IndexImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/rpc/$rpc": {
+      id: "/rpc/$rpc";
+      path: "/rpc/$rpc";
+      fullPath: "/rpc/$rpc";
+      preLoaderRoute: typeof RpcRpcImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/rpc/$rpc/_l": {
+      id: "/rpc/$rpc/_l";
+      path: "/rpc/$rpc";
+      fullPath: "/rpc/$rpc";
+      preLoaderRoute: typeof RpcRpcLImport;
+      parentRoute: typeof RpcRpcRoute;
+    };
+    "/rpc/$rpc/_l/": {
+      id: "/rpc/$rpc/_l/";
+      path: "/";
+      fullPath: "/rpc/$rpc/";
+      preLoaderRoute: typeof RpcRpcLIndexImport;
+      parentRoute: typeof RpcRpcLImport;
+    };
+    "/rpc/$rpc/_l/address/$address": {
+      id: "/rpc/$rpc/_l/address/$address";
+      path: "/address/$address";
+      fullPath: "/rpc/$rpc/address/$address";
+      preLoaderRoute: typeof RpcRpcLAddressAddressImport;
+      parentRoute: typeof RpcRpcLImport;
+    };
+    "/rpc/$rpc/_l/block/$blockNumber": {
+      id: "/rpc/$rpc/_l/block/$blockNumber";
+      path: "/block/$blockNumber";
+      fullPath: "/rpc/$rpc/block/$blockNumber";
+      preLoaderRoute: typeof RpcRpcLBlockBlockNumberImport;
+      parentRoute: typeof RpcRpcLImport;
+    };
   }
 }
 
 // Create and export the route tree
 
 interface RpcRpcLRouteChildren {
-  RpcRpcLIndexRoute: typeof RpcRpcLIndexRoute
-  RpcRpcLBlockBlockNumberRoute: typeof RpcRpcLBlockBlockNumberRoute
+  RpcRpcLIndexRoute: typeof RpcRpcLIndexRoute;
+  RpcRpcLAddressAddressRoute: typeof RpcRpcLAddressAddressRoute;
+  RpcRpcLBlockBlockNumberRoute: typeof RpcRpcLBlockBlockNumberRoute;
 }
 
 const RpcRpcLRouteChildren: RpcRpcLRouteChildren = {
   RpcRpcLIndexRoute: RpcRpcLIndexRoute,
+  RpcRpcLAddressAddressRoute: RpcRpcLAddressAddressRoute,
   RpcRpcLBlockBlockNumberRoute: RpcRpcLBlockBlockNumberRoute,
-}
+};
 
 const RpcRpcLRouteWithChildren =
-  RpcRpcLRoute._addFileChildren(RpcRpcLRouteChildren)
+  RpcRpcLRoute._addFileChildren(RpcRpcLRouteChildren);
 
 interface RpcRpcRouteChildren {
-  RpcRpcLRoute: typeof RpcRpcLRouteWithChildren
+  RpcRpcLRoute: typeof RpcRpcLRouteWithChildren;
 }
 
 const RpcRpcRouteChildren: RpcRpcRouteChildren = {
   RpcRpcLRoute: RpcRpcLRouteWithChildren,
-}
+};
 
 const RpcRpcRouteWithChildren =
-  RpcRpcRoute._addFileChildren(RpcRpcRouteChildren)
+  RpcRpcRoute._addFileChildren(RpcRpcRouteChildren);
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/rpc/$rpc': typeof RpcRpcLRouteWithChildren
-  '/rpc/$rpc/': typeof RpcRpcLIndexRoute
-  '/rpc/$rpc/block/$blockNumber': typeof RpcRpcLBlockBlockNumberRoute
+  "/": typeof IndexRoute;
+  "/rpc/$rpc": typeof RpcRpcLRouteWithChildren;
+  "/rpc/$rpc/": typeof RpcRpcLIndexRoute;
+  "/rpc/$rpc/address/$address": typeof RpcRpcLAddressAddressRoute;
+  "/rpc/$rpc/block/$blockNumber": typeof RpcRpcLBlockBlockNumberRoute;
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/rpc/$rpc': typeof RpcRpcLIndexRoute
-  '/rpc/$rpc/block/$blockNumber': typeof RpcRpcLBlockBlockNumberRoute
+  "/": typeof IndexRoute;
+  "/rpc/$rpc": typeof RpcRpcLIndexRoute;
+  "/rpc/$rpc/address/$address": typeof RpcRpcLAddressAddressRoute;
+  "/rpc/$rpc/block/$blockNumber": typeof RpcRpcLBlockBlockNumberRoute;
 }
 
 export interface FileRoutesById {
-  __root__: typeof rootRoute
-  '/': typeof IndexRoute
-  '/rpc/$rpc': typeof RpcRpcRouteWithChildren
-  '/rpc/$rpc/_l': typeof RpcRpcLRouteWithChildren
-  '/rpc/$rpc/_l/': typeof RpcRpcLIndexRoute
-  '/rpc/$rpc/_l/block/$blockNumber': typeof RpcRpcLBlockBlockNumberRoute
+  __root__: typeof rootRoute;
+  "/": typeof IndexRoute;
+  "/rpc/$rpc": typeof RpcRpcRouteWithChildren;
+  "/rpc/$rpc/_l": typeof RpcRpcLRouteWithChildren;
+  "/rpc/$rpc/_l/": typeof RpcRpcLIndexRoute;
+  "/rpc/$rpc/_l/address/$address": typeof RpcRpcLAddressAddressRoute;
+  "/rpc/$rpc/_l/block/$blockNumber": typeof RpcRpcLBlockBlockNumberRoute;
 }
 
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/rpc/$rpc' | '/rpc/$rpc/' | '/rpc/$rpc/block/$blockNumber'
-  fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/rpc/$rpc' | '/rpc/$rpc/block/$blockNumber'
+  fileRoutesByFullPath: FileRoutesByFullPath;
+  fullPaths:
+    | "/"
+    | "/rpc/$rpc"
+    | "/rpc/$rpc/"
+    | "/rpc/$rpc/address/$address"
+    | "/rpc/$rpc/block/$blockNumber";
+  fileRoutesByTo: FileRoutesByTo;
+  to:
+    | "/"
+    | "/rpc/$rpc"
+    | "/rpc/$rpc/address/$address"
+    | "/rpc/$rpc/block/$blockNumber";
   id:
-    | '__root__'
-    | '/'
-    | '/rpc/$rpc'
-    | '/rpc/$rpc/_l'
-    | '/rpc/$rpc/_l/'
-    | '/rpc/$rpc/_l/block/$blockNumber'
-  fileRoutesById: FileRoutesById
+    | "__root__"
+    | "/"
+    | "/rpc/$rpc"
+    | "/rpc/$rpc/_l"
+    | "/rpc/$rpc/_l/"
+    | "/rpc/$rpc/_l/address/$address"
+    | "/rpc/$rpc/_l/block/$blockNumber";
+  fileRoutesById: FileRoutesById;
 }
 
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  RpcRpcRoute: typeof RpcRpcRouteWithChildren
+  IndexRoute: typeof IndexRoute;
+  RpcRpcRoute: typeof RpcRpcRouteWithChildren;
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   RpcRpcRoute: RpcRpcRouteWithChildren,
-}
+};
 
 export const routeTree = rootRoute
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+  ._addFileTypes<FileRouteTypes>();
 
 /* ROUTE_MANIFEST_START
 {
@@ -196,11 +225,16 @@ export const routeTree = rootRoute
       "parent": "/rpc/$rpc",
       "children": [
         "/rpc/$rpc/_l/",
+        "/rpc/$rpc/_l/address/$address",
         "/rpc/$rpc/_l/block/$blockNumber"
       ]
     },
     "/rpc/$rpc/_l/": {
       "filePath": "rpc.$rpc/_l/index.tsx",
+      "parent": "/rpc/$rpc/_l"
+    },
+    "/rpc/$rpc/_l/address/$address": {
+      "filePath": "rpc.$rpc/_l/address.$address.tsx",
       "parent": "/rpc/$rpc/_l"
     },
     "/rpc/$rpc/_l/block/$blockNumber": {

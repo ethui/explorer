@@ -1,14 +1,15 @@
-import Big from "big.js";
 import { ReceiptText } from "lucide-react";
 import { useMemo } from "react";
 import type { Transaction } from "viem";
-import { formatEther } from "viem";
 import { LinkText } from "#/components/LinkText";
-import { Tooltip } from "#/components/Tooltip";
 import { useLatestTransactions } from "#/hooks/useLatestTransactions";
 import { truncateHex } from "#/utils/hash";
 import { formatRelativeTime } from "#/utils/time";
-import { EmptyCardContentList, LoadingCardContentList } from "./Card";
+import {
+  AmountWrapper,
+  EmptyCardContentList,
+  LoadingCardContentList,
+} from "./Card";
 
 interface LatestTransactionsProps {
   latestBlock: bigint;
@@ -85,8 +86,8 @@ export function TransactionRow({
           <div className="flex flex-row items-center gap-2 text-xs">
             From
             <LinkText
-              to="/rpc/$rpc/transaction/$hash"
-              params={{ hash: transaction.hash }}
+              to="/rpc/$rpc/address/$address"
+              params={{ address: transaction.from }}
               tooltip={transaction.from}
             >
               {truncateHex(transaction.from)}
@@ -96,29 +97,17 @@ export function TransactionRow({
             <div className="flex flex-row items-center gap-2 text-xs">
               To
               <LinkText
-                to="/rpc/$rpc/transaction/$hash"
-                params={{ hash: transaction.hash }}
+                to="/rpc/$rpc/address/$address"
+                params={{ address: transaction.to }}
                 tooltip={transaction.to}
               >
-                {truncateHex(transaction.to, 8)}
+                {truncateHex(transaction.to)}
               </LinkText>
             </div>
           )}
         </div>
-        <TransactionValue value={formatEther(transaction.value)} />
+        <AmountWrapper value={transaction.value} title="Amount" />
       </div>
     </li>
-  );
-}
-
-function TransactionValue({ value }: { value: string }) {
-  const formatted = new Big(value).toFixed(5);
-
-  return (
-    <Tooltip content="Amount">
-      <div className="flex items-center rounded-lg border px-2 py-[6px]">
-        <span className="block text-xs leading-none">{formatted} Eth</span>
-      </div>
-    </Tooltip>
   );
 }
