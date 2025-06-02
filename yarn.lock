@@ -1277,7 +1277,7 @@ __metadata:
     "@tailwindcss/postcss": "npm:^4.0.11"
     "@tailwindcss/typography": "npm:^0.5.16"
     "@tailwindcss/vite": "npm:^4.0.11"
-    "@tanstack/react-query": "npm:^5.71.1"
+    "@tanstack/react-query": "npm:^5.79.0"
     "@tanstack/react-router": "npm:^1.112.17"
     "@tanstack/react-start": "npm:^1.112.17"
     "@tanstack/react-table": "npm:^8.21.3"
@@ -4236,7 +4236,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/react-query@npm:^5.69.0, @tanstack/react-query@npm:^5.71.1":
+"@tanstack/query-core@npm:5.79.0":
+  version: 5.79.0
+  resolution: "@tanstack/query-core@npm:5.79.0"
+  checksum: 10c0/614c9f4dc7cb4df9c6804f67a76e2d580af5fa7b25505c2e3c5137bfa40d2005a1a96606c9f8e533754c78722e23708948760104a460fd8bc06df990fea42afb
+  languageName: node
+  linkType: hard
+
+"@tanstack/react-query@npm:^5.69.0":
   version: 5.75.1
   resolution: "@tanstack/react-query@npm:5.75.1"
   dependencies:
@@ -4244,6 +4251,17 @@ __metadata:
   peerDependencies:
     react: ^18 || ^19
   checksum: 10c0/dbaaed4ca3b6c3dd1cedad0ce4d0a8a8e3553573665d2a1281ca3983e28f7984bb833f17935885a38ac8c35e36b69a4a4fabb3f6aca0e16e8b91cecfbf56008f
+  languageName: node
+  linkType: hard
+
+"@tanstack/react-query@npm:^5.79.0":
+  version: 5.79.0
+  resolution: "@tanstack/react-query@npm:5.79.0"
+  dependencies:
+    "@tanstack/query-core": "npm:5.79.0"
+  peerDependencies:
+    react: ^18 || ^19
+  checksum: 10c0/f1d440075b7f8e7738cd4f26a87a089c0efaf282e633cfb9db249ef20068d5f4f14c9d990a304b96df183bffc8839ee579853fef212c213510c425b8092630be
   languageName: node
   linkType: hard
 
