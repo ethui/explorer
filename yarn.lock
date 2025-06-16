@@ -1304,7 +1304,7 @@ __metadata:
     react-dom: "npm:^19.0.0"
     react-hook-form: "npm:^7.54.2"
     rollup: "npm:^4.34.8"
-    simple-icons: "npm:^14.9.0"
+    simple-icons: "npm:^15.2.0"
     tailwind-merge: "npm:^3.0.2"
     tailwindcss: "npm:^4.0.11"
     titleize: "npm:^4.0.0"
@@ -13082,10 +13082,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"simple-icons@npm:^14.9.0":
-  version: 14.12.3
-  resolution: "simple-icons@npm:14.12.3"
-  checksum: 10c0/cfbd5c38947d359c75a71869f619c11be755be36c2d310c08a8e993bc0e0f3f50ce90024572bf15b0d2cab377e2ffdb4d7856f57a31cffeb850484475c97e04f
+"simple-icons@npm:^15.2.0":
+  version: 15.2.0
+  resolution: "simple-icons@npm:15.2.0"
+  checksum: 10c0/da3b769af7e7ecdc6f6f186fdcf837e16db980071ede2423eb9f396506eeb4a695db7d45f2f8e67f026286c968c352ec7aee4c9e3fc8b12d82f59bf2932da288
   languageName: node
   linkType: hard
 
