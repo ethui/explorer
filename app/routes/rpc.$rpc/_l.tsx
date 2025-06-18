@@ -1,6 +1,12 @@
+import {
+  RainbowKitProvider,
+  darkTheme,
+  getDefaultConfig,
+} from "@rainbow-me/rainbowkit";
 import { Outlet, createFileRoute } from "@tanstack/react-router";
-import { http, WagmiProvider, createConfig, webSocket } from "wagmi";
+import { http, WagmiProvider, webSocket } from "wagmi";
 import { foundry } from "wagmi/chains";
+import { Topbar } from "#/components/Topbar";
 import { useConnectionState } from "#/hooks/useConnectionState";
 
 export const Route = createFileRoute("/rpc/$rpc/_l")({
@@ -18,21 +24,34 @@ function RouteComponent() {
       ? webSocket(rpc)
       : http(rpc);
 
-  const wagmi = createConfig({
+  const config = getDefaultConfig({
+    appName: "Ethui Explorer",
+    projectId: "ethui-explorer",
     chains: [foundry],
     transports: {
       [foundry.id]: transport,
     },
+    ssr: true,
   });
 
   return (
-    <WagmiProvider reconnectOnMount key={rpc} config={wagmi}>
-      <ConnectionStateUpdater rpc={rpc} />
-      <div className="flex flex-col justify-center gap-2">
-        <div className="flex-grow overflow-hidden">
-          <Outlet />
+    <WagmiProvider reconnectOnMount key={rpc} config={config}>
+      <RainbowKitProvider
+        theme={darkTheme({
+          accentColor: "#000000",
+          accentColorForeground: "white",
+          borderRadius: "medium",
+        })}
+        initialChain={foundry}
+      >
+        <Topbar showConnectButton />
+        <ConnectionStateUpdater rpc={rpc} />
+        <div className="flex flex-col justify-center gap-2">
+          <div className="flex-grow overflow-hidden">
+            <Outlet />
+          </div>
         </div>
-      </div>
+      </RainbowKitProvider>
     </WagmiProvider>
   );
 }

@@ -1,3 +1,4 @@
 @import "@ethui/ui/tailwind.css";
+@import "@rainbow-me/rainbowkit/styles.css";
 @plugin "@tailwindcss/typography";
 @source "../node_modules/@ethui/ui";
