@@ -34,7 +34,10 @@ export function Topbar({
     if (newRpc !== currRpc) {
       reset();
     }
-    navigate({ to: `/rpc/${encodeURIComponent(newRpc)}`, replace: true });
+    (navigate as any)({
+      to: `/rpc/${encodeURIComponent(newRpc)}`,
+      replace: true,
+    });
   };
 
   return (
