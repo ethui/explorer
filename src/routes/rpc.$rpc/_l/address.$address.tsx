@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import { type Address, formatEther } from "viem";
+import { type Address, formatEther, isAddress } from "viem";
 import { useBalance } from "wagmi";
 import { TransactionsTable } from "#/components/Tables/TransactionsTable";
 import { Tabs } from "#/components/Tabs";
@@ -11,6 +11,10 @@ import { SignatureForm } from "#/components/Forms/SignatureForm";
 
 export const Route = createFileRoute("/rpc/$rpc/_l/address/$address")({
   loader: ({ params }) => {
+    if (!isAddress(params.address)) {
+      throw new Error("The address is not valid");
+    }
+
     return { address: params.address as Address };
   },
   component: RouteComponent,

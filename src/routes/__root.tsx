@@ -13,6 +13,7 @@ import React from "react";
 import appCss from "#/app.css?url";
 import { DefaultCatchBoundary } from "#/components/DefaultCatchBoundary";
 import { NotFound } from "#/components/NotFound";
+import Toast from "#/components/Toast";
 import { seo } from "#/utils/seo";
 
 export interface RouteContext {
@@ -93,6 +94,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           <TanStackRouterDevtools position="bottom-right" />
         </Suspense>
         <Scripts />
+        <Toast />
       </body>
     </html>
   );

@@ -1174,6 +1174,7 @@ __metadata:
     react: "npm:^19.0.0"
     react-dom: "npm:^19.0.0"
     react-hook-form: "npm:^7.56.1"
+    react-hot-toast: "npm:^2.5.2"
     rollup: "npm:^4.34.8"
     simple-icons: "npm:^14.9.0"
     tailwind-merge: "npm:^3.0.2"
@@ -11452,6 +11453,19 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17 || ^18 || ^19
   checksum: 10c0/981b9982b7eb497c3afff86c219175fdd4d92a24e3533518035239545dda23f5ebc6ba647fb29a250f768bdf811ba413094ce0103fbf36b436737fc18aa1bb49
+  languageName: node
+  linkType: hard
+
+"react-hot-toast@npm:^2.5.2":
+  version: 2.5.2
+  resolution: "react-hot-toast@npm:2.5.2"
+  dependencies:
+    csstype: "npm:^3.1.3"
+    goober: "npm:^2.1.16"
+  peerDependencies:
+    react: ">=16"
+    react-dom: ">=16"
+  checksum: 10c0/2db00b491bd1d2ec3ed04754a32b640272cdb32985f95e32ef033fcc996588a93e67d9764b005f9f391ee2bad5d0f9f343ba290dca82fcd439e08e708a161d76
   languageName: node
   linkType: hard
 

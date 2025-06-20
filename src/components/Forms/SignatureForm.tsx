@@ -2,9 +2,11 @@ import { AbiItemFormWithPreview } from "@ethui/ui/components/abi-form/abi-item-f
 import { Form } from "@ethui/ui/components/form";
 import { Button } from "@ethui/ui/components/shadcn/button";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMemo, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FormProvider } from "react-hook-form";
+import toast from "react-hot-toast";
 import { type AbiFunction, decodeFunctionData, parseAbiItem } from "viem";
 import type { Address } from "viem";
 import { useAccount, usePublicClient, useWalletClient } from "wagmi";
@@ -45,7 +47,7 @@ export function SignatureForm({ address }: SignatureFormProps) {
   const [result, setResult] = useState<Result | undefined>(undefined);
   const publicClient = usePublicClient();
   const { data: walletClient } = useWalletClient();
-  const { isConnected } = useAccount();
+  const { isConnected, address: accountAddress } = useAccount();
 
   const signatureForm = useForm({
     mode: "onChange",
@@ -58,6 +60,12 @@ export function SignatureForm({ address }: SignatureFormProps) {
   const signature = signatureForm.watch().signature;
   const isValidSignature = signatureForm.formState.isValid;
 
+  useEffect(() => {
+    if (signature !== undefined) {
+      setResult(undefined);
+    }
+  }, [signature]);
+
   const isWrite = useMemo(() => {
     try {
       const abiItem = parseAbiItem(signature) as AbiFunction;
@@ -69,11 +77,10 @@ export function SignatureForm({ address }: SignatureFormProps) {
     }
   }, [signature]);
 
-  async function simulate() {
-    if (!callData || !publicClient) return;
-    setResult(undefined);
+  const { mutate: simulate, isPending: isSimulating } = useMutation({
+    mutationFn: async () => {
+      if (!callData || !publicClient) throw new Error("Missing required data");
 
-    try {
       const abiItem = parseAbiItem(signature) as AbiFunction;
       const { args } = decodeFunctionData({
         abi: [abiItem],
@@ -85,18 +92,23 @@ export function SignatureForm({ address }: SignatureFormProps) {
         address,
         functionName: abiItem.name,
         args,
+        account: accountAddress,
       });
 
-      setResult({
-        type: "simulation",
+      return {
+        type: "simulation" as const,
         data: formatResult({
           result: result.result,
           gasEstimate: result.request.gas,
           status: "success",
         }),
-      });
-    } catch (error) {
-      console.error("Error simulating:", error);
+      };
+    },
+    onSuccess: (data) => {
+      setResult(data);
+      toast.success("Simulation successful");
+    },
+    onError: (error) => {
       setResult({
         type: "simulation",
         data: formatResult({
@@ -104,30 +116,40 @@ export function SignatureForm({ address }: SignatureFormProps) {
           status: "reverted",
         }),
       });
-    }
-  }
+      toast.error("Simulation failed");
+    },
+  });
 
-  async function execute() {
-    if (!callData || !publicClient || !walletClient) return;
-    setResult(undefined);
+  const { mutate: execute, isPending: isExecuting } = useMutation({
+    mutationFn: async () => {
+      if (!callData || !publicClient || !walletClient)
+        throw new Error("Missing required data");
 
-    try {
       const hash = await walletClient.sendTransaction({
         data: callData as `0x${string}`,
         to: address,
       });
 
+      toast.promise(publicClient.waitForTransactionReceipt({ hash }), {
+        loading: "Waiting for transaction to be mined",
+      });
+
       const receipt = await publicClient.waitForTransactionReceipt({ hash });
-      setResult({
-        type: "execution",
+
+      return {
+        type: "execution" as const,
         data: formatResult({
           transactionHash: hash,
           gasUsed: receipt.gasUsed,
           status: receipt.status,
         }),
-      });
-    } catch (error) {
-      console.error("Error executing:", error);
+      };
+    },
+    onSuccess: (data) => {
+      setResult(data);
+      toast.success("Transaction successful");
+    },
+    onError: (error) => {
       setResult({
         type: "execution",
         data: formatResult({
@@ -135,8 +157,9 @@ export function SignatureForm({ address }: SignatureFormProps) {
           status: "reverted",
         }),
       });
-    }
-  }
+      toast.error("Transaction failed");
+    },
+  });
 
   return (
     <div className="mx-auto flex w-fit flex-col items-center space-y-6 p-6">
@@ -150,7 +173,6 @@ export function SignatureForm({ address }: SignatureFormProps) {
                 name="signature"
                 placeholder="function transfer(address to, uint256 amount) returns (bool)"
                 className="w-4xl"
-                onChange={() => setResult(undefined)}
               />
             </div>
 
@@ -179,15 +201,15 @@ export function SignatureForm({ address }: SignatureFormProps) {
                     <>
                       <Button
                         type="button"
-                        disabled={!callData}
-                        onClick={simulate}
+                        disabled={!callData || isSimulating}
+                        onClick={() => simulate()}
                       >
                         Simulate
                       </Button>
                       <Button
                         type="button"
-                        disabled={!isConnected || !callData}
-                        onClick={() => (isWrite ? execute() : simulate())}
+                        disabled={!isConnected || !callData || isExecuting}
+                        onClick={() => execute()}
                       >
                         Execute
                       </Button>
@@ -195,7 +217,7 @@ export function SignatureForm({ address }: SignatureFormProps) {
                   ) : (
                     <Button
                       type="button"
-                      disabled={!callData}
+                      disabled={!callData || isSimulating}
                       onClick={() => simulate()}
                     >
                       Call
@@ -213,7 +235,7 @@ export function SignatureForm({ address }: SignatureFormProps) {
           <h3 className="mb-4 font-semibold text-lg">
             {result.type === "simulation" ? "Simulated Result" : "Result"}
           </h3>
-          <pre className="whitespace-pre-wrap break-all rounded bg-muted p-4">
+          <pre className="break-al w-4xl whitespace-pre-wrap rounded bg-muted p-4">
             {result.data}
           </pre>
         </div>
