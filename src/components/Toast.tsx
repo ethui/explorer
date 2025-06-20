@@ -1,8 +1,7 @@
 "use client";
 
+import { Check, X } from "lucide-react";
 import { ToastBar, Toaster } from "react-hot-toast";
-import Checkmark from "#/components/Icons/Checkmark";
-import Warning from "#/components/Icons/Warning";
 import LoadingSpinner from "./LoadingSpinner";
 
 export const transactionToast = {
@@ -25,11 +24,11 @@ export default function Toast() {
         },
         success: {
           duration: 4000,
-          icon: <Checkmark />,
+          icon: <Check size={32} />,
         },
         error: {
           duration: 4000,
-          icon: <Warning />,
+          icon: <X size={32} />,
         },
       }}
     >
