@@ -17,7 +17,7 @@ interface SignatureFormProps {
 }
 
 type Result = {
-  type: "simulation" | "execution";
+  type: "call" | "simulation" | "execution";
   data: string;
 };
 
@@ -96,7 +96,7 @@ export function SignatureForm({ address }: SignatureFormProps) {
       });
 
       return {
-        type: "simulation" as const,
+        type: isWrite ? "simulation" : "call",
         data: formatResult({
           result: result.result,
           gasEstimate: result.request.gas,
@@ -105,18 +105,18 @@ export function SignatureForm({ address }: SignatureFormProps) {
       };
     },
     onSuccess: (data) => {
-      setResult(data);
-      toast.success("Simulation successful");
+      setResult(data as Result);
+      toast.success(isWrite ? "Simulation successful" : "Call successful");
     },
     onError: (error) => {
       setResult({
-        type: "simulation",
+        type: isWrite ? "simulation" : "call",
         data: formatResult({
           error: error instanceof Error ? error.message : String(error),
           status: "reverted",
         }),
       });
-      toast.error("Simulation failed");
+      toast.error(isWrite ? "Simulation failed" : "Call failed");
     },
   });
 
@@ -131,7 +131,7 @@ export function SignatureForm({ address }: SignatureFormProps) {
       });
 
       toast.promise(publicClient.waitForTransactionReceipt({ hash }), {
-        loading: "Waiting for transaction to be mined",
+        loading: "Waiting for transaction to be executed",
       });
 
       const receipt = await publicClient.waitForTransactionReceipt({ hash });
@@ -193,7 +193,7 @@ export function SignatureForm({ address }: SignatureFormProps) {
                   signature={signature}
                   address={address}
                   sender={address}
-                  chainId={1}
+                  chainId={31337}
                 />
 
                 <div className="mt-4 flex justify-center gap-2">
@@ -233,7 +233,11 @@ export function SignatureForm({ address }: SignatureFormProps) {
       {result && (
         <div className="w-full rounded-lg border bg-card p-6 shadow-sm">
           <h3 className="mb-4 font-semibold text-lg">
-            {result.type === "simulation" ? "Simulated Result" : "Result"}
+            {result.type === "call"
+              ? "Call Result"
+              : result.type === "simulation"
+                ? "Simulation Result"
+                : "Execution Result"}
           </h3>
           <pre className="break-al w-4xl whitespace-pre-wrap rounded bg-muted p-4">
             {result.data}
