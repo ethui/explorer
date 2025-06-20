@@ -1,5 +1,6 @@
 import { AbiItemFormWithPreview } from "@ethui/ui/components/abi-form/abi-item-form-with-preview";
 import { Form } from "@ethui/ui/components/form";
+
 import { Button } from "@ethui/ui/components/shadcn/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
@@ -97,11 +98,7 @@ export function SignatureForm({ address }: SignatureFormProps) {
 
       return {
         type: isWrite ? "simulation" : "call",
-        data: formatResult({
-          result: result.result,
-          gasEstimate: result.request.gas,
-          status: "success",
-        }),
+        data: formatResult(result),
       };
     },
     onSuccess: (data) => {
@@ -135,19 +132,14 @@ export function SignatureForm({ address }: SignatureFormProps) {
       });
 
       const receipt = await publicClient.waitForTransactionReceipt({ hash });
-
       return {
         type: "execution" as const,
-        data: formatResult({
-          transactionHash: hash,
-          gasUsed: receipt.gasUsed,
-          status: receipt.status,
-        }),
+        data: formatResult(receipt),
       };
     },
     onSuccess: (data) => {
       setResult(data);
-      toast.success("Transaction successful");
+      toast.success("Transaction executed");
     },
     onError: (error) => {
       setResult({
@@ -201,14 +193,19 @@ export function SignatureForm({ address }: SignatureFormProps) {
                     <>
                       <Button
                         type="button"
-                        disabled={!callData || isSimulating}
+                        disabled={!callData || isSimulating || isExecuting}
                         onClick={() => simulate()}
                       >
                         Simulate
                       </Button>
                       <Button
                         type="button"
-                        disabled={!isConnected || !callData || isExecuting}
+                        disabled={
+                          !isConnected ||
+                          !callData ||
+                          isExecuting ||
+                          isSimulating
+                        }
                         onClick={() => execute()}
                       >
                         Execute
@@ -237,9 +234,9 @@ export function SignatureForm({ address }: SignatureFormProps) {
               ? "Call Result"
               : result.type === "simulation"
                 ? "Simulation Result"
-                : "Execution Result"}
+                : "Transaction Receipt"}
           </h3>
-          <pre className="break-al w-4xl whitespace-pre-wrap rounded bg-muted p-4">
+          <pre className="break-all w-4xl whitespace-pre-wrap rounded bg-muted p-4">
             {result.data}
           </pre>
         </div>
