@@ -1,9 +1,14 @@
 import { AbiItemFormWithPreview } from "@ethui/ui/components/abi-form/abi-item-form-with-preview";
 import { Form } from "@ethui/ui/components/form";
-
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@ethui/ui/components/shadcn/alert";
 import { Button } from "@ethui/ui/components/shadcn/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
+import { Info } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FormProvider } from "react-hook-form";
@@ -158,10 +163,10 @@ export function SignatureForm({ address }: SignatureFormProps) {
       <div className="w-full rounded-lg border bg-card p-6 shadow-sm">
         <h2 className="mb-6 font-semibold text-2xl">Contract Interaction</h2>
         <FormProvider {...signatureForm}>
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col">
             <div className="flex gap-2">
               <Form.Text
-                label={<span className="font-bold">Signature</span>}
+                label={<span className="font-bold text-base">Signature</span>}
                 name="signature"
                 placeholder="function transfer(address to, uint256 amount) returns (bool)"
                 className="w-4xl"
@@ -171,11 +176,14 @@ export function SignatureForm({ address }: SignatureFormProps) {
             {isValidSignature && (
               <>
                 {isWrite && !isConnected && (
-                  <div className="mb-4 border-yellow-500 border-l-4 bg-yellow-100 p-4 text-yellow-700">
-                    Connect your wallet to execute this write function
-                  </div>
+                  <Alert className="mb-4">
+                    <Info className="h-4 w-4" />
+                    <AlertTitle>Connect your wallet</AlertTitle>
+                    <AlertDescription>
+                      Connect your wallet to execute this write function
+                    </AlertDescription>
+                  </Alert>
                 )}
-                <h3 className="font-medium text-lg">Parameters</h3>
                 <AbiItemFormWithPreview
                   key={signature}
                   onChange={(data) => {
