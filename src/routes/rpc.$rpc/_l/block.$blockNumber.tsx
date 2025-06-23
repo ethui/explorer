@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useBlock } from "wagmi";
 import { LinkText } from "#/components/LinkText";
-import { LoadingSpinner } from "#/components/LoadingSpinner";
+import LoadingSpinner from "#/components/LoadingSpinner";
 import { TransactionsTable } from "#/components/Tables/TransactionsTable";
 
 export const Route = createFileRoute("/rpc/$rpc/_l/block/$blockNumber")({

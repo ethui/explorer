@@ -1,9 +1,9 @@
 import { createColumnHelper } from "@tanstack/react-table";
 import type { Transaction } from "viem";
 import { LinkText } from "#/components/LinkText";
-import Table from "#/components/Tables/Table";
 import { formatEth } from "#/utils/formatters";
 import { truncateHex } from "#/utils/hash";
+import Table from "./Table";
 
 interface TransactionsTableProps {
   transactions: Transaction[];

@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useWatchBlockNumber } from "wagmi";
-import { useConnectionStore } from "#/store/connection";
+import { useConnectionStore } from "../store/connection";
 
 export function useConnectionState({ rpc }: { rpc: string }) {
   const { setState } = useConnectionStore();
