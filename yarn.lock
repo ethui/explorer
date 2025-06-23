@@ -1175,7 +1175,7 @@ __metadata:
     react-dom: "npm:^19.0.0"
     react-hook-form: "npm:^7.56.1"
     react-hot-toast: "npm:^2.5.2"
-    rollup: "npm:^4.34.8"
+    rollup: "npm:^4.44.0"
     simple-icons: "npm:^14.9.0"
     tailwind-merge: "npm:^3.0.2"
     tailwindcss: "npm:^4.0.11"
@@ -11901,7 +11901,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rollup@npm:^4.34.8, rollup@npm:^4.34.9":
+"rollup@npm:^4.34.9":
   version: 4.40.1
   resolution: "rollup@npm:4.40.1"
   dependencies:
@@ -11976,7 +11976,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rollup@npm:^4.40.2":
+"rollup@npm:^4.40.2, rollup@npm:^4.44.0":
   version: 4.44.0
   resolution: "rollup@npm:4.44.0"
   dependencies:
