@@ -46,7 +46,7 @@ export function Topbar({
   };
 
   return (
-    <nav className="flex w-full flex-row items-center justify-between border-b bg-accent p-5">
+    <nav className="flex w-full flex-row items-center justify-between border-b bg-accent gap-4 p-5">
       <Form
         form={rpcForm}
         onSubmit={handleRpcSubmit}
@@ -55,20 +55,13 @@ export function Topbar({
         <Form.Text
           name="url"
           placeholder="Enter URL (e.g. localhost:8545)"
-          className="inline space-y-0"
+          className="inline space-y-0 w-48"
           onSubmit={handleRpcSubmit}
         />
         <Button type="submit">Go</Button>
       </Form>
 
-      <div className="flex flex-1 justify-center px-4">
-        {connected && (
-          <div className="w-full max-w-3xl">
-            <SearchBar currRpc={currRpc} />
-          </div>
-        )}
-      </div>
-
+      {connected && <SearchBar currRpc={currRpc} />}
       <div className="flex items-center gap-4 pb-5">
         <div>
           {connected === undefined ? (
@@ -126,7 +119,7 @@ function SearchBar({ currRpc }: { currRpc: string }) {
       <Form.Text
         name="search"
         placeholder="Search by address or block number"
-        className="inline w-96 space-y-0"
+        className="inline space-y-0 w-96"
       />
       <Button type="submit">Search</Button>
     </Form>
