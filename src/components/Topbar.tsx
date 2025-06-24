@@ -4,8 +4,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { type FieldValues, useForm } from "react-hook-form";
+import { isAddress } from "viem";
 import { z } from "zod";
 import { useConnectionStore } from "#/store/connection";
+
+const isBlockNumber = (str: string): boolean => {
+  return /^\d+$/.test(str);
+};
 
 export function Topbar({
   showConnectButton = false,
@@ -17,19 +22,19 @@ export function Topbar({
   const { connected, blockNumber, reset } = useConnectionStore();
   const currRpc = rpc ? decodeURIComponent(rpc) : "ws://localhost:8545";
 
-  const schema = z.object({
+  const rpcSchema = z.object({
     url: z.string(),
   });
 
-  const form = useForm({
+  const rpcForm = useForm({
     mode: "onBlur",
-    resolver: zodResolver(schema),
+    resolver: zodResolver(rpcSchema),
     defaultValues: {
       url: currRpc,
     },
   });
 
-  const handleSubmit = (data: FieldValues) => {
+  const handleRpcSubmit = (data: FieldValues) => {
     const newRpc = data.url;
     if (newRpc !== currRpc) {
       reset();
@@ -41,28 +46,89 @@ export function Topbar({
   };
 
   return (
-    <nav className="flex w-full flex-row items-baseline justify-between border-b bg-accent p-5">
-      <Form form={form} onSubmit={handleSubmit} className="flex-row gap-[0]">
+    <nav className="flex w-full flex-row items-center justify-between border-b bg-accent p-5">
+      <Form
+        form={rpcForm}
+        onSubmit={handleRpcSubmit}
+        className="flex-row gap-[0]"
+      >
         <Form.Text
           name="url"
           placeholder="Enter URL (e.g. localhost:8545)"
           className="inline space-y-0"
-          onSubmit={handleSubmit}
+          onSubmit={handleRpcSubmit}
         />
         <Button type="submit">Go</Button>
       </Form>
-      <div className="ml-2">
-        {connected === undefined ? (
-          <span className="text-highlight">No connection</span>
-        ) : connected ? (
-          <span className="text-success">
-            Connected to {currRpc} (Block: {blockNumber?.toString()})
-          </span>
-        ) : (
-          <span className="text-error">Disconnected</span>
+
+      <div className="flex flex-1 justify-center px-4">
+        {connected && (
+          <div className="w-full max-w-3xl">
+            <SearchBar currRpc={currRpc} />
+          </div>
         )}
       </div>
-      {showConnectButton && <ConnectButton />}
+
+      <div className="flex items-center gap-4 pb-5">
+        <div>
+          {connected === undefined ? (
+            <span className="text-highlight">No connection</span>
+          ) : connected ? (
+            <span className="text-success">
+              Connected to {currRpc} (Block: {blockNumber?.toString()})
+            </span>
+          ) : (
+            <span className="text-error">Disconnected</span>
+          )}
+        </div>
+        {showConnectButton && <ConnectButton />}
+      </div>
     </nav>
+  );
+}
+
+function SearchBar({ currRpc }: { currRpc: string }) {
+  const navigate = useNavigate();
+
+  const searchForm = useForm({
+    defaultValues: {
+      search: "",
+    },
+  });
+
+  const handleSearchSubmit = ({ search }: FieldValues) => {
+    const searchTerm = search.trim();
+    const basePath = `/rpc/${encodeURIComponent(currRpc)}`;
+
+    if (isAddress(searchTerm)) {
+      (navigate as any)({
+        to: `${basePath}/address/${searchTerm}`,
+      });
+    } else if (isBlockNumber(searchTerm)) {
+      (navigate as any)({
+        to: `${basePath}/block/${searchTerm}`,
+      });
+    } else {
+      (navigate as any)({
+        to: `${basePath}/not-found`,
+      });
+    }
+
+    searchForm.reset();
+  };
+
+  return (
+    <Form
+      form={searchForm}
+      onSubmit={handleSearchSubmit}
+      className="flex-row gap-[0]"
+    >
+      <Form.Text
+        name="search"
+        placeholder="Search by address or block number"
+        className="inline w-96 space-y-0"
+      />
+      <Button type="submit">Search</Button>
+    </Form>
   );
 }
