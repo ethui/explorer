@@ -46,7 +46,7 @@ export function Topbar({
   };
 
   return (
-    <nav className="flex w-full flex-row items-center justify-between border-b bg-accent gap-4 p-5">
+    <nav className="flex w-full flex-row items-center justify-between gap-4 border-b bg-accent p-5">
       <Form
         form={rpcForm}
         onSubmit={handleRpcSubmit}
@@ -55,7 +55,7 @@ export function Topbar({
         <Form.Text
           name="url"
           placeholder="Enter URL (e.g. localhost:8545)"
-          className="inline space-y-0 w-48"
+          className="inline w-48 space-y-0"
           onSubmit={handleRpcSubmit}
         />
         <Button type="submit">Go</Button>
@@ -119,7 +119,7 @@ function SearchBar({ currRpc }: { currRpc: string }) {
       <Form.Text
         name="search"
         placeholder="Search by address or block number"
-        className="inline space-y-0 w-96"
+        className="inline w-96 space-y-0"
       />
       <Button type="submit">Search</Button>
     </Form>
