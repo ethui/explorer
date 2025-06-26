@@ -10,7 +10,7 @@ export function ModeSwitch({
   setUseContractFunctions,
 }: ModeSwitchProps) {
   return (
-    <div className="mb-4">
+    <div className="mb-4 flex-col flex">
       <span className="font-semibold text-base">Raw Signature Mode</span>
       <span className="text-muted-foreground text-sm">
         Switch between contract functions and raw signature input.
