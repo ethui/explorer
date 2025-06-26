@@ -10,7 +10,7 @@ import { useIsContract } from "#/hooks/useIsContract";
 
 import { Button } from "@ethui/ui/components/shadcn/button";
 
-import { SignatureForm } from "#/components/Forms/SignatureForm";
+import { ContractInteractionForm } from "#/components/Forms/ContractInteractionForm";
 import { AbiDialogForm } from "#/components/Forms/AbiDialogForm";
 
 export const Route = createFileRoute("/rpc/$rpc/_l/address/$address")({
@@ -90,7 +90,7 @@ function Transactions() {
 
 function Contract() {
   const { address } = Route.useLoaderData();
-  return <SignatureForm address={address} />;
+  return <ContractInteractionForm address={address} />;
 }
 
 const getAddressTitle = (isContract: boolean | undefined) => {
