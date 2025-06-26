@@ -1,8 +1,13 @@
 import { Button } from "@ethui/ui/components/shadcn/button";
 import clsx from "clsx";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import type { Result } from "../types";
 
+export type Result = {
+  type: "call" | "simulation" | "execution";
+  data: string;
+  hash?: string;
+  cleanResult?: string;
+};
 interface ResultDisplayProps {
   result: Result;
   showFullResult: boolean;

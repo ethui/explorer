@@ -1,6 +1,5 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { Form } from "@ethui/ui/components/form";
+import { Button } from "@ethui/ui/components/shadcn/button";
 import {
   Dialog,
   DialogContent,
@@ -10,12 +9,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@ethui/ui/components/shadcn/dialog";
-import { Button } from "@ethui/ui/components/shadcn/button";
-import { Form } from "@ethui/ui/components/form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import type { ReactNode } from "react";
-import { useContractsStore } from "#/store/contracts";
-import { type Address, type Abi } from "viem";
+import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import type { Abi, Address } from "viem";
+import { z } from "zod";
+import { useContractsStore } from "#/store/contracts";
 
 const abiSchema = z.object({
   abi: z

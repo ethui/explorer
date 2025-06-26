@@ -4,7 +4,22 @@ import toast from "react-hot-toast";
 import { type AbiFunction, decodeFunctionData } from "viem";
 import type { Address } from "viem";
 import { useAccount, usePublicClient, useWalletClient } from "wagmi";
-import type { Result, UseContractExecutionReturn } from "../types";
+import type { Result } from "../components/ResultDisplay";
+export interface UseContractExecutionReturn {
+  simulate: (params: {
+    abiFunction: AbiFunction;
+    callData: string;
+    msgSender?: Address | undefined;
+  }) => void;
+  execute: (params: { callData: string }) => void;
+  isConnected: boolean;
+  isSimulating: boolean;
+  isExecuting: boolean;
+  result: any;
+  showFullResult: boolean;
+  setShowFullResult: (show: boolean) => void;
+  resetResult: () => void;
+}
 
 const formatResult = (value: unknown): string =>
   JSON.stringify(

@@ -1,4 +1,4 @@
-import { Abi, Address } from "viem";
+import type { Abi, Address } from "viem";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 

@@ -38,7 +38,7 @@ export default function Table<T>({ data, columns }: TableProps<T>) {
           <tr
             key={row.id}
             className={clsx(
-              "border-b h-16 align-middle",
+              "h-16 border-b align-middle",
               index === data.length - 1 && "border-b-0",
             )}
           >

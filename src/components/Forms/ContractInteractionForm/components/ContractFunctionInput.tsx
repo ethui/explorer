@@ -1,12 +1,12 @@
-import { useState } from "react";
+import { Button } from "@ethui/ui/components/shadcn/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@ethui/ui/components/shadcn/dropdown-menu";
-import { Button } from "@ethui/ui/components/shadcn/button";
 import { ChevronDown } from "lucide-react";
+import { useState } from "react";
 import type { AbiFunction } from "viem";
 import { formatAbiItem } from "viem/utils";
 
@@ -25,14 +25,12 @@ export function ContractFunctionInput({
 
   return (
     <div className="mb-4">
-      <label className="mb-2 block font-bold text-base">
-        Contract Function
-      </label>
+      <span className="mb-2 block font-bold text-base">Contract Function</span>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
             variant="outline"
-            className="w-full justify-between text-left min-w-4xl"
+            className="w-full min-w-4xl justify-between text-left"
           >
             <span className="truncate font-mono text-sm">
               {selectedFunction
@@ -42,7 +40,7 @@ export function ContractFunctionInput({
             <ChevronDown className="ml-2 h-4 w-4 flex-shrink-0" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="max-h-96 overflow-y-auto min-w-4xl">
+        <DropdownMenuContent className="max-h-96 min-w-4xl overflow-y-auto">
           {functions.map((func, index) => (
             <DropdownMenuItem
               key={index}
@@ -53,7 +51,7 @@ export function ContractFunctionInput({
               className="flex flex-col items-start p-3"
             >
               <div className="w-full">
-                <div className="flex items-center justify-between mb-1">
+                <div className="mb-1 flex items-center justify-between">
                   <span className="font-medium">{func.name}</span>
                   <span className="rounded bg-muted px-2 py-1 text-xs">
                     {func.stateMutability === "view" ||
@@ -62,7 +60,7 @@ export function ContractFunctionInput({
                       : "Write"}
                   </span>
                 </div>
-                <code className="text-muted-foreground text-xs break-all">
+                <code className="break-all text-muted-foreground text-xs">
                   {formatAbiItem(func)}
                 </code>
               </div>

@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Edit } from "lucide-react";
 import type { ReactNode } from "react";
 import { type Address, formatEther, isAddress } from "viem";
 import { useBalance } from "wagmi";
-import { Edit } from "lucide-react";
 import { TransactionsTable } from "#/components/Tables/TransactionsTable";
 import { Tabs } from "#/components/Tabs";
 import { useAddressTransactions } from "#/hooks/useAddressTransactions";
@@ -10,8 +10,8 @@ import { useIsContract } from "#/hooks/useIsContract";
 
 import { Button } from "@ethui/ui/components/shadcn/button";
 
-import { ContractInteractionForm } from "#/components/Forms/ContractInteractionForm";
 import { AbiDialogForm } from "#/components/Forms/AbiDialogForm";
+import { ContractInteractionForm } from "#/components/Forms/ContractInteractionForm";
 
 export const Route = createFileRoute("/rpc/$rpc/_l/address/$address")({
   loader: ({ params }) => {

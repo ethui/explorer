@@ -2,7 +2,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { type AbiFunction, isAddress, parseAbiItem } from "viem";
-import type { Address } from "viem";
 import { z } from "zod";
 
 const signatureSchema = z.object({

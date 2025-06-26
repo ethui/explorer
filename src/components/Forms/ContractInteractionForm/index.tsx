@@ -1,12 +1,14 @@
 import { useState } from "react";
-import { useContractExecution } from "./hooks/useContractExecution";
-import { ModeSwitch } from "./components/ModeSwitch";
-import { SignatureForm } from "./components/SignatureForm";
-import { FunctionSelectorForm } from "./components/FunctionSelectorForm";
-import { ResultDisplay } from "./components/ResultDisplay";
+import type { Address } from "viem";
 import { useContractsStore } from "#/store/contracts";
-import type { ContractInteractionFormProps } from "./types";
-
+import { FunctionSelectorForm } from "./components/FunctionSelectorForm";
+import { ModeSwitch } from "./components/ModeSwitch";
+import { ResultDisplay } from "./components/ResultDisplay";
+import { SignatureForm } from "./components/SignatureForm";
+import { useContractExecution } from "./hooks/useContractExecution";
+interface ContractInteractionFormProps {
+  address: Address;
+}
 export function ContractInteractionForm({
   address,
 }: ContractInteractionFormProps) {

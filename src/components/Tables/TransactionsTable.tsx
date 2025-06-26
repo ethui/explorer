@@ -1,12 +1,12 @@
 import { createColumnHelper } from "@tanstack/react-table";
+import titleize from "titleize";
 import type { Transaction } from "viem";
 import { decodeFunctionData } from "viem";
 import { LinkText } from "#/components/LinkText";
+import { useContractsStore } from "#/store/contracts";
 import { formatEth } from "#/utils/formatters";
 import { truncateHex } from "#/utils/hash";
-import { useContractsStore } from "#/store/contracts";
 import Table from "./Table";
-import titleize from "titleize";
 interface TransactionsTableProps {
   transactions: Transaction[];
 }
@@ -29,13 +29,13 @@ function MethodCell({ transaction }: { transaction: Transaction }) {
       data: transaction.input,
     });
     return (
-      <div className="flex flex-row items-center gap-2 rounded-md border bg-muted p-2 w-fit">
-        <span className="text-xs font-mono" title={decoded.functionName}>
+      <div className="flex w-fit flex-row items-center gap-2 rounded-md border bg-muted p-2">
+        <span className="font-mono text-xs" title={decoded.functionName}>
           {titleize(decoded.functionName)}
         </span>
       </div>
     );
-  } catch (error) {
+  } catch {
     return <span className="text-muted-foreground text-xs">-</span>;
   }
 }
