@@ -1,15 +1,44 @@
 import { createColumnHelper } from "@tanstack/react-table";
 import type { Transaction } from "viem";
+import { decodeFunctionData } from "viem";
 import { LinkText } from "#/components/LinkText";
 import { formatEth } from "#/utils/formatters";
 import { truncateHex } from "#/utils/hash";
+import { useContractsStore } from "#/store/contracts";
 import Table from "./Table";
-
+import titleize from "titleize";
 interface TransactionsTableProps {
   transactions: Transaction[];
 }
 
 const columnHelper = createColumnHelper<Transaction>();
+
+function MethodCell({ transaction }: { transaction: Transaction }) {
+  const { getContract } = useContractsStore();
+
+  if (!transaction.to || !transaction.input || transaction.input === "0x") {
+    return <span className="text-muted-foreground text-xs">-</span>;
+  }
+  const contract = getContract(transaction.to);
+  if (!contract) {
+    return <span className="text-muted-foreground text-xs">-</span>;
+  }
+  try {
+    const decoded = decodeFunctionData({
+      abi: contract.abi,
+      data: transaction.input,
+    });
+    return (
+      <div className="flex flex-row items-center gap-2 rounded-md border bg-muted p-2 w-fit">
+        <span className="text-xs font-mono" title={decoded.functionName}>
+          {titleize(decoded.functionName)}
+        </span>
+      </div>
+    );
+  } catch (error) {
+    return <span className="text-muted-foreground text-xs">-</span>;
+  }
+}
 
 const columns = [
   columnHelper.accessor("hash", {
@@ -26,6 +55,7 @@ const columns = [
   }),
   columnHelper.accessor("blockNumber", {
     header: "Block",
+    size: 50,
     cell: ({ row }) => {
       const blockNumber = BigInt(
         row.original.blockNumber?.toString() ?? "0",
@@ -42,6 +72,10 @@ const columns = [
       );
     },
   }),
+  columnHelper.accessor("input", {
+    header: "Method",
+    cell: ({ row }) => <MethodCell transaction={row.original} />,
+  }),
   columnHelper.accessor("from", {
     header: "From",
     cell: ({ row }) => (
@@ -50,7 +84,7 @@ const columns = [
         params={{ address: row.original.from }}
         tooltip={row.original.from}
       >
-        {truncateHex(row.original.from)}
+        {truncateHex(row.original.from, 6)}
       </LinkText>
     ),
   }),
@@ -63,13 +97,14 @@ const columns = [
           params={{ address: row.original.to }}
           tooltip={row.original.to}
         >
-          {truncateHex(row.original.to)}
+          {truncateHex(row.original.to, 6)}
         </LinkText>
       ),
   }),
+
   columnHelper.accessor("value", {
     header: "Amount",
-    cell: ({ row }) => <span>{formatEth(row.original.value, 9)} ETH</span>,
+    cell: ({ row }) => <span>{formatEth(row.original.value, 4)} ETH</span>,
   }),
   columnHelper.display({
     id: "fee",

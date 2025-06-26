@@ -23,7 +23,7 @@ export default function Table<T>({ data, columns }: TableProps<T>) {
         {table.getHeaderGroups().map((headerGroup) => (
           <tr key={headerGroup.id}>
             {headerGroup.headers.map((header) => (
-              <th key={header.id} className="p-3 text-left">
+              <th key={header.id} className="p-3 text-left align-middle">
                 {flexRender(
                   header.column.columnDef.header,
                   header.getContext(),
@@ -38,13 +38,15 @@ export default function Table<T>({ data, columns }: TableProps<T>) {
           <tr
             key={row.id}
             className={clsx(
-              "border-b",
+              "border-b h-16 align-middle",
               index === data.length - 1 && "border-b-0",
             )}
           >
             {row.getVisibleCells().map((cell) => (
-              <td key={cell.id} className="p-3">
-                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+              <td key={cell.id} className="p-3 align-middle">
+                <div className="truncate">
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </div>
               </td>
             ))}
           </tr>

@@ -1,12 +1,12 @@
 import { create } from "zustand";
 
-interface ConnectionState {
+type ConnectionState = {
   connected: boolean | undefined;
   blockNumber: bigint | null;
   rpc: string | undefined;
   setState: (state: Partial<ConnectionState>) => void;
   reset: () => void;
-}
+};
 
 export const useConnectionStore = create<ConnectionState>((set) => ({
   connected: undefined,

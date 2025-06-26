@@ -1,4 +1,11 @@
 import { AbiItemFormWithPreview } from "@ethui/ui/components/abi-form/abi-item-form-with-preview";
+import { Switch } from "@ethui/ui/components/shadcn/switch";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@ethui/ui/components/shadcn/dropdown-menu";
 import { Form } from "@ethui/ui/components/form";
 import {
   Alert,
@@ -20,9 +27,11 @@ import {
   isAddress,
   parseAbiItem,
 } from "viem";
+import { formatAbiItem } from "viem/utils";
 import type { Address } from "viem";
 import { useAccount, usePublicClient, useWalletClient } from "wagmi";
 import { z } from "zod";
+import { useContractsStore } from "#/store/contracts";
 
 interface SignatureFormProps {
   address: Address;
@@ -70,9 +79,11 @@ export function SignatureForm({ address }: SignatureFormProps) {
   const [callData, setCallData] = useState<string | undefined>(undefined);
   const [result, setResult] = useState<Result | undefined>(undefined);
   const [showFullResult, setShowFullResult] = useState(false);
+  const [useContractFunctions, setUseContractFunctions] = useState(false);
   const publicClient = usePublicClient();
   const { data: walletClient } = useWalletClient();
   const { isConnected, address: accountAddress } = useAccount();
+  const { getContract } = useContractsStore();
 
   const signatureForm = useForm({
     mode: "onChange",
@@ -88,6 +99,16 @@ export function SignatureForm({ address }: SignatureFormProps) {
   const isValidSignature =
     signatureForm.getFieldState("signature").invalid === false &&
     signature.length > 0;
+
+  const contract = getContract(address);
+  const contractFunctions = useMemo(() => {
+    if (!contract?.abi) return [];
+    return contract.abi.filter(
+      (item) => item.type === "function",
+    ) as AbiFunction[];
+  }, [contract]);
+
+  const hasContract = contractFunctions.length > 0;
 
   useEffect(() => {
     if (signature !== undefined) {
@@ -113,7 +134,7 @@ export function SignatureForm({ address }: SignatureFormProps) {
       const abiItem = parseAbiItem(signature) as AbiFunction;
       const { args } = decodeFunctionData({
         abi: [abiItem],
-        data: callData as `0x${string}`,
+        data: callData as Address,
       });
 
       const result = await publicClient.simulateContract({
@@ -157,7 +178,7 @@ export function SignatureForm({ address }: SignatureFormProps) {
         throw new Error("Missing required data");
 
       const hash = await walletClient.sendTransaction({
-        data: callData as `0x${string}`,
+        data: callData as Address,
         to: address,
       });
 
@@ -200,7 +221,24 @@ export function SignatureForm({ address }: SignatureFormProps) {
         <h2 className="mb-6 font-semibold text-2xl">Contract Interaction</h2>
         <FormProvider {...signatureForm}>
           <div className="flex flex-col">
-            <SignatureInput />
+            {hasContract && (
+              <ModeSwitch
+                useContractFunctions={useContractFunctions}
+                setUseContractFunctions={setUseContractFunctions}
+              />
+            )}
+
+            {useContractFunctions || !hasContract ? (
+              <SignatureInput />
+            ) : (
+              <ContractFunctionsDropdown
+                functions={contractFunctions}
+                onSelectFunction={(func) => {
+                  const signature = formatAbiItem(func);
+                  signatureForm.setValue("signature", signature);
+                }}
+              />
+            )}
 
             {isValidSignature && (
               <>
@@ -406,6 +444,91 @@ function CollapsibleResult({
           </pre>
         </div>
       )}
+    </div>
+  );
+}
+
+function ModeSwitch({
+  useContractFunctions,
+  setUseContractFunctions,
+}: {
+  useContractFunctions: boolean;
+  setUseContractFunctions: (value: boolean) => void;
+}) {
+  return (
+    <div className="mb-4">
+      <label className="font-semibold text-base">Raw Signature Mode</label>
+      <p className="text-muted-foreground text-sm">
+        Switch between contract functions and raw signature input.
+      </p>
+      <div className="mt-2">
+        <Switch
+          checked={useContractFunctions}
+          onCheckedChange={setUseContractFunctions}
+        />
+      </div>
+    </div>
+  );
+}
+
+function ContractFunctionsDropdown({
+  functions,
+  onSelectFunction,
+}: {
+  functions: AbiFunction[];
+  onSelectFunction: (func: AbiFunction) => void;
+}) {
+  const [selectedFunction, setSelectedFunction] = useState<AbiFunction | null>(
+    null,
+  );
+
+  return (
+    <div className="mb-4">
+      <label className="mb-2 block font-bold text-base">
+        Contract Function
+      </label>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="outline"
+            className="w-full justify-between text-left min-w-4xl"
+          >
+            <span className="truncate font-mono text-sm">
+              {selectedFunction
+                ? formatAbiItem(selectedFunction)
+                : "Select a function..."}
+            </span>
+            <ChevronDown className="ml-2 h-4 w-4 flex-shrink-0" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="max-h-96 overflow-y-auto min-w-4xl">
+          {functions.map((func, index) => (
+            <DropdownMenuItem
+              key={index}
+              onClick={() => {
+                setSelectedFunction(func);
+                onSelectFunction(func);
+              }}
+              className="flex flex-col items-start p-3"
+            >
+              <div className="w-full">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="font-medium">{func.name}</span>
+                  <span className="rounded bg-muted px-2 py-1 text-xs">
+                    {func.stateMutability === "view" ||
+                    func.stateMutability === "pure"
+                      ? "Read"
+                      : "Write"}
+                  </span>
+                </div>
+                <code className="text-muted-foreground text-xs break-all">
+                  {formatAbiItem(func)}
+                </code>
+              </div>
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 }

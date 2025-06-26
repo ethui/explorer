@@ -2,12 +2,16 @@ import { createFileRoute } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { type Address, formatEther, isAddress } from "viem";
 import { useBalance } from "wagmi";
+import { Edit } from "lucide-react";
 import { TransactionsTable } from "#/components/Tables/TransactionsTable";
 import { Tabs } from "#/components/Tabs";
 import { useAddressTransactions } from "#/hooks/useAddressTransactions";
 import { useIsContract } from "#/hooks/useIsContract";
 
+import { Button } from "@ethui/ui/components/shadcn/button";
+
 import { SignatureForm } from "#/components/Forms/SignatureForm";
+import { AbiDialogForm } from "#/components/Forms/AbiDialogForm";
 
 export const Route = createFileRoute("/rpc/$rpc/_l/address/$address")({
   loader: ({ params }) => {
@@ -58,6 +62,16 @@ function Header({
           {getAddressTitle(isContract)}
         </h3>
         <span className="text-sm">{address}</span>
+        {isContract && (
+          <AbiDialogForm
+            address={address}
+            trigger={
+              <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                <Edit className="h-4 w-4" />
+              </Button>
+            }
+          />
+        )}
       </span>
       <span className="text-sm">Eth balance: {formattedBalance}</span>
     </div>
