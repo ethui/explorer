@@ -31,8 +31,9 @@ export const Route = createRootRouteWithContext<RouteContext>()({
         content: "width=device-width, initial-scale=1",
       },
       ...seo({
-        title: "@ethui/explorer",
-        description: "An Ethereum toolkit",
+        title: "ethui explorer",
+        description: "An Ethereum local explorer",
+        image: "/symbol-black.svg",
       }),
     ],
     links: [

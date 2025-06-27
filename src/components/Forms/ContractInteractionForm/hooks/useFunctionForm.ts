@@ -5,7 +5,7 @@ import type { AbiFunction, Address } from "viem";
 import { isAddress } from "viem";
 import { formatAbiItem } from "viem/utils";
 import { z } from "zod";
-import { useContractsStore } from "#/store/contracts";
+import useAbi from "#/hooks/useAbi";
 
 const functionFormSchema = z.object({
   msgSender: z
@@ -25,7 +25,7 @@ export function useFunctionForm(address: Address) {
     null,
   );
   const [callData, setCallData] = useState<string | undefined>(undefined);
-  const { getContract } = useContractsStore();
+  const { abi } = useAbi({ address });
 
   const functionForm = useForm({
     mode: "onChange",
@@ -35,13 +35,10 @@ export function useFunctionForm(address: Address) {
     },
   });
 
-  const contract = getContract(address);
   const contractFunctions = useMemo(() => {
-    if (!contract?.abi) return [];
-    return contract.abi.filter(
-      (item) => item.type === "function",
-    ) as AbiFunction[];
-  }, [contract]);
+    if (!abi) return [];
+    return abi.filter((item) => item.type === "function") as AbiFunction[];
+  }, [abi]);
 
   const msgSender = functionForm.watch().msgSender || "";
 

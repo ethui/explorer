@@ -3,7 +3,7 @@ import titleize from "titleize";
 import type { Transaction } from "viem";
 import { decodeFunctionData } from "viem";
 import { LinkText } from "#/components/LinkText";
-import { useContractsStore } from "#/store/contracts";
+import useAbi from "#/hooks/useAbi";
 import { formatEth } from "#/utils/formatters";
 import { truncateHex } from "#/utils/hash";
 import Table from "./Table";
@@ -14,20 +14,22 @@ interface TransactionsTableProps {
 const columnHelper = createColumnHelper<Transaction>();
 
 function MethodCell({ transaction }: { transaction: Transaction }) {
-  const { getContract } = useContractsStore();
+  if (!transaction.to) {
+    return <span className="text-muted-foreground text-xs">-</span>;
+  }
+
+  const { abi } = useAbi({ address: transaction.to });
 
   if (!transaction.to || !transaction.input || transaction.input === "0x") {
     return <span className="text-muted-foreground text-xs">-</span>;
   }
-  const contract = getContract(transaction.to);
-  if (!contract) {
-    return <span className="text-muted-foreground text-xs">-</span>;
-  }
+
   try {
     const decoded = decodeFunctionData({
-      abi: contract.abi,
+      abi: abi ?? [],
       data: transaction.input,
     });
+
     return (
       <div className="flex w-fit flex-row items-center gap-2 rounded-md border bg-muted p-2">
         <span className="font-mono text-xs" title={decoded.functionName}>

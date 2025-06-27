@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Address } from "viem";
-import { useContractsStore } from "#/store/contracts";
+import useAbi from "#/hooks/useAbi";
 import { FunctionSelectorForm } from "./components/FunctionSelectorForm";
 import { ModeSwitch } from "./components/ModeSwitch";
 import { ResultDisplay } from "./components/ResultDisplay";
@@ -16,10 +16,8 @@ export function ContractInteractionForm({
 
   const execution = useContractExecution(address);
 
-  const { getContract } = useContractsStore();
-  const contract = getContract(address);
-  const hasContract =
-    contract?.abi?.some((item) => item.type === "function") ?? false;
+  const { abi } = useAbi({ address });
+  const hasContract = abi?.some((item) => item.type === "function") ?? false;
 
   return (
     <div className="mx-auto flex w-fit flex-col items-center space-y-6 p-6">

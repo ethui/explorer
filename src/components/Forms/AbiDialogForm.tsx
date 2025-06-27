@@ -11,10 +11,13 @@ import {
 } from "@ethui/ui/components/shadcn/dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { ReactNode } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import type { Abi, Address } from "viem";
 import { z } from "zod";
+import useAbi from "#/hooks/useAbi";
+import useIsEthui from "#/hooks/useIsEthui";
 import { useContractsStore } from "#/store/contracts";
 
 const abiSchema = z.object({
@@ -50,18 +53,63 @@ interface AbiDialogFormProps {
 }
 
 export function AbiDialogForm({ trigger, address }: AbiDialogFormProps) {
-  const { addOrUpdateContract, getContract, removeContract } =
-    useContractsStore();
-  const existingContract = getContract(address);
+  const { abi } = useAbi({ address });
+  const isEthui = useIsEthui();
+
+  if (!!isEthui && !!abi) {
+    return <AbiViewDialog trigger={trigger} abi={abi} />;
+  }
+
+  return <AbiFormDialog trigger={trigger} address={address} abi={abi} />;
+}
+
+function AbiViewDialog({ trigger, abi }: { trigger: ReactNode; abi: Abi }) {
+  return (
+    <Dialog>
+      <DialogTrigger asChild>{trigger}</DialogTrigger>
+      <DialogContent className="sm:max-w-[600px]">
+        <DialogHeader>
+          <DialogTitle>Contract ABI</DialogTitle>
+          <DialogDescription>
+            ABI loaded from ethui (read-only)
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-2">
+          <span className="font-medium text-sm">ABI</span>
+          <pre className="max-h-[500px] min-h-[300px] w-full overflow-auto rounded-md border bg-gray-50 p-3 font-mono text-sm">
+            {JSON.stringify(abi, null, 2)}
+          </pre>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function AbiFormDialog({
+  trigger,
+  address,
+  abi,
+}: {
+  trigger: ReactNode;
+  address: Address;
+  abi?: Abi;
+}) {
+  const { addOrUpdateContract, removeContract } = useContractsStore();
+  const abiString = abi ? JSON.stringify(abi, null, 2) : "";
+
   const form = useForm<AbiFormData>({
     mode: "onChange",
     resolver: zodResolver(abiSchema),
     defaultValues: {
-      abi: existingContract
-        ? JSON.stringify(existingContract.abi, null, 2)
-        : "",
+      abi: abiString,
     },
   });
+
+  useEffect(() => {
+    if (abi) {
+      form.reset({ abi: JSON.stringify(abi, null, 2) });
+    }
+  }, [abi, form]);
 
   const handleSubmit = (data: AbiFormData) => {
     const parsedAbi = JSON.parse(data.abi) as Abi;
@@ -99,16 +147,15 @@ export function AbiDialogForm({ trigger, address }: AbiDialogFormProps) {
         </Form>
         <DialogFooter>
           <div className="mx-auto w-fit">
-            {existingContract && (
-              <Button
-                type="button"
-                variant="destructive"
-                onClick={handleRemove}
-                className="mr-2"
-              >
-                Remove
-              </Button>
-            )}
+            <Button
+              disabled={!abi}
+              type="button"
+              variant="destructive"
+              onClick={handleRemove}
+              className="mr-2"
+            >
+              Remove
+            </Button>
             <Button
               disabled={!form.formState.isValid}
               type="submit"
