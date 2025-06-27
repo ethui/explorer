@@ -15,6 +15,7 @@ const useEthuiAbi = ({ address }: { address: Address }) => {
         method: "ethui_getContractAbi",
         params: { address },
       } as any)) as Abi;
+
       return abi;
     },
     enabled: isEthui && !!walletClient,

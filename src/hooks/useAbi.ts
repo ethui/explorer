@@ -9,6 +9,7 @@ const useAbi = ({ address }: { address: Address }) => {
 
   return {
     abi: ethuiAbi || contract?.abi,
+    isEthuiAbi: !!ethuiAbi,
   };
 };
 

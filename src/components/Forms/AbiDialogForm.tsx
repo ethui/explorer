@@ -17,7 +17,6 @@ import toast from "react-hot-toast";
 import type { Abi, Address } from "viem";
 import { z } from "zod";
 import useAbi from "#/hooks/useAbi";
-import useIsEthui from "#/hooks/useIsEthui";
 import { useContractsStore } from "#/store/contracts";
 
 const abiSchema = z.object({
@@ -53,10 +52,9 @@ interface AbiDialogFormProps {
 }
 
 export function AbiDialogForm({ trigger, address }: AbiDialogFormProps) {
-  const { abi } = useAbi({ address });
-  const isEthui = useIsEthui();
+  const { abi, isEthuiAbi } = useAbi({ address });
 
-  if (!!isEthui && !!abi) {
+  if (isEthuiAbi && abi) {
     return <AbiViewDialog trigger={trigger} abi={abi} />;
   }
 
