@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import toast from "react-hot-toast";
 import { type AbiFunction, decodeFunctionData } from "viem";
 import type { Address } from "viem";
@@ -138,6 +138,11 @@ export function useContractExecution(address: Address) {
     },
   });
 
+  const resetResult = useCallback(() => {
+    setResult(undefined);
+    setShowFullResult(false);
+  }, []);
+
   return {
     result,
     showFullResult,
@@ -147,9 +152,6 @@ export function useContractExecution(address: Address) {
     isSimulating,
     isExecuting,
     isConnected,
-    resetResult: () => {
-      setResult(undefined);
-      setShowFullResult(false);
-    },
+    resetResult,
   };
 }

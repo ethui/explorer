@@ -1,8 +1,10 @@
 import { AbiItemFormWithPreview } from "@ethui/ui/components/abi-form/abi-item-form-with-preview";
 import { Form } from "@ethui/ui/components/form";
+import { useEffect } from "react";
 import { FormProvider } from "react-hook-form";
 import type { AbiFunction, Address } from "viem";
 import { parseAbiItem } from "viem";
+import { useChainId } from "wagmi";
 import type { UseContractExecutionReturn } from "../hooks/useContractExecution";
 import { useSignatureForm } from "../hooks/useSignatureForm";
 import {
@@ -18,6 +20,7 @@ interface SignatureFormProps {
 
 export function SignatureForm({ execution, address }: SignatureFormProps) {
   const formData = useSignatureForm();
+  const chainId = useChainId();
   const {
     signatureForm,
     signature,
@@ -27,6 +30,12 @@ export function SignatureForm({ execution, address }: SignatureFormProps) {
     setCallData,
     msgSender,
   } = formData;
+
+  useEffect(() => {
+    if (signature !== undefined) {
+      execution.resetResult();
+    }
+  }, [signature, execution.resetResult]);
 
   const handleSimulate = () => {
     if (!callData) return;
@@ -67,7 +76,7 @@ export function SignatureForm({ execution, address }: SignatureFormProps) {
             signature={signature}
             address={address}
             sender={address}
-            chainId={31337}
+            chainId={chainId}
           />
 
           <ActionButtons

@@ -1,6 +1,8 @@
 import { AbiItemFormWithPreview } from "@ethui/ui/components/abi-form/abi-item-form-with-preview";
+import { useEffect } from "react";
 import { FormProvider } from "react-hook-form";
 import type { Address } from "viem";
+import { useChainId } from "wagmi";
 import type { UseContractExecutionReturn } from "../hooks/useContractExecution";
 import { useFunctionForm } from "../hooks/useFunctionForm";
 import { ContractFunctionInput } from "./ContractFunctionInput";
@@ -19,6 +21,7 @@ export function FunctionSelectorForm({
   execution,
   address,
 }: FunctionSelectorFormProps) {
+  const chainId = useChainId();
   const formData = useFunctionForm(address);
   const {
     functionForm,
@@ -30,6 +33,12 @@ export function FunctionSelectorForm({
     msgSender,
     isWrite,
   } = formData;
+
+  useEffect(() => {
+    if (selectedFunction !== undefined) {
+      execution.resetResult();
+    }
+  }, [selectedFunction, execution.resetResult]);
 
   const handleSimulate = () => {
     if (!callData || !selectedFunction) return;
@@ -66,7 +75,7 @@ export function FunctionSelectorForm({
             abiFunction={selectedFunction}
             address={address}
             sender={address}
-            chainId={31337}
+            chainId={chainId}
           />
 
           <ActionButtons
