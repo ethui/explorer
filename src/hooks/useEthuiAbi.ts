@@ -9,7 +9,7 @@ const useEthuiAbi = ({ address }: { address: Address }) => {
   const { data: walletClient } = useWalletClient();
 
   return useQuery({
-    queryKey: ["abi", address],
+    queryKey: ["abi", address, isEthui],
     queryFn: async () => {
       const abi = (await walletClient?.request({
         method: "ethui_getContractAbi",
