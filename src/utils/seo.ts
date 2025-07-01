@@ -22,8 +22,8 @@ export const seo = ({
     { property: "og:description", content: description },
     ...(image
       ? [
-          { property: "twitter:image", content: image },
-          { property: "twitter:card", content: "summary_large_image" },
+          { name: "twitter:image", content: image },
+          { name: "twitter:card", content: "summary_large_image" },
           { property: "og:image", content: image },
         ]
       : []),
