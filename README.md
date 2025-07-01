@@ -1,3 +1,3 @@
 # ethui explorer
 
-https://exporer.ethui.dev
+https://explorer.ethui.dev
