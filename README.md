@@ -1,1 +1,3 @@
-# ethui website
+# ethui explorer
+
+https://exporer.ethui.dev
