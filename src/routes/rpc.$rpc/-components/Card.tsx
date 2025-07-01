@@ -49,7 +49,7 @@ export function AmountWrapper({
   return (
     <Tooltip content={title}>
       <div className="flex items-center rounded-lg border px-2 py-[6px]">
-        <span className="block text-xs leading-none">
+        <span className="text-xs leading-none whitespace-nowrap">
           {formatEth(value, 5)} Eth
         </span>
       </div>

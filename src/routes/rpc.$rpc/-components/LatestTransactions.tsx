@@ -67,7 +67,7 @@ export function TransactionRow({
   return (
     <li className="flex flex-row gap-4 border-b py-4 last:border-b-0 lg:h-[85px]">
       <div className="flex w-1/3 flex-row items-center gap-2">
-        <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-accent">
+        <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-accent flex-shrink-0">
           <ReceiptText className="h-5 w-5" />
         </div>
         <div className="flex flex-col gap-1">
