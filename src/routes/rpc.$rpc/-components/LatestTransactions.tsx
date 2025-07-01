@@ -72,8 +72,8 @@ export function TransactionRow({
         </div>
         <div className="flex flex-col gap-1">
           <LinkText
-            to="/rpc/$rpc/transaction/$hash"
-            params={{ hash: transaction.hash }}
+            to="/rpc/$rpc/tx/$tx"
+            params={{ tx: transaction.hash }}
             tooltip={transaction.hash}
           >
             {truncateHex(transaction.hash, 11, false)}

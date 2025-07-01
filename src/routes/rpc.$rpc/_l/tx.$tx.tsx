@@ -1,3 +1,4 @@
+import PageContainer from "#/components/PageContainer";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/rpc/$rpc/_l/tx/$tx")({
@@ -5,5 +6,9 @@ export const Route = createFileRoute("/rpc/$rpc/_l/tx/$tx")({
 });
 
 function RouteComponent() {
-  return <div>Hello "/rpc/$rpc/_l/tx/$tx"!</div>;
+  return (
+    <PageContainer header="Transaction Details">
+      <div></div>
+    </PageContainer>
+  );
 }
