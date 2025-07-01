@@ -61,7 +61,7 @@ function Header({
         <h3 className="pb-1 font-bold text-xl">
           {getAddressTitle(isContract)}
         </h3>
-        <span className="text-sm font-normal">{address}</span>
+        <span className="font-normal text-sm">{address}</span>
         {isContract && (
           <AbiDialogForm
             address={address}
@@ -73,7 +73,7 @@ function Header({
           />
         )}
       </span>
-      <span className="text-sm font-normal">
+      <span className="font-normal text-sm">
         Eth balance: {formattedBalance}
       </span>
     </div>
