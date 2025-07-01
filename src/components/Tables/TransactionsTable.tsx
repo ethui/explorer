@@ -62,8 +62,8 @@ const columns = [
     header: "Transaction hash",
     cell: ({ row }) => (
       <LinkText
-        to="/rpc/$rpc/transaction/$hash"
-        params={{ hash: row.original.hash }}
+        to="/rpc/$rpc/tx/$tx"
+        params={{ tx: row.original.hash }}
         tooltip={row.original.hash}
       >
         {truncateHex(row.original.hash, 11, false)}
@@ -74,9 +74,7 @@ const columns = [
     header: "Block",
     size: 50,
     cell: ({ row }) => {
-      const blockNumber = BigInt(
-        row.original.blockNumber?.toString() ?? "0",
-      ).toString();
+      const blockNumber = row.original.blockNumber?.toString() ?? "0";
       return (
         <LinkText
           to="/rpc/$rpc/block/$blockNumber"
