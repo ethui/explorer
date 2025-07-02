@@ -74,7 +74,9 @@ const columns = [
     header: "Block",
     size: 50,
     cell: ({ row }) => {
-      const blockNumber = row.original.blockNumber?.toString() ?? "0";
+      const blockNumber = BigInt(
+        row.original.blockNumber?.toString() ?? "0",
+      ).toString();
       return (
         <LinkText
           to="/rpc/$rpc/block/$blockNumber"
