@@ -1,6 +1,42 @@
+import {
+  decodeFunctionData,
+  getAbiItem,
+  type Abi,
+  type AbiFunction,
+} from "viem";
+
 const inputToMethod = {
   "0x": "Transfer",
 };
+
+export function getDecodedFunctionInput({
+  abi,
+  input,
+}: {
+  abi: Abi;
+  input: `0x${string}`;
+}) {
+  try {
+    const decoded = decodeFunctionData({
+      abi,
+      data: input,
+    });
+
+    const abiFunction = getAbiItem({
+      abi,
+      name: decoded.functionName,
+    }) as AbiFunction;
+
+    return {
+      functionName: decoded.functionName,
+      args: decoded.args,
+      abiFunction,
+    };
+  } catch (err) {
+    console.warn("Failed to decode input:", err);
+    return null;
+  }
+}
 
 export function getMethodName(input: string): string | null {
   return inputToMethod[input as keyof typeof inputToMethod] ?? null;
