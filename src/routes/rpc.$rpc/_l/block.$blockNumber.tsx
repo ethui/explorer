@@ -2,10 +2,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import type { BlockNumber } from "viem";
 import { useBlock } from "wagmi";
 import { LinkText } from "#/components/LinkText";
+import { LoadingSpinner } from "#/components/LoadingSpinner";
 import PageContainer from "#/components/PageContainer";
 import { TransactionsTable } from "#/components/Tables/TransactionsTable";
 import { isBlockNumber } from "#/utils/validators";
-import { LoadingSpinner } from "#/components/LoadingSpinner";
 
 export const Route = createFileRoute("/rpc/$rpc/_l/block/$blockNumber")({
   component: RouteComponent,
