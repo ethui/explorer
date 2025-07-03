@@ -1,8 +1,8 @@
 import {
-  decodeFunctionData,
-  getAbiItem,
   type Abi,
   type AbiFunction,
+  decodeFunctionData,
+  getAbiItem,
 } from "viem";
 
 const inputToMethod = {

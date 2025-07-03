@@ -4,20 +4,14 @@ import clsx from "clsx";
 import { format } from "date-fns";
 import { CheckCircle, XCircle } from "lucide-react";
 import titleize from "titleize";
-import {
-  type Hash,
-  decodeFunctionData,
-  formatEther,
-  isHash,
-  type AbiFunction,
-} from "viem";
+import { type Hash, formatEther, isHash } from "viem";
 import { useBlock, useTransaction, useTransactionReceipt } from "wagmi";
 import { LinkText } from "#/components/LinkText";
 import { LoadingSpinner } from "#/components/LoadingSpinner";
 import PageContainer from "#/components/PageContainer";
-import { formatRelativeTime } from "#/utils/time";
 import { Tabs } from "#/components/Tabs";
 import useAbi from "#/hooks/useAbi";
+import { formatRelativeTime } from "#/utils/time";
 
 import { AbiItemFormWithPreview } from "@ethui/ui/components/abi-form/abi-item-form-with-preview";
 import { getDecodedFunctionInput } from "#/utils/transaction";
