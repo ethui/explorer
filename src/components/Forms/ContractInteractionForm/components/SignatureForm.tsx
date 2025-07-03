@@ -1,17 +1,11 @@
-import { AbiItemFormWithPreview } from "@ethui/ui/components/abi-form/abi-item-form-with-preview";
 import { Form } from "@ethui/ui/components/form";
 import { useEffect } from "react";
 import { FormProvider } from "react-hook-form";
 import type { AbiFunction, Address } from "viem";
 import { parseAbiItem } from "viem";
-import { useChainId } from "wagmi";
 import type { UseContractExecutionReturn } from "../hooks/useContractExecution";
 import { useSignatureForm } from "../hooks/useSignatureForm";
-import {
-  ActionButtons,
-  ConnectWalletAlert,
-  MsgSenderInput,
-} from "./SharedComponents";
+import { ContractExecutionForm } from "./ContractExecutionForm";
 
 interface SignatureFormProps {
   execution: UseContractExecutionReturn;
@@ -20,16 +14,20 @@ interface SignatureFormProps {
 
 export function SignatureForm({ execution, address }: SignatureFormProps) {
   const formData = useSignatureForm();
-  const chainId = useChainId();
-  const {
-    signatureForm,
-    signature,
-    isValidSignature,
-    isWrite,
-    callData,
-    setCallData,
-    msgSender,
-  } = formData;
+  const { signatureForm, signature, isValidSignature, callData, setCallData } =
+    formData;
+
+  const parsedAbiFunction =
+    isValidSignature && signature
+      ? (() => {
+          try {
+            return parseAbiItem(signature) as AbiFunction;
+          } catch (error) {
+            console.warn("Failed to parse signature:", error);
+            return null;
+          }
+        })()
+      : null;
 
   useEffect(() => {
     if (signature !== undefined) {
@@ -37,59 +35,27 @@ export function SignatureForm({ execution, address }: SignatureFormProps) {
     }
   }, [signature, execution.resetResult]);
 
-  const handleSimulate = () => {
-    if (!callData) return;
-    const abiFunction = parseAbiItem(signature) as AbiFunction;
-    execution.simulate({
-      abiFunction,
-      callData,
-      msgSender: msgSender ? (msgSender as Address) : undefined,
-    });
-  };
-
-  const handleExecute = () => {
-    if (!callData) return;
-    execution.execute({ callData });
-  };
-
   return (
     <FormProvider {...signatureForm}>
-      <Form.Text
-        label={<span className="font-bold text-base">Signature</span>}
-        name="signature"
-        placeholder="function transfer(address to, uint256 amount) returns (bool)"
-        className="w-4xl"
-      />
+      <div className="space-y-6">
+        <Form.Text
+          label={<span className="font-bold text-base">Signature</span>}
+          name="signature"
+          placeholder="function transfer(address to, uint256 amount) returns (bool)"
+          className="w-4xl"
+        />
 
-      {isValidSignature && (
-        <>
-          {isWrite && <MsgSenderInput />}
-
-          {isWrite && !execution.isConnected && <ConnectWalletAlert />}
-
-          <AbiItemFormWithPreview
-            key={signature}
-            onChange={(data) => {
-              setCallData(data.data?.toString() ?? undefined);
-            }}
-            abiFunction="signature"
-            signature={signature}
+        {isValidSignature && (
+          <ContractExecutionForm
+            execution={execution}
             address={address}
-            sender={address}
-            chainId={chainId}
+            abiFunction={parsedAbiFunction || "signature"}
+            signature={signature}
+            defaultCalldata={callData as `0x${string}` | undefined}
+            onCallDataChange={setCallData}
           />
-
-          <ActionButtons
-            isWrite={isWrite}
-            callData={callData}
-            isSimulating={execution.isSimulating}
-            isExecuting={execution.isExecuting}
-            isConnected={execution.isConnected}
-            simulate={handleSimulate}
-            execute={handleExecute}
-          />
-        </>
-      )}
+        )}
+      </div>
     </FormProvider>
   );
 }

@@ -1,19 +1,18 @@
 import { Card } from "@ethui/ui/components/shadcn/card";
 import { createFileRoute } from "@tanstack/react-router";
-import clsx from "clsx";
 import { format } from "date-fns";
-import { CheckCircle, XCircle } from "lucide-react";
 import titleize from "titleize";
 import { type Hash, formatEther, isHash } from "viem";
 import { useBlock, useTransaction, useTransactionReceipt } from "wagmi";
+import { Chip } from "#/components/Chip";
+import { ContractExecutionForm } from "#/components/Forms/ContractInteractionForm/components/ContractExecutionForm";
+import { useContractExecution } from "#/components/Forms/ContractInteractionForm/hooks/useContractExecution";
 import { LinkText } from "#/components/LinkText";
 import { LoadingSpinner } from "#/components/LoadingSpinner";
 import PageContainer from "#/components/PageContainer";
 import { Tabs } from "#/components/Tabs";
 import useAbi from "#/hooks/useAbi";
 import { formatRelativeTime } from "#/utils/time";
-
-import { AbiItemFormWithPreview } from "@ethui/ui/components/abi-form/abi-item-form-with-preview";
 import { getDecodedFunctionInput } from "#/utils/transaction";
 
 export const Route = createFileRoute("/rpc/$rpc/_l/tx/$tx")({
@@ -73,7 +72,14 @@ function TransactionDetails({ tx }: { tx: Hash }) {
       {receipt && (
         <TransactionLabelValue
           label="Status"
-          value={<StatusChip status={receipt.status} />}
+          value={
+            <Chip
+              variant={receipt.status === "success" ? "success" : "error"}
+              showIcon={true}
+            >
+              {titleize(receipt.status)}
+            </Chip>
+          }
         />
       )}
       <TransactionLabelValue
@@ -143,6 +149,11 @@ function TransactionDetails({ tx }: { tx: Hash }) {
         label="Gas Price"
         value={<span>{formatEther(transaction.gasPrice ?? 0n)} ETH</span>}
       />
+      <TransactionLabelValue label="Nonce" value={transaction.nonce} />
+      <TransactionLabelValue
+        label="Transaction Type"
+        value={<Chip variant="default">{titleize(transaction.type)}</Chip>}
+      />
     </Card>
   );
 
@@ -172,6 +183,7 @@ function InputDetails({ tx }: { tx: Hash }) {
   );
 
   const { abi } = useAbi({ address: transaction?.to ?? "0x" });
+  const execution = useContractExecution(transaction?.to ?? "0x");
 
   const decodedInput =
     abi && transaction?.input
@@ -194,33 +206,17 @@ function InputDetails({ tx }: { tx: Hash }) {
   }
 
   return (
-    <div>
-      {decodedInput && (
-        <AbiItemFormWithPreview
-          sender={transaction.from}
-          chainId={transaction.chainId}
-          defaultCalldata={transaction.input}
-          abiFunction={decodedInput.abiFunction}
-          address={transaction.to ?? "0x"}
-        />
-      )}
-    </div>
-  );
-}
-
-function StatusChip({ status }: { status: string }) {
-  const statusSuccess = status === "success";
-  return (
-    <div
-      className={clsx(
-        "flex w-fit flex-shrink-0 flex-row items-center gap-1 rounded border-2 p-1 text-xs",
-        statusSuccess
-          ? "border-green-500 bg-green-100 text-success"
-          : "border-red-500 bg-red-100 text-error",
-      )}
-    >
-      {statusSuccess ? <CheckCircle size={10} /> : <XCircle size={10} />}
-      {titleize(status)}
+    <div className="flex flex-col items-center">
+      <Card className="flex w-fit flex-col rounded-2xl border p-8 shadow-md">
+        {decodedInput && (
+          <ContractExecutionForm
+            execution={execution}
+            address={transaction.to ?? "0x"}
+            abiFunction={decodedInput.abiFunction!}
+            defaultCalldata={transaction.input}
+          />
+        )}
+      </Card>
     </div>
   );
 }

@@ -32,8 +32,8 @@ export function getDecodedFunctionInput({
       args: decoded.args,
       abiFunction,
     };
-  } catch (err) {
-    console.warn("Failed to decode input:", err);
+  } catch (error) {
+    console.error(error);
     return null;
   }
 }
