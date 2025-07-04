@@ -10,3 +10,10 @@ export function formatEth(
     .toFixed(decimals)
     .replace(/\.?0+$/, "");
 }
+
+export const stringifyWithBigInt = (value: unknown): string =>
+  JSON.stringify(
+    value,
+    (_, v) => (typeof v === "bigint" ? v.toString() : v),
+    2,
+  );

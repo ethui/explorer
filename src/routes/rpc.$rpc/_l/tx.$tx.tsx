@@ -1,5 +1,6 @@
 import { Card } from "@ethui/ui/components/shadcn/card";
 import { createFileRoute } from "@tanstack/react-router";
+import clsx from "clsx";
 import { format } from "date-fns";
 import titleize from "titleize";
 import { type Hash, formatEther, isHash } from "viem";
@@ -12,6 +13,7 @@ import { LoadingSpinner } from "#/components/LoadingSpinner";
 import PageContainer from "#/components/PageContainer";
 import { Tabs } from "#/components/Tabs";
 import useAbi from "#/hooks/useAbi";
+import { stringifyWithBigInt } from "#/utils/formatters";
 import { formatRelativeTime } from "#/utils/time";
 import { getDecodedFunctionInput } from "#/utils/transaction";
 
@@ -34,6 +36,7 @@ function RouteComponent() {
         tabs={[
           { label: "Overview", component: <TransactionDetails tx={tx} /> },
           { label: "Input Data", component: <InputDetails tx={tx} /> },
+          { label: "Logs", component: <Logs tx={tx} /> },
         ]}
       />
     </PageContainer>
@@ -185,14 +188,6 @@ function InputDetails({ tx }: { tx: Hash }) {
   const { abi } = useAbi({ address: transaction?.to ?? "0x" });
   const execution = useContractExecution(transaction?.to ?? "0x");
 
-  const decodedInput =
-    abi && transaction?.input
-      ? getDecodedFunctionInput({
-          abi,
-          input: transaction?.input,
-        })
-      : null;
-
   if (isTransactionLoading) {
     return <LoadingSpinner />;
   }
@@ -201,21 +196,89 @@ function InputDetails({ tx }: { tx: Hash }) {
     return <div>Transaction not found</div>;
   }
 
+  if (!transaction.to) {
+    return <div>Contract deployment transaction</div>;
+  }
+
+  if (transaction.input === "0x") {
+    return <div>This was a native transfer transaction</div>;
+  }
+
+  if (!abi) {
+    return (
+      <InputDetailsCard className="max-w-[1000px]">
+        <pre className="mt-2 w-full whitespace-pre-wrap break-all rounded bg-muted p-4">
+          {transaction.input}
+        </pre>
+      </InputDetailsCard>
+    );
+  }
+
+  const decodedInput =
+    abi && transaction.input
+      ? getDecodedFunctionInput({
+          abi,
+          input: transaction.input,
+        })
+      : null;
+
   if (!decodedInput) {
-    return <div>No input data found</div>;
+    return <div>No function input found</div>;
   }
 
   return (
+    <InputDetailsCard>
+      {decodedInput && (
+        <ContractExecutionForm
+          execution={execution}
+          address={transaction.to}
+          abiFunction={decodedInput.abiFunction}
+          defaultCalldata={transaction.input}
+        />
+      )}
+    </InputDetailsCard>
+  );
+}
+
+function Logs({ tx }: { tx: Hash }) {
+  const { data: receipt, isLoading: isTransactionReceiptLoading } =
+    useTransactionReceipt({
+      hash: tx,
+    });
+
+  if (isTransactionReceiptLoading) {
+    return <LoadingSpinner />;
+  }
+
+  if (!receipt?.logs || receipt.logs.length === 0) {
+    return <div>No logs found</div>;
+  }
+
+  return (
+    <InputDetailsCard className="max-w-[1000px]">
+      <pre className="mt-2 w-full whitespace-pre-wrap break-all rounded bg-muted p-4">
+        {stringifyWithBigInt(receipt.logs)}
+      </pre>
+    </InputDetailsCard>
+  );
+}
+
+function InputDetailsCard({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
     <div className="flex flex-col items-center">
-      <Card className="flex w-fit flex-col rounded-2xl border p-8 shadow-md">
-        {decodedInput && (
-          <ContractExecutionForm
-            execution={execution}
-            address={transaction.to ?? "0x"}
-            abiFunction={decodedInput.abiFunction!}
-            defaultCalldata={transaction.input}
-          />
+      <Card
+        className={clsx(
+          "flex w-fit max-w-[1400px] flex-col rounded-2xl border p-8 shadow-md",
+          className,
         )}
+      >
+        {children}
       </Card>
     </div>
   );
