@@ -37,10 +37,10 @@ export function ConnectWalletAlert() {
 interface ActionButtonsProps {
   isWrite: boolean;
   callData: string | undefined;
-  isSimulating: boolean;
+  isSimulating?: boolean;
   isExecuting: boolean;
   isConnected: boolean;
-  simulate: () => void;
+  simulate?: () => void;
   execute: () => void;
 }
 
@@ -60,7 +60,7 @@ export function ActionButtons({
           <Button
             type="button"
             disabled={!callData || isSimulating || isExecuting}
-            onClick={() => simulate()}
+            onClick={() => simulate?.()}
           >
             Simulate
           </Button>
@@ -76,7 +76,7 @@ export function ActionButtons({
         <Button
           type="button"
           disabled={!callData || isSimulating}
-          onClick={() => simulate()}
+          onClick={() => simulate?.()}
         >
           Call
         </Button>

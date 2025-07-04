@@ -12,6 +12,7 @@ import { Button } from "@ethui/ui/components/shadcn/button";
 
 import { AbiDialogForm } from "#/components/Forms/AbiDialogForm";
 import { ContractInteractionForm } from "#/components/Forms/ContractInteractionForm";
+import PageContainer from "#/components/PageContainer";
 
 export const Route = createFileRoute("/rpc/$rpc/_l/address/$address")({
   loader: ({ params }) => {
@@ -29,20 +30,19 @@ function RouteComponent() {
   const isContract = useIsContract(address);
 
   return (
-    <div className="flex flex-1 flex-col items-center p-10">
-      <div className="flex w-full max-w-[1400px] flex-col">
-        <Header address={address} isContract={isContract} />
-        <Tabs
-          tabs={
-            [
-              { label: "Transactions", component: <Transactions /> },
-              { label: "Internal Transactions", component: <span /> },
-              isContract && { label: "Contract", component: <Contract /> },
-            ].filter(Boolean) as { label: string; component: ReactNode }[]
-          }
-        />
-      </div>
-    </div>
+    <PageContainer
+      header={<Header address={address} isContract={isContract} />}
+    >
+      <Tabs
+        tabs={
+          [
+            { label: "Transactions", component: <Transactions /> },
+            { label: "Internal Transactions", component: <span /> },
+            isContract && { label: "Contract", component: <Contract /> },
+          ].filter(Boolean) as { label: string; component: ReactNode }[]
+        }
+      />
+    </PageContainer>
   );
 }
 
@@ -61,7 +61,7 @@ function Header({
         <h3 className="pb-1 font-bold text-xl">
           {getAddressTitle(isContract)}
         </h3>
-        <span className="text-sm">{address}</span>
+        <span className="font-normal text-sm">{address}</span>
         {isContract && (
           <AbiDialogForm
             address={address}
@@ -73,7 +73,9 @@ function Header({
           />
         )}
       </span>
-      <span className="text-sm">Eth balance: {formattedBalance}</span>
+      <span className="font-normal text-sm">
+        Eth balance: {formattedBalance}
+      </span>
     </div>
   );
 }

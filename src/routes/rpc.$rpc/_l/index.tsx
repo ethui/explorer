@@ -18,7 +18,7 @@ function RouteComponent() {
 
   return (
     <div className="flex flex-1 items-center justify-center p-10">
-      <div className="grid w-full max-w-[1400px] grid-cols-1 gap-4 lg:grid-cols-2">
+      <div className="grid w-full max-w-[1400px] grid-cols-1 gap-4 xl:grid-cols-2">
         <Card
           title="Latest Blocks"
           footerLink={{

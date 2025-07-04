@@ -1,8 +1,7 @@
 "use client";
 
-import { Check, X } from "lucide-react";
+import { Check, Loader2, X } from "lucide-react";
 import { ToastBar, Toaster } from "react-hot-toast";
-import LoadingSpinner from "./LoadingSpinner";
 
 export const transactionToast = {
   loading: "Waiting for the transaction to be executed",
@@ -20,7 +19,7 @@ export default function Toast() {
           padding: "8px 20px",
         },
         loading: {
-          icon: <LoadingSpinner size={32} />,
+          icon: <Loader2 size={32} />,
         },
         success: {
           duration: 4000,

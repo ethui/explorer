@@ -4,13 +4,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { type FieldValues, useForm } from "react-hook-form";
-import { isAddress } from "viem";
+import { isAddress, isHash } from "viem";
 import { z } from "zod";
 import { useConnectionStore } from "#/store/connection";
-
-const isBlockNumber = (str: string): boolean => {
-  return /^\d+$/.test(str);
-};
+import { isBlockNumber } from "#/utils/validators";
 
 export function Topbar({
   showConnectButton = false,
@@ -101,6 +98,10 @@ function SearchBar({ currRpc }: { currRpc: string }) {
       (navigate as any)({
         to: `${basePath}/block/${searchTerm}`,
       });
+    } else if (isHash(searchTerm)) {
+      (navigate as any)({
+        to: `${basePath}/tx/${searchTerm}`,
+      });
     } else {
       (navigate as any)({
         to: `${basePath}/not-found`,
@@ -118,7 +119,7 @@ function SearchBar({ currRpc }: { currRpc: string }) {
     >
       <Form.Text
         name="search"
-        placeholder="Search by address or block number"
+        placeholder="Search by Address / Txn Hash / Block"
         className="inline w-96 space-y-0"
       />
       <Button type="submit">Search</Button>

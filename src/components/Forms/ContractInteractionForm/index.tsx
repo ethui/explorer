@@ -3,12 +3,13 @@ import type { Address } from "viem";
 import useAbi from "#/hooks/useAbi";
 import { FunctionSelectorForm } from "./components/FunctionSelectorForm";
 import { ModeSwitch } from "./components/ModeSwitch";
-import { ResultDisplay } from "./components/ResultDisplay";
 import { SignatureForm } from "./components/SignatureForm";
 import { useContractExecution } from "./hooks/useContractExecution";
+
 interface ContractInteractionFormProps {
   address: Address;
 }
+
 export function ContractInteractionForm({
   address,
 }: ContractInteractionFormProps) {
@@ -40,14 +41,6 @@ export function ContractInteractionForm({
           <SignatureForm execution={execution} address={address} />
         )}
       </div>
-
-      {execution.result && (
-        <ResultDisplay
-          result={execution.result}
-          showFullResult={execution.showFullResult}
-          setShowFullResult={execution.setShowFullResult}
-        />
-      )}
     </div>
   );
 }
