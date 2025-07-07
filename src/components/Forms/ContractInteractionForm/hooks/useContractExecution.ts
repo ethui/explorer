@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { type AbiFunction, decodeFunctionData } from "viem";
 import type { Address } from "viem";
 import { useAccount, usePublicClient, useWalletClient } from "wagmi";
+import { stringifyWithBigInt } from "#/utils/formatters";
 import type { Result } from "../components/ResultDisplay";
 export interface UseContractExecutionReturn {
   simulate: (params: {
@@ -20,13 +21,6 @@ export interface UseContractExecutionReturn {
   setShowFullResult: (show: boolean) => void;
   resetResult: () => void;
 }
-
-const formatResult = (value: unknown): string =>
-  JSON.stringify(
-    value,
-    (_, v) => (typeof v === "bigint" ? v.toString() : v),
-    2,
-  );
 
 const isWriteFunction = (abiFunction: AbiFunction): boolean =>
   abiFunction.stateMutability !== "view" &&
@@ -65,8 +59,7 @@ export function useContractExecution(address: Address) {
         args,
         account: msgSender ? (msgSender as Address) : accountAddress,
       });
-
-      const formattedResult = formatResult(result);
+      const formattedResult = stringifyWithBigInt(result);
       const cleanResult = isWrite
         ? undefined
         : (result.result as any)?.toString();
@@ -86,7 +79,7 @@ export function useContractExecution(address: Address) {
       const isWrite = isWriteFunction(variables.abiFunction);
       setResult({
         type: isWrite ? "simulation" : "call",
-        data: formatResult({
+        data: stringifyWithBigInt({
           error: error instanceof Error ? error.message : String(error),
           status: "reverted",
         }),
@@ -118,7 +111,7 @@ export function useContractExecution(address: Address) {
       const receipt = await publicClient.waitForTransactionReceipt({ hash });
       return {
         type: "execution" as const,
-        data: formatResult(receipt),
+        data: stringifyWithBigInt(receipt),
         hash: hash,
       };
     },
@@ -129,7 +122,7 @@ export function useContractExecution(address: Address) {
     onError: (error) => {
       setResult({
         type: "execution",
-        data: formatResult({
+        data: stringifyWithBigInt({
           error: error instanceof Error ? error.message : String(error),
           status: "reverted",
         }),

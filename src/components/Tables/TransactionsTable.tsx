@@ -6,6 +6,7 @@ import { LinkText } from "#/components/LinkText";
 import useAbi from "#/hooks/useAbi";
 import { formatEth } from "#/utils/formatters";
 import { truncateHex } from "#/utils/hash";
+import { getMethodName } from "#/utils/transaction";
 import Table from "./Table";
 interface TransactionsTableProps {
   transactions: Transaction[];
@@ -13,16 +14,31 @@ interface TransactionsTableProps {
 
 const columnHelper = createColumnHelper<Transaction>();
 
+function EmptyMethodPill() {
+  return <span className="text-muted-foreground text-xs">-</span>;
+}
+
+function MethodPill({ name, title }: { name: string; title?: string }) {
+  return (
+    <div className="flex max-w-24 flex-row items-center justify-center gap-2 rounded-md border bg-muted p-2">
+      <span className="truncate font-mono text-xs" title={title}>
+        {name}
+      </span>
+    </div>
+  );
+}
+
 function MethodCell({ transaction }: { transaction: Transaction }) {
-  if (!transaction.to) {
-    return <span className="text-muted-foreground text-xs">-</span>;
+  if (!transaction.to || !transaction.input) {
+    return <EmptyMethodPill />;
+  }
+  const methodName = getMethodName(transaction.input);
+
+  if (methodName) {
+    return <MethodPill name={methodName} />;
   }
 
   const { abi } = useAbi({ address: transaction.to });
-
-  if (!transaction.to || !transaction.input || transaction.input === "0x") {
-    return <span className="text-muted-foreground text-xs">-</span>;
-  }
 
   try {
     const decoded = decodeFunctionData({
@@ -31,14 +47,13 @@ function MethodCell({ transaction }: { transaction: Transaction }) {
     });
 
     return (
-      <div className="flex w-fit flex-row items-center gap-2 rounded-md border bg-muted p-2">
-        <span className="font-mono text-xs" title={decoded.functionName}>
-          {titleize(decoded.functionName)}
-        </span>
-      </div>
+      <MethodPill
+        name={titleize(decoded.functionName)}
+        title={decoded.functionName}
+      />
     );
   } catch {
-    return <span className="text-muted-foreground text-xs">-</span>;
+    return <EmptyMethodPill />;
   }
 }
 
@@ -47,8 +62,8 @@ const columns = [
     header: "Transaction hash",
     cell: ({ row }) => (
       <LinkText
-        to="/rpc/$rpc/transaction/$hash"
-        params={{ hash: row.original.hash }}
+        to="/rpc/$rpc/tx/$tx"
+        params={{ tx: row.original.hash }}
         tooltip={row.original.hash}
       >
         {truncateHex(row.original.hash, 11, false)}
