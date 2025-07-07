@@ -17,8 +17,6 @@ export interface UseContractExecutionReturn {
   isSimulating: boolean;
   isExecuting: boolean;
   result: any;
-  showFullResult: boolean;
-  setShowFullResult: (show: boolean) => void;
   resetResult: () => void;
 }
 
@@ -28,7 +26,6 @@ const isWriteFunction = (abiFunction: AbiFunction): boolean =>
 
 export function useContractExecution(address: Address) {
   const [result, setResult] = useState<Result | undefined>(undefined);
-  const [showFullResult, setShowFullResult] = useState(false);
   const publicClient = usePublicClient();
   const { data: walletClient } = useWalletClient();
   const { isConnected, address: accountAddress } = useAccount();
@@ -133,13 +130,10 @@ export function useContractExecution(address: Address) {
 
   const resetResult = useCallback(() => {
     setResult(undefined);
-    setShowFullResult(false);
   }, []);
 
   return {
     result,
-    showFullResult,
-    setShowFullResult,
     simulate,
     execute,
     isSimulating,
