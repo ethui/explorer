@@ -21,8 +21,8 @@ export function ContractInteractionForm({
   const hasContract = abi?.some((item) => item.type === "function") ?? false;
 
   return (
-    <div className="mx-auto flex w-fit flex-col items-center space-y-6 p-6">
-      <div className="w-full rounded-lg border bg-card p-6 shadow-sm">
+    <div className="mx-auto flex flex-col items-center space-y-6 p-6">
+      <div className="w-[1000px] rounded-lg border bg-card p-6 shadow-sm">
         <h2 className="mb-6 font-semibold text-2xl">Contract Interaction</h2>
 
         {hasContract && (

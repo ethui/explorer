@@ -1,6 +1,7 @@
 import { Button } from "@ethui/ui/components/shadcn/button";
 import clsx from "clsx";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { useState } from "react";
 
 export type Result = {
   type: "call" | "simulation" | "execution";
@@ -8,17 +9,14 @@ export type Result = {
   hash?: string;
   cleanResult?: string;
 };
+
 interface ResultDisplayProps {
   result: Result;
-  showFullResult: boolean;
-  setShowFullResult: (show: boolean) => void;
 }
 
-export function ResultDisplay({
-  result,
-  showFullResult,
-  setShowFullResult,
-}: ResultDisplayProps) {
+export function ResultDisplay({ result }: ResultDisplayProps) {
+  const [showFullResult, setShowFullResult] = useState(false);
+
   const getTitle = () => {
     switch (result.type) {
       case "call":
@@ -58,7 +56,7 @@ export function ResultDisplay({
       )}
 
       {result.type !== "call" && result.data && (
-        <pre className="w-full max-w-4xl whitespace-pre-wrap break-all rounded bg-muted p-4">
+        <pre className="w-full whitespace-pre-wrap break-all rounded bg-muted p-4">
           {result.data}
         </pre>
       )}

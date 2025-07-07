@@ -19,7 +19,7 @@ export default function Toast() {
           padding: "8px 20px",
         },
         loading: {
-          icon: <Loader2 size={32} />,
+          icon: <Loader2 size={32} className="animate-spin" />,
         },
         success: {
           duration: 4000,

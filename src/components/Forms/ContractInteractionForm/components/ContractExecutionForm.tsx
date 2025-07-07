@@ -124,9 +124,8 @@ export function ContractExecutionForm({
 
         {showResult && execution.result && (
           <ResultDisplay
+            key={`${execution.result.type}-${execution.result.data}`}
             result={execution.result}
-            showFullResult={execution.showFullResult}
-            setShowFullResult={execution.setShowFullResult}
           />
         )}
       </div>
