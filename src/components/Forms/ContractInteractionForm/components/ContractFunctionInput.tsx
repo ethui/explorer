@@ -21,8 +21,8 @@ export function ContractFunctionInput({
   selectedFunction,
 }: ContractFunctionInputProps) {
   return (
-    <div className="mb-4">
-      <span className="mb-2 block font-bold text-base">Contract Function</span>
+    <div className="pb-7">
+      <span className="block font-bold text-base">Contract Function</span>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button

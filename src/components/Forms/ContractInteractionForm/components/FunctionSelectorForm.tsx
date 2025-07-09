@@ -34,7 +34,7 @@ export function FunctionSelectorForm({
   }, [selectedFunction, execution.resetResult]);
 
   return (
-    <div className="space-y-6">
+    <>
       <ContractFunctionInput
         functions={contractFunctions}
         onSelectFunction={handleSelectFunction}
@@ -50,6 +50,6 @@ export function FunctionSelectorForm({
           onCallDataChange={setCallData}
         />
       )}
-    </div>
+    </>
   );
 }
