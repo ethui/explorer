@@ -37,7 +37,18 @@ export function Tabs({ tabs, tabIndex = 0 }: Tabs) {
           </div>
         ))}
       </div>
-      <div className="mt-4">{selectedTab.component}</div>
+      <div className="mt-4">
+        {tabs.map((tab) => (
+          <div
+            key={tab.label}
+            className={clsx(
+              selectedTab.label === tab.label ? "block" : "hidden",
+            )}
+          >
+            {tab.component}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

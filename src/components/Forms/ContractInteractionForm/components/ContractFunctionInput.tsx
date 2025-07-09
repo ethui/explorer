@@ -6,23 +6,20 @@ import {
   DropdownMenuTrigger,
 } from "@ethui/ui/components/shadcn/dropdown-menu";
 import { ChevronDown } from "lucide-react";
-import { useState } from "react";
 import type { AbiFunction } from "viem";
 import { formatAbiItem } from "viem/utils";
 
 interface ContractFunctionInputProps {
   functions: AbiFunction[];
   onSelectFunction: (func: AbiFunction) => void;
+  selectedFunction?: AbiFunction | null;
 }
 
 export function ContractFunctionInput({
   functions,
   onSelectFunction,
+  selectedFunction,
 }: ContractFunctionInputProps) {
-  const [selectedFunction, setSelectedFunction] = useState<AbiFunction | null>(
-    null,
-  );
-
   return (
     <div className="mb-4">
       <span className="mb-2 block font-bold text-base">Contract Function</span>
@@ -30,7 +27,7 @@ export function ContractFunctionInput({
         <DropdownMenuTrigger asChild>
           <Button
             variant="outline"
-            className="w-full min-w-4xl justify-between text-left"
+            className="w-full justify-between text-left"
           >
             <span className="truncate font-mono text-sm">
               {selectedFunction
@@ -45,10 +42,9 @@ export function ContractFunctionInput({
             <DropdownMenuItem
               key={index}
               onClick={() => {
-                setSelectedFunction(func);
                 onSelectFunction(func);
               }}
-              className="flex flex-col items-start p-3"
+              className="flex w-full flex-col items-start p-3"
             >
               <div className="w-full">
                 <div className="mb-1 flex items-center justify-between">

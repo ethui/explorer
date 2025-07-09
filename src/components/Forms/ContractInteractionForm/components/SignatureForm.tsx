@@ -14,8 +14,13 @@ interface SignatureFormProps {
 
 export function SignatureForm({ execution, address }: SignatureFormProps) {
   const formData = useSignatureForm();
-  const { signatureForm, signature, isValidSignature, callData, setCallData } =
-    formData;
+  const {
+    signatureForm,
+    signature,
+    isValidSignature,
+    callData: formCallData,
+    setCallData,
+  } = formData;
 
   const parsedAbiFunction =
     isValidSignature && signature
@@ -51,7 +56,7 @@ export function SignatureForm({ execution, address }: SignatureFormProps) {
             address={address}
             abiFunction={parsedAbiFunction || "signature"}
             signature={signature}
-            defaultCalldata={callData as `0x${string}` | undefined}
+            defaultCalldata={formCallData as `0x${string}` | undefined}
             onCallDataChange={setCallData}
           />
         )}

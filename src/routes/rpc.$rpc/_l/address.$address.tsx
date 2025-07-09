@@ -105,7 +105,8 @@ function Transactions() {
 
 function Contract() {
   const { address } = Route.useLoaderData();
-  return <ContractInteractionForm address={address} />;
+  const { callData } = Route.useSearch();
+  return <ContractInteractionForm address={address} callData={callData} />;
 }
 
 const getAddressTitle = (isContract: boolean | undefined) => {

@@ -8,12 +8,15 @@ import { useContractExecution } from "./hooks/useContractExecution";
 
 interface ContractInteractionFormProps {
   address: Address;
+  callData?: string;
 }
 
 export function ContractInteractionForm({
   address,
+  callData,
 }: ContractInteractionFormProps) {
   const [useContractFunctions, setUseContractFunctions] = useState(false);
+  const [initialCallData, setInitialCallData] = useState(callData);
 
   const execution = useContractExecution(address);
 
@@ -31,12 +34,18 @@ export function ContractInteractionForm({
             setUseContractFunctions={() => {
               setUseContractFunctions(!useContractFunctions);
               execution.resetResult();
+              setInitialCallData(undefined);
             }}
           />
         )}
 
         {!useContractFunctions && hasContract ? (
-          <FunctionSelectorForm execution={execution} address={address} />
+          <FunctionSelectorForm
+            execution={execution}
+            address={address}
+            callData={initialCallData}
+            onUserInteraction={() => setInitialCallData(undefined)}
+          />
         ) : (
           <SignatureForm execution={execution} address={address} />
         )}
