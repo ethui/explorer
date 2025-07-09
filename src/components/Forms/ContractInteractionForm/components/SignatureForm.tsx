@@ -57,7 +57,7 @@ export function SignatureForm({ execution, address }: SignatureFormProps) {
           defaultCalldata={formCallData as `0x${string}` | undefined}
           onCallDataChange={setCallData}
         />
-      )}{" "}
+      )}
     </FormProvider>
   );
 }
