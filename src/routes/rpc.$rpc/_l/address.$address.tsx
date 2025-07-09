@@ -14,6 +14,13 @@ import { AbiDialogForm } from "#/components/Forms/AbiDialogForm";
 import { ContractInteractionForm } from "#/components/Forms/ContractInteractionForm";
 import PageContainer from "#/components/PageContainer";
 
+import { z } from "zod";
+import { LoadingSpinner } from "#/components/LoadingSpinner";
+
+const searchSchema = z.object({
+  callData: z.string().catch(""),
+});
+
 export const Route = createFileRoute("/rpc/$rpc/_l/address/$address")({
   loader: ({ params }) => {
     if (!isAddress(params.address)) {
@@ -22,12 +29,18 @@ export const Route = createFileRoute("/rpc/$rpc/_l/address/$address")({
 
     return { address: params.address as Address };
   },
+  validateSearch: (search) => searchSchema.parse(search),
   component: RouteComponent,
 });
 
 function RouteComponent() {
+  const { callData } = Route.useSearch();
   const { address } = Route.useLoaderData();
-  const isContract = useIsContract(address);
+  const { isContract, isLoading: isContractLoading } = useIsContract(address);
+
+  if (isContractLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <PageContainer
@@ -37,10 +50,10 @@ function RouteComponent() {
         tabs={
           [
             { label: "Transactions", component: <Transactions /> },
-            { label: "Internal Transactions", component: <span /> },
             isContract && { label: "Contract", component: <Contract /> },
           ].filter(Boolean) as { label: string; component: ReactNode }[]
         }
+        tabIndex={callData && isContract ? 1 : 0}
       />
     </PageContainer>
   );

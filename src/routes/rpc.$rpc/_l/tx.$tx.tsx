@@ -1,16 +1,39 @@
 import { Card } from "@ethui/ui/components/shadcn/card";
 
-import { createFileRoute } from "@tanstack/react-router";
+import { Button } from "@ethui/ui/components/shadcn/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@ethui/ui/components/shadcn/dropdown-menu";
+import { SolidityCall } from "@ethui/ui/components/solidity-call";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import clsx from "clsx";
 import { format } from "date-fns";
+import { ChevronDown } from "lucide-react";
+import { useState } from "react";
 import titleize from "titleize";
-import { type Hash, type Transaction, formatEther, isHash } from "viem";
-import { useBlock, useTransaction, useTransactionReceipt } from "wagmi";
+import {
+  type Abi,
+  type Hash,
+  type Transaction,
+  formatEther,
+  hexToBytes,
+  isHash,
+} from "viem";
+import {
+  useBlock,
+  useChainId,
+  useTransaction,
+  useTransactionReceipt,
+} from "wagmi";
 import { Chip } from "#/components/Chip";
 import { LinkText } from "#/components/LinkText";
 import { LoadingSpinner } from "#/components/LoadingSpinner";
 import PageContainer from "#/components/PageContainer";
 import { Tabs } from "#/components/Tabs";
+import useAbi from "#/hooks/useAbi";
 import { stringifyWithBigInt } from "#/utils/formatters";
 import { formatRelativeTime } from "#/utils/time";
 
@@ -162,38 +185,111 @@ function TransactionDetails({ tx }: { tx: Hash }) {
   );
 
   function InputDetails({ transaction }: { transaction: Transaction }) {
-    // const [displayMode, setDisplayMode] = useState<
-    //   "default" | "utf8" | "original"
-    // >("default");
+    const abi = useAbi({ address: transaction.to ?? "0x" });
+    const isTransfer = transaction.input === "0x";
+
+    const [displayMode, setDisplayMode] = useState<
+      "default" | "utf8" | "original"
+    >(isTransfer ? "original" : "default");
 
     return (
       <div className="flex flex-col gap-2">
-        <div className="min-h-20 w-full rounded-md border border-r-4 bg-accent p-4">
-          {transaction.input}
-        </div>
-        {/* <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="outline"
-              size="sm"
-              className="w-fit bg-accent text-xs focus:outline-none focus:ring-0 focus-visible:ring-0"
-            >
-              <span className="capitalize">{displayMode}</span>
-              <ChevronDown className="ml-2 h-3 w-3" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-32">
-            <DropdownMenuItem onClick={() => setDisplayMode("default")}>
-              Default
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setDisplayMode("utf8")}>
-              UTF-8
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setDisplayMode("original")}>
-              Original
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu> */}
+        <InputDetailsByType
+          transaction={transaction}
+          displayMode={displayMode}
+          abi={abi.abi}
+        />
+        {!isTransfer && (
+          <div className="flex flex-row gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-fit bg-accent text-xs focus:outline-none focus:ring-0 focus-visible:ring-0"
+                >
+                  <span className="capitalize">{displayMode}</span>
+                  <ChevronDown className="ml-2 h-3 w-3" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-32">
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={() => setDisplayMode("default")}
+                >
+                  Default
+                </DropdownMenuItem>
+
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={() => setDisplayMode("original")}
+                >
+                  Original
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={() => setDisplayMode("utf8")}
+                >
+                  UTF-8
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            {abi.abi && transaction.to && (
+              <Button variant="outline" size="sm" className="bg-accent" asChild>
+                <Link
+                  to="/rpc/$rpc/address/$address"
+                  params={{ address: transaction.to }}
+                  search={{ callData: transaction.input }}
+                >
+                  Write Contract
+                </Link>
+              </Button>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  function hexToUtf8Safe(hex: string): string {
+    const bytes = hexToBytes(hex as `0x${string}`);
+    return new TextDecoder("utf-8", { fatal: false }).decode(bytes);
+  }
+
+  function InputDetailsByType({
+    transaction,
+    displayMode,
+    abi,
+  }: {
+    transaction: Transaction;
+    abi: Abi | undefined;
+    displayMode: "default" | "utf8" | "original";
+  }) {
+    const chainId = useChainId();
+    return (
+      <div className="min-h-20 w-full rounded-md border border-r-4 bg-accent p-4">
+        {displayMode === "default" && (
+          <div className="text-muted-foreground text-sm">
+            <SolidityCall
+              value={transaction.value}
+              data={transaction.input}
+              from={transaction.from}
+              to={transaction.to ?? undefined}
+              chainId={chainId}
+              abi={abi}
+            />
+          </div>
+        )}
+        {displayMode === "original" && (
+          <div className="text-muted-foreground text-sm">
+            {transaction.input}
+          </div>
+        )}
+        {displayMode === "utf8" && (
+          <div className="text-muted-foreground text-sm">
+            {hexToUtf8Safe(transaction.input)}
+          </div>
+        )}
       </div>
     );
   }
