@@ -17,7 +17,7 @@ export function Topbar({
   const navigate = useNavigate();
   const { rpc } = useParams({ strict: false });
   const { connected, blockNumber, reset } = useConnectionStore();
-  const currRpc = rpc ? decodeURIComponent(rpc) : "ws://localhost:8545";
+  const currRpc = rpc ? atob(rpc) : "ws://localhost:8545";
 
   const rpcSchema = z.object({
     url: z.string(),
@@ -37,7 +37,7 @@ export function Topbar({
       reset();
     }
     (navigate as any)({
-      to: `/rpc/${encodeURIComponent(newRpc)}`,
+      to: `/rpc/${btoa(newRpc)}`,
       replace: true,
     });
   };
@@ -88,7 +88,7 @@ function SearchBar({ currRpc }: { currRpc: string }) {
 
   const handleSearchSubmit = ({ search }: FieldValues) => {
     const searchTerm = search.trim();
-    const basePath = `/rpc/${encodeURIComponent(currRpc)}`;
+    const basePath = `/rpc/${btoa(currRpc)}`;
 
     if (isAddress(searchTerm)) {
       (navigate as any)({

@@ -11,7 +11,7 @@ import { useConnectionState } from "#/hooks/useConnectionState";
 
 export const Route = createFileRoute("/rpc/$rpc/_l")({
   loader: async ({ params }) => {
-    return decodeURIComponent(params.rpc);
+    return atob(params.rpc);
   },
   component: RouteComponent,
 });

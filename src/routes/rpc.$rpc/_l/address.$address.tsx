@@ -18,7 +18,7 @@ import { z } from "zod";
 import { LoadingSpinner } from "#/components/LoadingSpinner";
 
 const searchSchema = z.object({
-  callData: z.string().catch(""),
+  callData: z.string().optional(),
 });
 
 export const Route = createFileRoute("/rpc/$rpc/_l/address/$address")({
