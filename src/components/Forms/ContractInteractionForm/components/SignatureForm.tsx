@@ -14,8 +14,13 @@ interface SignatureFormProps {
 
 export function SignatureForm({ execution, address }: SignatureFormProps) {
   const formData = useSignatureForm();
-  const { signatureForm, signature, isValidSignature, callData, setCallData } =
-    formData;
+  const {
+    signatureForm,
+    signature,
+    isValidSignature,
+    callData: formCallData,
+    setCallData,
+  } = formData;
 
   const parsedAbiFunction =
     isValidSignature && signature
@@ -37,25 +42,22 @@ export function SignatureForm({ execution, address }: SignatureFormProps) {
 
   return (
     <FormProvider {...signatureForm}>
-      <div className="space-y-6">
-        <Form.Text
-          label={<span className="font-bold text-base">Signature</span>}
-          name="signature"
-          placeholder="function transfer(address to, uint256 amount) returns (bool)"
-          className="w-4xl"
+      <Form.Text
+        label={<span className="font-bold text-base">Signature</span>}
+        name="signature"
+        placeholder="function transfer(address to, uint256 amount) returns (bool)"
+        className="w-4xl"
+      />
+      {isValidSignature && (
+        <ContractExecutionForm
+          execution={execution}
+          address={address}
+          abiFunction={parsedAbiFunction || "signature"}
+          signature={signature}
+          defaultCalldata={formCallData as `0x${string}` | undefined}
+          onCallDataChange={setCallData}
         />
-
-        {isValidSignature && (
-          <ContractExecutionForm
-            execution={execution}
-            address={address}
-            abiFunction={parsedAbiFunction || "signature"}
-            signature={signature}
-            defaultCalldata={callData as `0x${string}` | undefined}
-            onCallDataChange={setCallData}
-          />
-        )}
-      </div>
+      )}
     </FormProvider>
   );
 }

@@ -1,8 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import type { AbiFunction, Address } from "viem";
-import { isAddress } from "viem";
+import { decodeFunctionData, isAddress } from "viem";
 import { formatAbiItem } from "viem/utils";
 import { z } from "zod";
 import useAbi from "#/hooks/useAbi";
@@ -20,7 +20,11 @@ const functionFormSchema = z.object({
     .optional(),
 });
 
-export function useFunctionForm(address: Address) {
+export function useFunctionForm(
+  address: Address,
+  initialCallData?: string,
+  onUserInteraction?: () => void,
+) {
   const [selectedFunction, setSelectedFunction] = useState<AbiFunction | null>(
     null,
   );
@@ -40,11 +44,39 @@ export function useFunctionForm(address: Address) {
     return abi.filter((item) => item.type === "function") as AbiFunction[];
   }, [abi]);
 
+  useEffect(() => {
+    if (
+      initialCallData &&
+      abi &&
+      contractFunctions.length > 0 &&
+      !selectedFunction
+    ) {
+      try {
+        const decoded = decodeFunctionData({
+          abi,
+          data: initialCallData as `0x${string}`,
+        });
+
+        const matchingFunction = contractFunctions.find(
+          (func) => func.name === decoded.functionName,
+        );
+
+        if (matchingFunction) {
+          setSelectedFunction(matchingFunction);
+          setCallData(initialCallData);
+        }
+      } catch (error) {
+        console.warn("Failed to decode initial callData:", error);
+      }
+    }
+  }, [initialCallData, abi, contractFunctions, selectedFunction]);
+
   const msgSender = functionForm.watch().msgSender || "";
 
   const handleSelectFunction = (func: AbiFunction) => {
     setSelectedFunction(func);
     setCallData(undefined);
+    onUserInteraction?.();
   };
 
   const isWrite = useMemo(() => {

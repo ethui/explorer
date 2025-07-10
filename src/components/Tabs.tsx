@@ -1,15 +1,22 @@
 import clsx from "clsx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Tabs {
   tabs: {
     label: string;
     component: React.ReactNode;
   }[];
+  tabIndex?: number;
 }
 
-export function Tabs({ tabs }: Tabs) {
-  const [selectedTab, setSelectedTab] = useState(tabs[0]);
+export function Tabs({ tabs, tabIndex = 0 }: Tabs) {
+  const [selectedTab, setSelectedTab] = useState(tabs[tabIndex]);
+
+  useEffect(() => {
+    if (tabs[tabIndex]) {
+      setSelectedTab(tabs[tabIndex]);
+    }
+  }, [tabIndex, tabs]);
 
   return (
     <div className="flex flex-col gap-4 pt-8">
@@ -30,7 +37,18 @@ export function Tabs({ tabs }: Tabs) {
           </div>
         ))}
       </div>
-      <div className="mt-4">{selectedTab.component}</div>
+      <div className="mt-4">
+        {tabs.map((tab) => (
+          <div
+            key={tab.label}
+            className={clsx(
+              selectedTab.label === tab.label ? "block" : "hidden",
+            )}
+          >
+            {tab.component}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
