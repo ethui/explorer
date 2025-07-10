@@ -44,7 +44,6 @@ export function useFunctionForm(
     return abi.filter((item) => item.type === "function") as AbiFunction[];
   }, [abi]);
 
-  // Auto-select function based on initial callData
   useEffect(() => {
     if (
       initialCallData &&
