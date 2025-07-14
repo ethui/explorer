@@ -70,7 +70,7 @@
     "ts-unused-exports": "^11.0.1",
     "tsc": "^2.0.4",
     "typescript": "^5.8.2",
-    "vite": "^6.3.5",
+    "vite": "^7.0.4",
     "vite-tsconfig-paths": "^5.1.4"
   },
   "packageManager": "yarn@4.7.0"
