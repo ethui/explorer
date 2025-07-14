@@ -72,7 +72,7 @@ function Header({
   return (
     <div>
       <span className="flex flex-row items-center gap-2">
-        {isContract && <FileCode className="h-5 w-5 mb-1" />}
+        {isContract && <FileCode className="mb-1 h-5 w-5" />}
         <h3 className="pb-1 font-bold text-xl">
           {getAddressTitle(isContract)}
         </h3>
