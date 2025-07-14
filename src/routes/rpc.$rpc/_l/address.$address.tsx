@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Edit, FileCode, ReceiptText } from "lucide-react";
+import { Edit, FileCode } from "lucide-react";
 import type { ReactNode } from "react";
 import { type Address, formatEther, isAddress } from "viem";
 import { useBalance } from "wagmi";
