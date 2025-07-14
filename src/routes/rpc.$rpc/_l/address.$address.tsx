@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Edit } from "lucide-react";
+import { Edit, FileCode } from "lucide-react";
 import type { ReactNode } from "react";
 import { type Address, formatEther, isAddress } from "viem";
 import { useBalance } from "wagmi";
@@ -72,6 +72,7 @@ function Header({
   return (
     <div>
       <span className="flex flex-row items-center gap-2">
+        {isContract && <FileCode className="mb-1 h-5 w-5" />}
         <h3 className="pb-1 font-bold text-xl">
           {getAddressTitle(isContract)}
         </h3>
