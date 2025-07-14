@@ -2,6 +2,7 @@ import { createColumnHelper } from "@tanstack/react-table";
 import titleize from "titleize";
 import type { Transaction } from "viem";
 import { decodeFunctionData } from "viem";
+import { AddressLink } from "#/components/AddressLink";
 import { LinkText } from "#/components/LinkText";
 import useAbi from "#/hooks/useAbi";
 import { formatEth } from "#/utils/formatters";
@@ -96,26 +97,20 @@ const columns = [
   columnHelper.accessor("from", {
     header: "From",
     cell: ({ row }) => (
-      <LinkText
-        to="/rpc/$rpc/address/$address"
-        params={{ address: row.original.from }}
-        tooltip={row.original.from}
-      >
-        {truncateHex(row.original.from, 6)}
-      </LinkText>
+      <AddressLink
+        address={row.original.from}
+        text={truncateHex(row.original.from, 6)}
+      />
     ),
   }),
   columnHelper.accessor("to", {
     header: "To",
     cell: ({ row }) =>
       row.original.to && (
-        <LinkText
-          to="/rpc/$rpc/address/$address"
-          params={{ address: row.original.to }}
-          tooltip={row.original.to}
-        >
-          {truncateHex(row.original.to, 6)}
-        </LinkText>
+        <AddressLink
+          address={row.original.to}
+          text={truncateHex(row.original.to, 6)}
+        />
       ),
   }),
 

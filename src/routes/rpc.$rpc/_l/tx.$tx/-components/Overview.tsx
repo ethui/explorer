@@ -25,6 +25,8 @@ import {
   useTransaction,
   useTransactionReceipt,
 } from "wagmi";
+import { AddressLink } from "#/components/AddressLink";
+import { AddressView } from "#/components/AddressView";
 import { Chip } from "#/components/Chip";
 import { LinkText } from "#/components/LinkText";
 import { LoadingSpinner } from "#/components/LoadingSpinner";
@@ -95,29 +97,13 @@ export default function Overview({ tx }: { tx: Hash }) {
 
       <TransactionLabelValue
         label="From:"
-        value={
-          <LinkText
-            to="/rpc/$rpc/address/$address"
-            params={{ address: transaction?.from }}
-            tooltip={transaction?.from}
-          >
-            {transaction?.from}
-          </LinkText>
-        }
+        value={<AddressLink address={transaction.from} />}
       />
 
       {transaction?.to && (
         <TransactionLabelValue
           label="To:"
-          value={
-            <LinkText
-              to="/rpc/$rpc/address/$address"
-              params={{ address: transaction.to }}
-              tooltip={transaction.to}
-            >
-              {transaction.to}
-            </LinkText>
-          }
+          value={<AddressLink address={transaction.to} />}
         />
       )}
 
@@ -247,6 +233,9 @@ function InputDetailsByType({
             to={transaction.to ?? undefined}
             chainId={chainId}
             abi={abi}
+            ArgProps={{
+              addressRenderer: (address) => <AddressView address={address} />,
+            }}
           />
         </div>
       )}

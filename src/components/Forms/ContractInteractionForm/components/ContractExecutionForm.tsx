@@ -5,6 +5,7 @@ import type { AbiFunction, Address } from "viem";
 import { isAddress, parseAbiItem } from "viem";
 import { useChainId } from "wagmi";
 import { z } from "zod";
+import { AddressView } from "#/components/AddressView";
 import type { UseContractExecutionReturn } from "../hooks/useContractExecution";
 import { ResultDisplay } from "./ResultDisplay";
 import {
@@ -110,6 +111,9 @@ export function ContractExecutionForm({
           sender={address}
           chainId={chainId}
           defaultCalldata={defaultCalldata}
+          ArgProps={{
+            addressRenderer: (address) => <AddressView address={address} />,
+          }}
         />
 
         <ActionButtons

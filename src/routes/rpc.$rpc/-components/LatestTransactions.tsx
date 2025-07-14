@@ -1,6 +1,7 @@
 import { ReceiptText } from "lucide-react";
 import { useMemo } from "react";
 import type { Transaction } from "viem";
+import { AddressLink } from "#/components/AddressLink";
 import { LinkText } from "#/components/LinkText";
 import { useLatestTransactions } from "#/hooks/useLatestTransactions";
 import { truncateHex } from "#/utils/hash";
@@ -85,24 +86,12 @@ export function TransactionRow({
         <div className="flex flex-col gap-1">
           <div className="flex flex-row items-center gap-2 text-xs">
             From
-            <LinkText
-              to="/rpc/$rpc/address/$address"
-              params={{ address: transaction.from }}
-              tooltip={transaction.from}
-            >
-              {truncateHex(transaction.from)}
-            </LinkText>
+            <AddressLink address={transaction.from} />
           </div>
           {transaction.to && (
             <div className="flex flex-row items-center gap-2 text-xs">
               To
-              <LinkText
-                to="/rpc/$rpc/address/$address"
-                params={{ address: transaction.to }}
-                tooltip={transaction.to}
-              >
-                {truncateHex(transaction.to)}
-              </LinkText>
+              <AddressLink address={transaction.to} />
             </div>
           )}
         </div>

@@ -36,6 +36,7 @@ export const Route = createFileRoute("/rpc/$rpc/_l/address/$address")({
 function RouteComponent() {
   const { callData } = Route.useSearch();
   const { address } = Route.useLoaderData();
+
   const { isContract, isLoading: isContractLoading } = useIsContract(address);
 
   if (isContractLoading) {
