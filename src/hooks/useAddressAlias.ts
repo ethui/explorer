@@ -9,7 +9,7 @@ const useAddressAlias = ({ address }: { address: Address }) => {
   const { data: walletClient } = useWalletClient();
 
   return useQuery({
-    queryKey: ["address-alias", address],
+    queryKey: ["address-alias", address, isEthui],
     queryFn: async () => {
       const alias = (await walletClient?.request({
         method: "ethui_getAddressAlias",
