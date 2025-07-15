@@ -57,7 +57,7 @@ export default function Overview({ tx }: { tx: Hash }) {
   }
 
   return (
-    <Card className="flex flex-col rounded-2xl border p-8 pb-2 shadow-md">
+    <Card className="flex flex-col rounded-lg border p-8 pb-2 shadow-sm">
       <TransactionLabelValue
         label="Transaction Hash:"
         value={transaction?.hash}
