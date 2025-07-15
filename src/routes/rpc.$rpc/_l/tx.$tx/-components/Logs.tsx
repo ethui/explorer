@@ -1,8 +1,14 @@
 import { Card } from "@ethui/ui/components/shadcn/card";
-import { type Hash, Log, decodeEventLog, type Abi, type AbiEvent } from "viem";
+import {
+  type Abi,
+  type AbiEvent,
+  type Hash,
+  type Log,
+  decodeEventLog,
+} from "viem";
 import { useTransactionReceipt } from "wagmi";
-import { LoadingSpinner } from "#/components/LoadingSpinner";
 import { AddressLink } from "#/components/AddressLink";
+import { LoadingSpinner } from "#/components/LoadingSpinner";
 import useAbi from "#/hooks/useAbi";
 import { stringifyWithBigInt } from "#/utils/formatters";
 
@@ -37,7 +43,7 @@ export default function Logs({ tx }: { tx: Hash }) {
               <div key={index}>
                 <LogDisplay log={log} index={index} />
                 {index < logs.length - 1 && (
-                  <hr className="border-t border-muted my-4" />
+                  <hr className="my-4 border-muted border-t" />
                 )}
               </div>
             ))
@@ -45,7 +51,7 @@ export default function Logs({ tx }: { tx: Hash }) {
               <div key={index}>
                 <RawLogDisplay log={log} index={index} />
                 {index < receipt.logs.length - 1 && (
-                  <hr className="border-t border-muted my-4" />
+                  <hr className="my-4 border-muted border-t" />
                 )}
               </div>
             ))}
@@ -69,15 +75,19 @@ function decodeLogWithTypes(abi: Abi, log: Log) {
     if (!abiItem)
       throw new Error(`Event ABI not found for ${parsed.eventName}`);
 
+    const args = Object.entries(parsed.args || {}).map(([name, value]) => {
+      const input = abiItem.inputs.find((i) => i.name === name);
+      return {
+        name,
+        type: input?.type || "unknown",
+        indexed: input?.indexed || false,
+        value,
+      };
+    });
+
     return {
       eventName: parsed.eventName,
-      args: abiItem.inputs.map((input) => ({
-        name: input.name,
-        type: input.type,
-        indexed: input.indexed,
-        value:
-          parsed.args && input.name ? (parsed.args as any)[input.name] : null,
-      })),
+      args,
       raw: log,
     };
   } catch (error) {
@@ -107,8 +117,8 @@ function LogCard({
 }) {
   return (
     <div className="flex items-start gap-14 py-4">
-      <div className="flex-shrink-0 mt-1">
-        <div className="bg-success/10 text-success border border-success/20 rounded-full size-12 flex items-center justify-center text-sm font-medium">
+      <div className="mt-1 flex-shrink-0">
+        <div className="flex size-12 items-center justify-center rounded-full border border-success/20 bg-success/10 font-medium text-sm text-success">
           {logIndex ?? "NA"}
         </div>
       </div>
@@ -126,7 +136,7 @@ function LogSection({
 }) {
   return (
     <div className="flex flex-row pb-6">
-      <div className="w-24 flex-shrink-0 pr-4 text-muted-foreground text-sm flex items-center justify-end">
+      <div className="flex w-24 flex-shrink-0 items-center justify-end pr-4 text-muted-foreground text-sm">
         {title}:
       </div>
       <div className="flex-1 break-all text-sm">{children}</div>
@@ -142,11 +152,11 @@ function TopicItem({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex items-center gap-4 mb-2">
-      <span className="text-xs text-muted-foreground w-4 flex items-center justify-center">
+    <div className="mb-2 flex items-center gap-4">
+      <span className="flex w-4 items-center justify-center text-muted-foreground text-xs">
         {index}
       </span>
-      <div className="font-mono text-xs break-all bg-muted p-2 rounded flex-1">
+      <div className="flex-1 break-all rounded bg-muted p-2 font-mono text-xs">
         {children}
       </div>
     </div>
@@ -162,9 +172,9 @@ function DataItem({
 }) {
   return (
     <div className="flex items-center gap-4">
-      <div className="font-mono text-xs break-all bg-muted p-2 rounded flex-1">
+      <div className="flex-1 break-all rounded bg-muted p-2 font-mono text-xs">
         {label && (
-          <span className="text-xs text-muted-foreground mr-2">{label}:</span>
+          <span className="mr-2 text-muted-foreground text-xs">{label}:</span>
         )}
         {children}
       </div>
@@ -179,24 +189,25 @@ function TopicsSection({
 }: {
   topics: readonly `0x${string}`[];
   indexedArgs: any[];
-  formatValue: (value: any, type: string) => any;
+  formatValue?: (value: any, type: string) => any;
 }) {
   return (
     <div className="flex flex-row pb-6">
-      <div className="w-24 flex-shrink-0 pr-4 text-muted-foreground text-sm flex items-start justify-end">
-        <span className="mt-[0.375rem]">Topics:</span>
+      <div className="flex w-24 flex-shrink-0 items-start justify-end pr-4 text-muted-foreground text-sm">
+        <span className="mt-1">Topics:</span>
       </div>
       <div className="flex-1 break-all text-sm">
         <div className="space-y-2">
           <TopicItem index={0}>{topics[0]}</TopicItem>
-          {indexedArgs.map((arg, i) => (
-            <TopicItem key={i} index={i + 1}>
-              <span className="text-xs text-muted-foreground mr-2">
-                {arg.name}:
-              </span>
-              {formatValue(arg.value, arg.type)}
-            </TopicItem>
-          ))}
+          {formatValue &&
+            indexedArgs.map((arg, i) => (
+              <TopicItem key={i} index={i + 1}>
+                <span className="mr-2 text-muted-foreground text-xs">
+                  {arg.name}:
+                </span>
+                {formatValue(arg.value, arg.type)}
+              </TopicItem>
+            ))}
           {indexedArgs.length === 0 &&
             topics.slice(1).map((topic, i) => (
               <TopicItem key={i + 1} index={i + 1}>
@@ -226,7 +237,7 @@ function LogDisplay({
       </LogSection>
 
       <LogSection title="Name">
-        <div className="font-mono text-sm bg-muted p-2 rounded">
+        <div className="rounded bg-muted p-2 font-mono text-sm">
           <span>{log.eventName}</span>
           {log.args.length > 0 && (
             <span>
@@ -268,7 +279,7 @@ function LogDisplay({
       )}
 
       {log.error && (
-        <div className="mb-4 p-2 bg-error/10 border border-error/20 rounded">
+        <div className="mb-4 rounded border border-error/20 bg-error/10 p-2">
           <span className="text-error text-sm">Error: {log.error}</span>
         </div>
       )}
@@ -283,11 +294,7 @@ function RawLogDisplay({ log, index }: { log: Log; index: number }) {
         <AddressLink address={log.address} />
       </LogSection>
 
-      <TopicsSection
-        topics={log.topics}
-        indexedArgs={[]}
-        formatValue={() => null}
-      />
+      <TopicsSection topics={log.topics} indexedArgs={[]} />
 
       <LogSection title="Data">
         <DataItem>{log.data}</DataItem>
