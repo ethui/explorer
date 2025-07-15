@@ -1,12 +1,5 @@
 import { Card } from "@ethui/ui/components/shadcn/card";
-import {
-  type Hash,
-  Log,
-  decodeEventLog,
-  parseEventLogs,
-  type Abi,
-  type AbiEvent,
-} from "viem";
+import { type Hash, Log, decodeEventLog, type Abi, type AbiEvent } from "viem";
 import { useTransactionReceipt } from "wagmi";
 import { LoadingSpinner } from "#/components/LoadingSpinner";
 import { AddressLink } from "#/components/AddressLink";
@@ -21,18 +14,9 @@ export default function Logs({ tx }: { tx: Hash }) {
 
   const abi = useAbi({ address: receipt?.to ?? "0x" });
 
-  const parsedLogs = parseEventLogs({
-    abi: abi.abi ?? [],
-    logs: receipt?.logs ?? [],
-  });
-
-  console.log("parsedLogs", parsedLogs);
-
   const logs = abi.abi
     ? receipt?.logs?.map((log) => decodeLogWithTypes(abi.abi!, log))
     : null;
-
-  console.log(logs);
 
   if (isTransactionReceiptLoading) {
     return <LoadingSpinner />;
@@ -43,15 +27,30 @@ export default function Logs({ tx }: { tx: Hash }) {
   }
 
   return (
-    <div className="space-y-4">
-      {logs
-        ? logs.map((log, index) => (
-            <LogDisplay key={index} log={log} index={index} />
-          ))
-        : receipt.logs.map((log, index) => (
-            <RawLogDisplay key={index} log={log} index={index} />
-          ))}
-    </div>
+    <Card className="rounded-lg border p-8 shadow-sm">
+      <div className="mb-6">
+        <h3 className="font-medium text-sm">Transaction Receipt Event Logs</h3>
+      </div>
+      <div>
+        {logs
+          ? logs.map((log, index) => (
+              <div key={index}>
+                <LogDisplay log={log} index={index} />
+                {index < logs.length - 1 && (
+                  <hr className="border-t border-muted my-4" />
+                )}
+              </div>
+            ))
+          : receipt.logs.map((log, index) => (
+              <div key={index}>
+                <RawLogDisplay log={log} index={index} />
+                {index < receipt.logs.length - 1 && (
+                  <hr className="border-t border-muted my-4" />
+                )}
+              </div>
+            ))}
+      </div>
+    </Card>
   );
 }
 
@@ -92,32 +91,29 @@ function decodeLogWithTypes(abi: Abi, log: Log) {
 }
 
 function formatValue(value: any, type: string) {
-  if (typeof value === "string") {
-    // Check if it's an address
-    if (type === "address" && value.startsWith("0x") && value.length === 42) {
-      return <AddressLink address={value as `0x${string}`} text={value} />;
-    }
-    return value;
+  if (type === "address") {
+    return <AddressLink address={value as `0x${string}`} text={value} />;
   }
   return stringifyWithBigInt(value).replace(/"/g, "");
 }
 
 function LogCard({
   children,
-  index,
+  logIndex,
 }: {
   children: React.ReactNode;
   index: number;
+  logIndex?: number;
 }) {
   return (
-    <Card className="mb-4 rounded-lg border p-4 shadow-sm">
-      <div className="mb-4">
-        <h3 className="font-semibold text-lg mb-2">
-          Transaction Receipt Event Log #{index}
-        </h3>
+    <div className="flex items-start gap-14 py-4">
+      <div className="flex-shrink-0 mt-1">
+        <div className="bg-success/10 text-success border border-success/20 rounded-full size-12 flex items-center justify-center text-sm font-medium">
+          {logIndex ?? "NA"}
+        </div>
       </div>
-      {children}
-    </Card>
+      <div className="flex-1">{children}</div>
+    </div>
   );
 }
 
@@ -129,11 +125,11 @@ function LogSection({
   children: React.ReactNode;
 }) {
   return (
-    <div className="mb-4">
-      <div className="flex items-center gap-2 mb-1">
-        <span className="font-medium text-sm">{title}</span>
+    <div className="flex flex-row pb-6">
+      <div className="w-24 flex-shrink-0 pr-4 text-muted-foreground text-sm flex items-center justify-end">
+        {title}:
       </div>
-      {children}
+      <div className="flex-1 break-all text-sm">{children}</div>
     </div>
   );
 }
@@ -146,8 +142,10 @@ function TopicItem({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex items-center gap-4">
-      <span className="text-xs text-muted-foreground w-4">{index}</span>
+    <div className="flex items-center gap-4 mb-2">
+      <span className="text-xs text-muted-foreground w-4 flex items-center justify-center">
+        {index}
+      </span>
       <div className="font-mono text-xs break-all bg-muted p-2 rounded flex-1">
         {children}
       </div>
@@ -164,9 +162,48 @@ function DataItem({
 }) {
   return (
     <div className="flex items-center gap-4">
-      {label && <span className="text-xs text-muted-foreground">{label}:</span>}
       <div className="font-mono text-xs break-all bg-muted p-2 rounded flex-1">
+        {label && (
+          <span className="text-xs text-muted-foreground mr-2">{label}:</span>
+        )}
         {children}
+      </div>
+    </div>
+  );
+}
+
+function TopicsSection({
+  topics,
+  indexedArgs,
+  formatValue,
+}: {
+  topics: readonly `0x${string}`[];
+  indexedArgs: any[];
+  formatValue: (value: any, type: string) => any;
+}) {
+  return (
+    <div className="flex flex-row pb-6">
+      <div className="w-24 flex-shrink-0 pr-4 text-muted-foreground text-sm flex items-start justify-end">
+        <span className="mt-[0.375rem]">Topics:</span>
+      </div>
+      <div className="flex-1 break-all text-sm">
+        <div className="space-y-2">
+          <TopicItem index={0}>{topics[0]}</TopicItem>
+          {indexedArgs.map((arg, i) => (
+            <TopicItem key={i} index={i + 1}>
+              <span className="text-xs text-muted-foreground mr-2">
+                {arg.name}:
+              </span>
+              {formatValue(arg.value, arg.type)}
+            </TopicItem>
+          ))}
+          {indexedArgs.length === 0 &&
+            topics.slice(1).map((topic, i) => (
+              <TopicItem key={i + 1} index={i + 1}>
+                {topic}
+              </TopicItem>
+            ))}
+        </div>
       </div>
     </div>
   );
@@ -183,7 +220,7 @@ function LogDisplay({
   const nonIndexedArgs = log.args.filter((arg) => !arg.indexed);
 
   return (
-    <LogCard index={index}>
+    <LogCard index={index} logIndex={log.raw.logIndex ?? undefined}>
       <LogSection title="Address">
         <AddressLink address={log.raw.address} />
       </LogSection>
@@ -211,19 +248,11 @@ function LogDisplay({
       </LogSection>
 
       {log.raw.topics.length > 0 && (
-        <LogSection title="Topics">
-          <div className="space-y-2">
-            <TopicItem index={0}>{log.raw.topics[0]}</TopicItem>
-            {indexedArgs.map((arg, i) => (
-              <TopicItem key={i} index={i + 1}>
-                <span className="text-xs text-muted-foreground  mr-2">
-                  {arg.name}:
-                </span>
-                {formatValue(arg.value, arg.type)}
-              </TopicItem>
-            ))}
-          </div>
-        </LogSection>
+        <TopicsSection
+          topics={log.raw.topics}
+          indexedArgs={indexedArgs}
+          formatValue={formatValue}
+        />
       )}
 
       {nonIndexedArgs.length > 0 && (
@@ -239,8 +268,8 @@ function LogDisplay({
       )}
 
       {log.error && (
-        <div className="mb-4 p-2 bg-red-50 border border-red-200 rounded">
-          <span className="text-red-700 text-sm">Error: {log.error}</span>
+        <div className="mb-4 p-2 bg-error/10 border border-error/20 rounded">
+          <span className="text-error text-sm">Error: {log.error}</span>
         </div>
       )}
     </LogCard>
@@ -249,20 +278,16 @@ function LogDisplay({
 
 function RawLogDisplay({ log, index }: { log: Log; index: number }) {
   return (
-    <LogCard index={index}>
+    <LogCard index={index} logIndex={log.logIndex ?? undefined}>
       <LogSection title="Address">
         <AddressLink address={log.address} />
       </LogSection>
 
-      <LogSection title="Topics">
-        <div className="space-y-2">
-          {log.topics.map((topic, i) => (
-            <TopicItem key={i} index={i}>
-              {topic}
-            </TopicItem>
-          ))}
-        </div>
-      </LogSection>
+      <TopicsSection
+        topics={log.topics}
+        indexedArgs={[]}
+        formatValue={() => null}
+      />
 
       <LogSection title="Data">
         <DataItem>{log.data}</DataItem>
