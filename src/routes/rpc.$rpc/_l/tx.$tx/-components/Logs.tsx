@@ -130,14 +130,16 @@ function LogCard({
 function LogSection({
   title,
   children,
+  titleClassName,
 }: {
   title: string;
   children: React.ReactNode;
+  titleClassName?: string;
 }) {
   return (
     <div className="flex flex-row pb-6">
-      <div className="flex w-24 flex-shrink-0 items-center justify-end pr-4 text-muted-foreground text-sm">
-        {title}:
+      <div className="flex w-24 flex-shrink-0 items-start justify-end pr-4 text-muted-foreground text-sm">
+        <span className={titleClassName}>{title}:</span>
       </div>
       <div className="flex-1 break-all text-sm">{children}</div>
     </div>
@@ -192,31 +194,26 @@ function TopicsSection({
   formatValue?: (value: any, type: string) => any;
 }) {
   return (
-    <div className="flex flex-row pb-6">
-      <div className="flex w-24 flex-shrink-0 items-start justify-end pr-4 text-muted-foreground text-sm">
-        <span className="mt-1">Topics:</span>
+    <LogSection title="Topics" titleClassName="mt-1">
+      <div className="space-y-2">
+        <TopicItem index={0}>{topics[0]}</TopicItem>
+        {formatValue &&
+          indexedArgs.map((arg, i) => (
+            <TopicItem key={i} index={i + 1}>
+              <span className="mr-2 text-muted-foreground text-xs">
+                {arg.name}:
+              </span>
+              {formatValue(arg.value, arg.type)}
+            </TopicItem>
+          ))}
+        {indexedArgs.length === 0 &&
+          topics.slice(1).map((topic, i) => (
+            <TopicItem key={i + 1} index={i + 1}>
+              {topic}
+            </TopicItem>
+          ))}
       </div>
-      <div className="flex-1 break-all text-sm">
-        <div className="space-y-2">
-          <TopicItem index={0}>{topics[0]}</TopicItem>
-          {formatValue &&
-            indexedArgs.map((arg, i) => (
-              <TopicItem key={i} index={i + 1}>
-                <span className="mr-2 text-muted-foreground text-xs">
-                  {arg.name}:
-                </span>
-                {formatValue(arg.value, arg.type)}
-              </TopicItem>
-            ))}
-          {indexedArgs.length === 0 &&
-            topics.slice(1).map((topic, i) => (
-              <TopicItem key={i + 1} index={i + 1}>
-                {topic}
-              </TopicItem>
-            ))}
-        </div>
-      </div>
-    </div>
+    </LogSection>
   );
 }
 
@@ -236,7 +233,7 @@ function LogDisplay({
         <AddressLink address={log.raw.address} />
       </LogSection>
 
-      <LogSection title="Name">
+      <LogSection title="Name" titleClassName="mt-2">
         <div className="rounded bg-muted p-2 font-mono text-sm">
           <span>{log.eventName}</span>
           {log.args.length > 0 && (
@@ -267,7 +264,7 @@ function LogDisplay({
       )}
 
       {nonIndexedArgs.length > 0 && (
-        <LogSection title="Data">
+        <LogSection title="Data" titleClassName="mt-1">
           <div className="space-y-2">
             {nonIndexedArgs.map((arg, i) => (
               <DataItem key={i} label={arg.name}>
@@ -296,7 +293,7 @@ function RawLogDisplay({ log, index }: { log: Log; index: number }) {
 
       <TopicsSection topics={log.topics} indexedArgs={[]} />
 
-      <LogSection title="Data">
+      <LogSection title="Data" titleClassName="mt-1">
         <DataItem>{log.data}</DataItem>
       </LogSection>
     </LogCard>
