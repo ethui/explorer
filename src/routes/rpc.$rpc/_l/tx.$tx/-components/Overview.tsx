@@ -57,7 +57,7 @@ export default function Overview({ tx }: { tx: Hash }) {
   }
 
   return (
-    <Card className="flex flex-col rounded-2xl border p-8 pb-2 shadow-md">
+    <Card className="flex flex-col rounded-lg border p-8 pb-2 shadow-sm">
       <TransactionLabelValue
         label="Transaction Hash:"
         value={transaction?.hash}
@@ -223,7 +223,7 @@ function InputDetailsByType({
 }) {
   const chainId = useChainId();
   return (
-    <div className="min-h-20 w-full rounded-md border border-r-4 bg-accent p-4">
+    <div className="max-h-40 min-h-20 w-full rounded-md border border-r-4 bg-accent p-4">
       {displayMode === "default" && (
         <div className="text-muted-foreground text-sm">
           <SolidityCall
