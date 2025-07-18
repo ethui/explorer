@@ -1,3 +1,4 @@
+import { Card } from "@ethui/ui/components/shadcn/card";
 import { useState } from "react";
 import type { Address } from "viem";
 import useAbi from "#/hooks/useAbi";
@@ -24,8 +25,8 @@ export function ContractInteractionForm({
   const hasContract = abi?.some((item) => item.type === "function") ?? false;
 
   return (
-    <div className="mx-auto flex flex-col items-center space-y-6 p-6">
-      <div className="w-[1000px] rounded-lg border bg-card p-6 shadow-sm">
+    <div className="flex justify-center">
+      <Card className="w-[1000px] rounded-lg border bg-card p-6 shadow-sm">
         <h2 className="mb-6 font-semibold text-2xl">Contract Interaction</h2>
 
         {hasContract && (
@@ -49,7 +50,7 @@ export function ContractInteractionForm({
         ) : (
           <SignatureForm execution={execution} address={address} />
         )}
-      </div>
+      </Card>
     </div>
   );
 }

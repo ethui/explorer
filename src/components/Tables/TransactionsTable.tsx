@@ -1,3 +1,4 @@
+import { Card } from "@ethui/ui/components/shadcn/card";
 import { createColumnHelper } from "@tanstack/react-table";
 import titleize from "titleize";
 import type { Transaction } from "viem";
@@ -138,11 +139,11 @@ const columns = [
 
 export function TransactionsTable({ transactions }: TransactionsTableProps) {
   return (
-    <div className="rounded-2xl bg-card p-4 shadow-md">
+    <Card className="rounded-lg border bg-card p-6 shadow-sm">
       <span className="p-2 pb-4 text-sm">
         A total of {transactions.length} transactions found
       </span>
       <Table data={transactions} columns={columns} />
-    </div>
+    </Card>
   );
 }
