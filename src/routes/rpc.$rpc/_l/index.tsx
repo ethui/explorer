@@ -21,10 +21,10 @@ function RouteComponent() {
       <div className="grid w-full max-w-[1400px] grid-cols-1 gap-4 xl:grid-cols-2">
         <Card
           title="Latest Blocks"
-          footerLink={{
-            text: "VIEW ALL BLOCKS",
-            to: "/rpc/$rpc/blocks",
-          }}
+          // footerLink={{
+          //   text: "VIEW ALL BLOCKS",
+          //   to: "/rpc/$rpc/blocks",
+          // }}
         >
           <LatestBlocks
             rpc={rpc}
@@ -34,10 +34,10 @@ function RouteComponent() {
         </Card>
         <Card
           title="Latest Transactions"
-          footerLink={{
-            text: "VIEW ALL TRANSACTIONS",
-            to: "/rpc/$rpc/transactions",
-          }}
+          // footerLink={{
+          //   text: "VIEW ALL TRANSACTIONS",
+          //   to: "/rpc/$rpc/transactions",
+          // }}
         >
           <LatestTransactions
             latestBlock={blockNumber}
