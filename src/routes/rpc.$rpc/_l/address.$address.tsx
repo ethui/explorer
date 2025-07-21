@@ -51,7 +51,10 @@ function RouteComponent() {
         tabs={
           [
             { label: "Transactions", component: <Transactions /> },
-            isContract && { label: "Contract", component: <Contract /> },
+            isContract && {
+              label: "Contract",
+              component: <Contract callData={callData} />,
+            },
           ].filter(Boolean) as { label: string; component: ReactNode }[]
         }
         tabIndex={callData && isContract ? 1 : 0}
@@ -105,9 +108,8 @@ function Transactions() {
   return <TransactionsTable transactions={data?.txs ?? []} />;
 }
 
-function Contract() {
+function Contract({ callData }: { callData: string | undefined }) {
   const { address } = Route.useLoaderData();
-  const { callData } = Route.useSearch();
   return <ContractInteractionForm address={address} callData={callData} />;
 }
 
