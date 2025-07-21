@@ -223,7 +223,7 @@ function InputDetailsByType({
 }) {
   const chainId = useChainId();
   return (
-    <div className="max-h-40 min-h-20 w-full rounded-md border border-r-4 bg-accent p-4">
+    <div className="max-h-40 min-h-20 w-full overflow-auto rounded-md border border-r-4 bg-accent p-4">
       {displayMode === "default" && (
         <div className="text-muted-foreground text-sm">
           <SolidityCall
