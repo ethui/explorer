@@ -65,7 +65,7 @@
     "globals": "^16.0.0",
     "motion": "^12.4.7",
     "postcss": "^8.5.3",
-    "rollup": "^4.34.8",
+    "rollup": "^4.46.1",
     "tailwindcss": "^4.0.11",
     "ts-unused-exports": "^11.0.1",
     "tsc": "^2.0.4",
