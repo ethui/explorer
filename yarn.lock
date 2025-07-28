@@ -1148,7 +1148,7 @@ __metadata:
     "@tailwindcss/vite": "npm:^4.0.11"
     "@tanstack/react-query": "npm:^5.71.1"
     "@tanstack/react-router": "npm:^1.121.27"
-    "@tanstack/react-router-devtools": "npm:^1.121.27"
+    "@tanstack/react-router-devtools": "npm:^1.130.2"
     "@tanstack/react-router-with-query": "npm:^1.121.27"
     "@tanstack/react-start": "npm:^1.121.27"
     "@tanstack/react-table": "npm:^8.21.3"
@@ -4251,16 +4251,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/react-router-devtools@npm:^1.121.27":
-  version: 1.121.27
-  resolution: "@tanstack/react-router-devtools@npm:1.121.27"
+"@tanstack/react-router-devtools@npm:^1.130.2":
+  version: 1.130.2
+  resolution: "@tanstack/react-router-devtools@npm:1.130.2"
   dependencies:
-    "@tanstack/router-devtools-core": "npm:^1.121.27"
+    "@tanstack/router-devtools-core": "npm:1.130.2"
   peerDependencies:
-    "@tanstack/react-router": ^1.121.27
+    "@tanstack/react-router": ^1.130.2
     react: ">=18.0.0 || >=19.0.0"
     react-dom: ">=18.0.0 || >=19.0.0"
-  checksum: 10c0/aad2f5f820d10e2757bc2ef0b663eb1bf0c7a951a922a92f5ede668f7777e4edaee28dccf3d5b87173d898321b68ccf54049ee044f9827c7e0a3a3983f1bceba
+  checksum: 10c0/cde867aa6265839a3dd613b41ff27f3a98a96bb6f1fb8be351890cd65b291c50a7c667a5788341f319840036d14cba5b4d719a5359eb30aa080abe3be90a0729
   languageName: node
   linkType: hard
 
@@ -4408,22 +4408,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/router-devtools-core@npm:^1.121.27":
-  version: 1.121.27
-  resolution: "@tanstack/router-devtools-core@npm:1.121.27"
+"@tanstack/router-devtools-core@npm:1.130.2":
+  version: 1.130.2
+  resolution: "@tanstack/router-devtools-core@npm:1.130.2"
   dependencies:
     clsx: "npm:^2.1.1"
     goober: "npm:^2.1.16"
     solid-js: "npm:^1.9.5"
   peerDependencies:
-    "@tanstack/router-core": ^1.121.27
+    "@tanstack/router-core": ^1.130.2
     csstype: ^3.0.10
     solid-js: ">=1.9.5"
     tiny-invariant: ^1.3.3
   peerDependenciesMeta:
     csstype:
       optional: true
-  checksum: 10c0/90ca9e6e7a91878b2ace1c01714bcfc55671cdbf4cebc24e906b5367ed920ff66a802081ee23caec86dad1b25f468e0b67f33f5ad21b8190ec1926c2e3d6c034
+  checksum: 10c0/d2e6efdb5a42476234b890c6a32e59681239fe17ad978b74e2d1cb4adcb0516a7a90ae24878029cf439789f8a4edb4dcfb62fd414b37a88ab5b053bff2036efb
   languageName: node
   linkType: hard
 
