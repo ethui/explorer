@@ -43,7 +43,7 @@ export function Topbar({
   };
 
   return (
-    <nav className="flex w-full flex-row items-center justify-between gap-4 border-b bg-accent p-5">
+    <nav className="flex w-full flex-row items-center justify-between gap-4 border-b bg-accent px-5 pt-5">
       <Form
         form={rpcForm}
         onSubmit={handleRpcSubmit}
