@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Topbar } from "#/components/Topbar";
 import { useEffect, useState } from "react";
-import { createPublicClient, http } from "viem";
+import { http, createPublicClient } from "viem";
+import { Topbar } from "#/components/Topbar";
 
 export const Route = createFileRoute("/")({
   component: RouteComponent,
