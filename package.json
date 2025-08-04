@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@ethui/ui": "^0.0.75",
-    "@hookform/resolvers": "^4.1.2",
+    "@hookform/resolvers": "^5.2.1",
     "@mdx-js/react": "^3.1.0",
     "@rainbow-me/rainbowkit": "^2.2.4",
     "@tailwindcss/typography": "^0.5.16",
