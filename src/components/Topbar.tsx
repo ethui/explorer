@@ -88,25 +88,13 @@ function SearchBar({ currRpc }: { currRpc: string }) {
 
   const handleSearchSubmit = ({ search }: FieldValues) => {
     const searchTerm = search.trim();
-    const basePath = `/rpc/${btoa(currRpc)}`;
 
-    if (isAddress(searchTerm)) {
-      (navigate as any)({
-        to: `${basePath}/address/${searchTerm}`,
-      });
-    } else if (isBlockNumber(searchTerm)) {
-      (navigate as any)({
-        to: `${basePath}/block/${searchTerm}`,
-      });
-    } else if (isHash(searchTerm)) {
-      (navigate as any)({
-        to: `${basePath}/tx/${searchTerm}`,
-      });
-    } else {
-      (navigate as any)({
-        to: `${basePath}/not-found`,
-      });
-    }
+    if (!searchTerm) return;
+
+    (navigate as any)({
+      to: `/rpc/${btoa(currRpc)}/search`,
+      search: { q: searchTerm },
+    });
 
     searchForm.reset();
   };
