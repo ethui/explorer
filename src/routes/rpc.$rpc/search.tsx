@@ -1,7 +1,7 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { isAddress, isHash } from "viem";
-import { isBlockNumber } from "#/utils/validators";
 import { z } from "zod";
+import { isBlockNumber } from "#/utils/validators";
 
 const searchSchema = z.object({
   q: z

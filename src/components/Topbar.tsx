@@ -4,10 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { type FieldValues, useForm } from "react-hook-form";
-import { isAddress, isHash } from "viem";
 import { z } from "zod";
 import { useConnectionStore } from "#/store/connection";
-import { isBlockNumber } from "#/utils/validators";
 
 export function Topbar({
   showConnectButton = false,
