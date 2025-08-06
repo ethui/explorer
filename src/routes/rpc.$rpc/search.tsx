@@ -5,7 +5,7 @@ import { isBlockNumber } from "#/utils/validators";
 
 const searchSchema = z.object({
   q: z
-    .string()
+    .union([z.string(), z.number()])
     .optional()
     .transform((val) => String(val || "")),
 });
@@ -22,23 +22,25 @@ export const Route = createFileRoute("/rpc/$rpc/search")({
       });
     }
 
-    const basePath = `/rpc/${params.rpc}`;
-
     if (isAddress(searchTerm)) {
       throw redirect({
-        to: `${basePath}/address/${searchTerm}`,
+        to: "/rpc/$rpc/address/$address",
+        params: { rpc: params.rpc, address: searchTerm },
       });
     } else if (isBlockNumber(searchTerm)) {
       throw redirect({
-        to: `${basePath}/block/${searchTerm}`,
+        to: "/rpc/$rpc/block/$blockNumber",
+        params: { rpc: params.rpc, blockNumber: searchTerm },
       });
     } else if (isHash(searchTerm)) {
       throw redirect({
-        to: `${basePath}/tx/${searchTerm}`,
+        to: "/rpc/$rpc/tx/$tx",
+        params: { rpc: params.rpc, tx: searchTerm },
       });
     } else {
       throw redirect({
-        to: `${basePath}/not-found`,
+        to: "/rpc/$rpc/not-found",
+        params: { rpc: params.rpc },
       });
     }
   },
