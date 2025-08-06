@@ -4,10 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { type FieldValues, useForm } from "react-hook-form";
-import { isAddress, isHash } from "viem";
 import { z } from "zod";
 import { useConnectionStore } from "#/store/connection";
-import { isBlockNumber } from "#/utils/validators";
 
 export function Topbar({
   showConnectButton = false,
@@ -88,25 +86,13 @@ function SearchBar({ currRpc }: { currRpc: string }) {
 
   const handleSearchSubmit = ({ search }: FieldValues) => {
     const searchTerm = search.trim();
-    const basePath = `/rpc/${btoa(currRpc)}`;
 
-    if (isAddress(searchTerm)) {
-      (navigate as any)({
-        to: `${basePath}/address/${searchTerm}`,
-      });
-    } else if (isBlockNumber(searchTerm)) {
-      (navigate as any)({
-        to: `${basePath}/block/${searchTerm}`,
-      });
-    } else if (isHash(searchTerm)) {
-      (navigate as any)({
-        to: `${basePath}/tx/${searchTerm}`,
-      });
-    } else {
-      (navigate as any)({
-        to: `${basePath}/not-found`,
-      });
-    }
+    if (!searchTerm) return;
+
+    (navigate as any)({
+      to: `/rpc/${btoa(currRpc)}/search`,
+      search: { q: searchTerm },
+    });
 
     searchForm.reset();
   };
