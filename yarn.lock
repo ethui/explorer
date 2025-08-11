@@ -1168,7 +1168,7 @@ __metadata:
     date-fns: "npm:^4.1.0"
     globals: "npm:^16.0.0"
     lodash-es: "npm:^4.17.21"
-    lucide-react: "npm:^0.477.0"
+    lucide-react: "npm:^0.539.0"
     motion: "npm:^12.4.7"
     postcss: "npm:^8.5.3"
     react: "npm:^19.0.0"
@@ -9465,21 +9465,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lucide-react@npm:^0.477.0":
-  version: 0.477.0
-  resolution: "lucide-react@npm:0.477.0"
-  peerDependencies:
-    react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10c0/950b21e13875f3fbeaa233ffb470e0200c3a4559fd706a0c80c16f3a401d91acb2bd25848c7dd478da79c74b7fd00582d5114f335dc19ec0190fb130045b19e5
-  languageName: node
-  linkType: hard
-
 "lucide-react@npm:^0.506.0":
   version: 0.506.0
   resolution: "lucide-react@npm:0.506.0"
   peerDependencies:
     react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
   checksum: 10c0/2f6ece3804804e2a558d179a9df2a472b736f8152d3daa6847dd0bf62330aefc2b1d02354ce0ab09a8d4e3018a915c7977ff56dadbe1c0fb06bc34bceca214a8
+  languageName: node
+  linkType: hard
+
+"lucide-react@npm:^0.539.0":
+  version: 0.539.0
+  resolution: "lucide-react@npm:0.539.0"
+  peerDependencies:
+    react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
+  checksum: 10c0/ae85244dc23a78c51cc5f829ee09321cf68201333ab3d5614ed73cda77a4cd12284d3630a5a2167a39e31e02811056336de76a597c6874b28bb9984baf876494
   languageName: node
   linkType: hard
 
