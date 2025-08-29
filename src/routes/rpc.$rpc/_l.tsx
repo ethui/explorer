@@ -35,7 +35,7 @@ function RouteComponent() {
   });
 
   return (
-    <WagmiProvider reconnectOnMount key={rpc} config={config}>
+    <WagmiProvider key={rpc} config={config} reconnectOnMount={false}>
       <RainbowKitProvider
         theme={darkTheme({
           accentColor: "#000000",
