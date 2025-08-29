@@ -1,10 +1,10 @@
+import { EthuiLogo } from "@ethui/ui/components/ethui-logo";
 import { Form } from "@ethui/ui/components/form";
 import { Button } from "@ethui/ui/components/shadcn/button";
-import { EthuiLogo } from "@ethui/ui/components/ethui-logo";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useNavigate, useParams } from "@tanstack/react-router";
-import { type FieldValues, useForm } from "react-hook-form";
 import { Box, LogOut } from "lucide-react";
+import { type FieldValues, useForm } from "react-hook-form";
 import { useConnectionStore } from "#/store/connection";
 
 export function Topbar({
@@ -35,13 +35,14 @@ export function Topbar({
 
   return (
     <nav className="flex w-full flex-row items-center justify-between gap-4 border-b bg-accent px-5 pt-5">
-      <div
+      <button
+        type="button"
         onClick={handleLogoClick}
-        className="cursor-pointer hover:scale-105 transition-transform duration-200 pb-5"
+        className="cursor-pointer pb-5 transition-transform duration-200 hover:scale-105"
         title="Go to dashboard"
       >
         <EthuiLogo size={32} />
-      </div>
+      </button>
 
       {connected && <SearchBar currRpc={currRpc} />}
 
@@ -113,7 +114,7 @@ function ConnectionStatus({
         <span className="text-highlight">No connection</span>
       ) : connected ? (
         <div className="flex items-center gap-2">
-          <span className="text-success text-sm">{currRpc}</span>
+          <span className="text-sm text-success">{currRpc}</span>
           <div className="flex items-center gap-1 text-success">
             <Box size={16} />
             <span className="font-mono">#{blockNumber?.toString()}</span>

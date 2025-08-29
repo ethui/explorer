@@ -1,6 +1,6 @@
+import { EthuiLogo } from "@ethui/ui/components/ethui-logo";
 import { Form } from "@ethui/ui/components/form";
 import { Button } from "@ethui/ui/components/shadcn/button";
-import { EthuiLogo } from "@ethui/ui/components/ethui-logo";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { type FieldValues, useForm } from "react-hook-form";
@@ -36,29 +36,30 @@ function RouteComponent() {
   };
 
   return (
-    <div className="min-h-screen bg-accent flex items-center justify-center p-8">
-      <div className="w-full max-w-md space-y-8 opacity-0 animate-fade-in">
-        <div className="flex justify-center opacity-0 animate-fade-in animation-delay-200">
-          <div
-            className="cursor-pointer hover:scale-105 transition-transform duration-200"
+    <div className="flex min-h-screen items-center justify-center bg-accent p-8">
+      <div className="w-full max-w-md animate-fade-in space-y-8 opacity-0">
+        <div className="animation-delay-200 flex animate-fade-in justify-center opacity-0">
+          <button
+            className="cursor-pointer transition-transform duration-200 hover:scale-105"
             onClick={() =>
               window.open("https://ethui.dev/", "_blank", "noopener,noreferrer")
             }
             title="Visit ethui.dev"
+            type="button"
           >
             <EthuiLogo size={96} />
-          </div>
+          </button>
         </div>
 
-        <div className="text-center space-y-3 opacity-0 animate-fade-in animation-delay-400">
-          <h1 className="text-4xl font-bold text-foreground">ethui Explorer</h1>
-          <p className="text-muted-foreground text-lg">
+        <div className="animation-delay-400 animate-fade-in space-y-3 text-center opacity-0">
+          <h1 className="font-bold text-4xl text-foreground">ethui Explorer</h1>
+          <p className="text-lg text-muted-foreground">
             Connect to your local Ethereum network and explore blocks,
             transactions, and contracts
           </p>
         </div>
 
-        <div className="opacity-0 animate-fade-in animation-delay-600">
+        <div className="animation-delay-600 animate-fade-in opacity-0">
           <Form form={rpcForm} onSubmit={handleRpcSubmit} className="space-y-4">
             <Form.Text
               name="url"
@@ -71,8 +72,8 @@ function RouteComponent() {
           </Form>
         </div>
 
-        <div className="text-center opacity-0 animate-fade-in animation-delay-800">
-          <p className="text-sm text-muted-foreground">
+        <div className="animation-delay-800 animate-fade-in text-center opacity-0">
+          <p className="text-muted-foreground text-sm">
             Make sure your local Ethereum node is running
           </p>
         </div>
