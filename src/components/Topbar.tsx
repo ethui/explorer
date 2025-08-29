@@ -119,18 +119,31 @@ function ConnectionStatus({
             <Box size={16} />
             <span className="font-mono">#{blockNumber?.toString()}</span>
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleDisconnect}
-            className="text-muted-foreground hover:text-foreground"
-          >
-            <LogOut size={16} />
-          </Button>
+          <DisconnectButton handleDisconnect={handleDisconnect} />
         </div>
       ) : (
-        <span className="text-error">Disconnected</span>
+        <div className="flex items-center gap-2">
+          <span className="text-error">Disconnected</span>
+          <DisconnectButton handleDisconnect={handleDisconnect} />
+        </div>
       )}
     </div>
+  );
+}
+
+function DisconnectButton({
+  handleDisconnect,
+}: {
+  handleDisconnect: () => void;
+}) {
+  return (
+    <Button
+      variant="ghost"
+      size="sm"
+      onClick={handleDisconnect}
+      className="text-muted-foreground hover:text-foreground"
+    >
+      <LogOut size={16} />
+    </Button>
   );
 }
