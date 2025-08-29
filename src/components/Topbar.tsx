@@ -1,10 +1,10 @@
 import { Form } from "@ethui/ui/components/form";
 import { Button } from "@ethui/ui/components/shadcn/button";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { EthuiLogo } from "@ethui/ui/components/ethui-logo";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { type FieldValues, useForm } from "react-hook-form";
-import { z } from "zod";
+import { Box, LogOut } from "lucide-react";
 import { useConnectionStore } from "#/store/connection";
 
 export function Topbar({
@@ -12,63 +12,46 @@ export function Topbar({
 }: {
   showConnectButton?: boolean;
 }) {
-  const navigate = useNavigate();
   const { rpc } = useParams({ strict: false });
   const { connected, blockNumber, reset } = useConnectionStore();
   const currRpc = rpc ? atob(rpc) : "ws://localhost:8545";
+  const navigate = useNavigate();
 
-  const rpcSchema = z.object({
-    url: z.string(),
-  });
-
-  const rpcForm = useForm({
-    mode: "onBlur",
-    resolver: zodResolver(rpcSchema),
-    defaultValues: {
-      url: currRpc,
-    },
-  });
-
-  const handleRpcSubmit = (data: FieldValues) => {
-    const newRpc = data.url;
-    if (newRpc !== currRpc) {
-      reset();
-    }
+  const handleDisconnect = () => {
+    reset();
     (navigate as any)({
-      to: `/rpc/${btoa(newRpc)}`,
-      replace: true,
+      to: "/",
     });
+  };
+
+  const handleLogoClick = () => {
+    if (rpc) {
+      (navigate as any)({
+        to: "/rpc/$rpc",
+        params: { rpc },
+      });
+    }
   };
 
   return (
     <nav className="flex w-full flex-row items-center justify-between gap-4 border-b bg-accent px-5 pt-5">
-      <Form
-        form={rpcForm}
-        onSubmit={handleRpcSubmit}
-        className="flex-row gap-[0]"
+      <div
+        onClick={handleLogoClick}
+        className="cursor-pointer hover:scale-105 transition-transform duration-200 pb-5"
+        title="Go to dashboard"
       >
-        <Form.Text
-          name="url"
-          placeholder="Enter URL (e.g. localhost:8545)"
-          className="inline w-48 space-y-0"
-          onSubmit={handleRpcSubmit}
-        />
-        <Button type="submit">Go</Button>
-      </Form>
+        <EthuiLogo size={32} />
+      </div>
 
       {connected && <SearchBar currRpc={currRpc} />}
-      <div className="flex items-center gap-4 pb-5">
-        <div>
-          {connected === undefined ? (
-            <span className="text-highlight">No connection</span>
-          ) : connected ? (
-            <span className="text-success">
-              Connected to {currRpc} (Block: {blockNumber?.toString()})
-            </span>
-          ) : (
-            <span className="text-error">Disconnected</span>
-          )}
-        </div>
+
+      <div className="flex items-center gap-2 pb-5">
+        <ConnectionStatus
+          currRpc={currRpc}
+          connected={connected ?? false}
+          blockNumber={Number(blockNumber)}
+          handleDisconnect={handleDisconnect}
+        />
         {showConnectButton && <ConnectButton />}
       </div>
     </nav>
@@ -110,5 +93,43 @@ function SearchBar({ currRpc }: { currRpc: string }) {
       />
       <Button type="submit">Search</Button>
     </Form>
+  );
+}
+
+function ConnectionStatus({
+  currRpc,
+  connected,
+  blockNumber,
+  handleDisconnect,
+}: {
+  currRpc: string;
+  connected: boolean;
+  blockNumber: number;
+  handleDisconnect: () => void;
+}) {
+  return (
+    <div className="flex items-center gap-4">
+      {connected === undefined ? (
+        <span className="text-highlight">No connection</span>
+      ) : connected ? (
+        <div className="flex items-center gap-2">
+          <span className="text-success text-sm">{currRpc}</span>
+          <div className="flex items-center gap-1 text-success">
+            <Box size={16} />
+            <span className="font-mono">#{blockNumber?.toString()}</span>
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleDisconnect}
+            className="text-muted-foreground hover:text-foreground"
+          >
+            <LogOut size={16} />
+          </Button>
+        </div>
+      ) : (
+        <span className="text-error">Disconnected</span>
+      )}
+    </div>
   );
 }
