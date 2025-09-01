@@ -1,4 +1,5 @@
 import { Card } from "@ethui/ui/components/shadcn/card";
+import { Table } from "@ethui/ui/components/table";
 import { createColumnHelper } from "@tanstack/react-table";
 import titleize from "titleize";
 import type { Transaction } from "viem";
@@ -9,7 +10,7 @@ import useAbi from "#/hooks/useAbi";
 import { formatEth } from "#/utils/formatters";
 import { truncateHex } from "#/utils/hash";
 import { getMethodName } from "#/utils/transaction";
-import Table from "./Table";
+
 interface TransactionsTableProps {
   transactions: Transaction[];
 }
@@ -143,7 +144,7 @@ export function TransactionsTable({ transactions }: TransactionsTableProps) {
       <span className="p-2 pb-4 text-sm">
         A total of {transactions.length} transactions found
       </span>
-      <Table data={transactions} columns={columns} />
+      <Table rowClassName="h-16" data={transactions} columns={columns} />
     </Card>
   );
 }
