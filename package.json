@@ -14,7 +14,7 @@
     "fix:biome": "biome check --write ."
   },
   "dependencies": {
-    "@ethui/ui": "^0.0.75",
+    "@ethui/ui": "^0.0.111",
     "@hookform/resolvers": "^4.1.2",
     "@mdx-js/react": "^3.1.0",
     "@rainbow-me/rainbowkit": "^2.2.4",
