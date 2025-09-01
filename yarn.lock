@@ -1276,7 +1276,7 @@ __metadata:
     vite: "npm:^6.3.5"
     vite-tsconfig-paths: "npm:^5.1.4"
     wagmi: "npm:^2.14.15"
-    zod: "npm:^3.24.2"
+    zod: "npm:^4.1.5"
     zustand: "npm:^5.0.4"
   languageName: unknown
   linkType: soft
@@ -14276,6 +14276,13 @@ __metadata:
   version: 3.24.3
   resolution: "zod@npm:3.24.3"
   checksum: 10c0/ab0369810968d0329a1a141e9418e01e5c9c2a4905cbb7cb7f5a131d6e9487596e1400e21eeff24c4a8ee28dacfa5bd6103893765c055b7a98c2006a5a4fc68d
+  languageName: node
+  linkType: hard
+
+"zod@npm:^4.1.5":
+  version: 4.1.5
+  resolution: "zod@npm:4.1.5"
+  checksum: 10c0/7826fb931bc71d4d0fff2fbb72f1a1cf30a6672cf9dbe6933a216bbb60242ef1c3bdfbcd3c5b27e806235a35efaad7a4a9897ff4d3621452f9ea278bce6fd42a
   languageName: node
   linkType: hard
 
