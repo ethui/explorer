@@ -1,3 +1,5 @@
+import { HighlightableWrapper } from "@ethui/ui/components/highlightable-wrapper";
+import { HighlightProvider } from "@ethui/ui/components/providers/highlight-provider";
 import { Card } from "@ethui/ui/components/shadcn/card";
 import { Table } from "@ethui/ui/components/table";
 import { createColumnHelper } from "@tanstack/react-table";
@@ -23,10 +25,15 @@ function EmptyMethodPill() {
 
 function MethodPill({ name, title }: { name: string; title?: string }) {
   return (
-    <div className="flex max-w-24 flex-row items-center justify-center gap-2 rounded-md border bg-muted p-2">
-      <span className="truncate font-mono text-xs" title={title}>
-        {name}
-      </span>
+    <div className="flex max-w-24 gap-2 rounded-md border bg-muted">
+      <HighlightableWrapper
+        highlightKey={name}
+        className="flex flex-1 flex-row items-center justify-center p-2"
+      >
+        <span className="truncate font-mono text-xs" title={title}>
+          {name}
+        </span>
+      </HighlightableWrapper>
     </div>
   );
 }
@@ -99,20 +106,24 @@ const columns = [
   columnHelper.accessor("from", {
     header: "From",
     cell: ({ row }) => (
-      <AddressLink
-        address={row.original.from}
-        text={truncateHex(row.original.from, 6)}
-      />
+      <HighlightableWrapper highlightKey={row.original.from} className="w-fit">
+        <AddressLink
+          address={row.original.from}
+          text={truncateHex(row.original.from, 6)}
+        />
+      </HighlightableWrapper>
     ),
   }),
   columnHelper.accessor("to", {
     header: "To",
     cell: ({ row }) =>
       row.original.to && (
-        <AddressLink
-          address={row.original.to}
-          text={truncateHex(row.original.to, 6)}
-        />
+        <HighlightableWrapper highlightKey={row.original.to} className="w-fit">
+          <AddressLink
+            address={row.original.to}
+            text={truncateHex(row.original.to, 6)}
+          />
+        </HighlightableWrapper>
       ),
   }),
 
@@ -144,7 +155,9 @@ export function TransactionsTable({ transactions }: TransactionsTableProps) {
       <span className="p-2 pb-4 text-sm">
         A total of {transactions.length} transactions found
       </span>
-      <Table rowClassName="h-16" data={transactions} columns={columns} />
+      <HighlightProvider>
+        <Table rowClassName="h-16" data={transactions} columns={columns} />
+      </HighlightProvider>
     </Card>
   );
 }
