@@ -1,3 +1,5 @@
+import { HighlightableWrapper } from "@ethui/ui/components/highlightable-wrapper";
+import { HighlightProvider } from "@ethui/ui/components/providers/highlight-provider";
 import { Card } from "@ethui/ui/components/shadcn/card";
 import { Table } from "@ethui/ui/components/table";
 import { createColumnHelper } from "@tanstack/react-table";
@@ -10,8 +12,6 @@ import useAbi from "#/hooks/useAbi";
 import { formatEth } from "#/utils/formatters";
 import { truncateHex } from "#/utils/hash";
 import { getMethodName } from "#/utils/transaction";
-import { HighlightableWrapper } from "@ethui/ui/components/highlightable-wrapper";
-import { HighlightProvider } from "@ethui/ui/components/providers/highlight-provider";
 
 interface TransactionsTableProps {
   transactions: Transaction[];
@@ -28,7 +28,7 @@ function MethodPill({ name, title }: { name: string; title?: string }) {
     <div className="flex max-w-24 gap-2 rounded-md border bg-muted">
       <HighlightableWrapper
         highlightKey={name}
-        className="p-2 flex flex-1 flex-row items-center justify-center"
+        className="flex flex-1 flex-row items-center justify-center p-2"
       >
         <span className="truncate font-mono text-xs" title={title}>
           {name}
