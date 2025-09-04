@@ -28,6 +28,7 @@ function RouteComponent() {
     appName: "Ethui Explorer",
     projectId: "ethui-explorer",
     chains: [foundry],
+
     transports: {
       [foundry.id]: transport,
     },
@@ -35,7 +36,7 @@ function RouteComponent() {
   });
 
   return (
-    <WagmiProvider key={rpc} config={config} reconnectOnMount={false}>
+    <WagmiProvider key={rpc} config={config}>
       <RainbowKitProvider
         theme={darkTheme({
           accentColor: "#000000",
