@@ -21,12 +21,19 @@ export const Route = createFileRoute("/rpc/$rpc/_l")({
 
 function RouteComponent() {
   const rpc = Route.useLoaderData();
-  const { data: chainId, isLoading: isLoadingChainId } = useChainId(rpc);
 
-  const transport =
-    rpc.startsWith("ws://") || rpc.startsWith("wss://")
-      ? webSocket(rpc)
-      : http(rpc);
+  const transport = useMemo(
+    () =>
+      rpc.startsWith("ws://") || rpc.startsWith("wss://")
+        ? webSocket(rpc)
+        : http(rpc),
+    [rpc],
+  );
+
+  const { data: chainId, isLoading: isLoadingChainId } = useChainId(
+    rpc,
+    transport,
+  );
 
   const chain = useMemo(() => {
     return chainId

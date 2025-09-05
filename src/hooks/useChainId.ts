@@ -1,15 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { http, createPublicClient, webSocket } from "viem";
+import { type Transport, createPublicClient } from "viem";
 
-export function useChainId(rpc: string) {
+export function useChainId(rpc: string, transport: Transport) {
   return useQuery({
     queryKey: ["chainId", rpc],
     queryFn: async () => {
-      const transport =
-        rpc.startsWith("ws://") || rpc.startsWith("wss://")
-          ? webSocket(rpc)
-          : http(rpc);
-
       const client = createPublicClient({
         transport,
       });
@@ -17,6 +12,6 @@ export function useChainId(rpc: string) {
       const chainId = await client.getChainId();
       return chainId;
     },
-    enabled: !!rpc,
+    enabled: !!rpc && !!transport,
   });
 }
