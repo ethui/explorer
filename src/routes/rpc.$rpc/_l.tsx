@@ -5,12 +5,12 @@ import {
 } from "@rainbow-me/rainbowkit";
 import { Outlet, createFileRoute } from "@tanstack/react-router";
 import { useMemo } from "react";
-import { http, WagmiProvider, webSocket } from "wagmi";
-import { Topbar } from "#/components/Topbar";
-import { useConnectionState } from "#/hooks/useConnectionState";
-import { useChainId } from "#/hooks/useChainId";
 import { defineChain } from "viem";
 import { foundry } from "viem/chains";
+import { http, WagmiProvider, webSocket } from "wagmi";
+import { Topbar } from "#/components/Topbar";
+import { useChainId } from "#/hooks/useChainId";
+import { useConnectionState } from "#/hooks/useConnectionState";
 
 export const Route = createFileRoute("/rpc/$rpc/_l")({
   loader: async ({ params }) => {

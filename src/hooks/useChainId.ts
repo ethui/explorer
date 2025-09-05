@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { createPublicClient, http, webSocket } from "viem";
+import { http, createPublicClient, webSocket } from "viem";
 
 export function useChainId(rpc: string) {
   return useQuery({
