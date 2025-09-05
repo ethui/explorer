@@ -4,9 +4,12 @@ import {
   getDefaultConfig,
 } from "@rainbow-me/rainbowkit";
 import { Outlet, createFileRoute } from "@tanstack/react-router";
+import { useMemo } from "react";
+import { defineChain } from "viem";
+import { foundry } from "viem/chains";
 import { http, WagmiProvider, webSocket } from "wagmi";
-import { foundry } from "wagmi/chains";
 import { Topbar } from "#/components/Topbar";
+import { useChainId } from "#/hooks/useChainId";
 import { useConnectionState } from "#/hooks/useConnectionState";
 
 export const Route = createFileRoute("/rpc/$rpc/_l")({
@@ -19,22 +22,45 @@ export const Route = createFileRoute("/rpc/$rpc/_l")({
 function RouteComponent() {
   const rpc = Route.useLoaderData();
 
-  const transport =
-    rpc.startsWith("ws://") || rpc.startsWith("wss://")
-      ? webSocket(rpc)
-      : http(rpc);
+  const transport = useMemo(
+    () =>
+      rpc.startsWith("ws://") || rpc.startsWith("wss://")
+        ? webSocket(rpc)
+        : http(rpc),
+    [rpc],
+  );
 
-  const config = getDefaultConfig({
-    appName: "Ethui Explorer",
-    projectId: "ethui-explorer",
-    chains: [foundry],
+  const { data: chainId, isLoading: isLoadingChainId } = useChainId(
+    rpc,
+    transport,
+  );
 
-    transports: {
-      [foundry.id]: transport,
-    },
-    ssr: true,
-  });
+  const chain = useMemo(() => {
+    return chainId
+      ? defineChain({
+          ...foundry,
+          id: chainId,
+        })
+      : foundry;
+  }, [chainId]);
 
+  const config = useMemo(
+    () =>
+      getDefaultConfig({
+        appName: "Ethui Explorer",
+        projectId: "ethui-explorer",
+        chains: [chain],
+        transports: {
+          [chain.id]: transport,
+        },
+        ssr: true,
+      }),
+    [chain, transport],
+  );
+
+  if (isLoadingChainId) {
+    return null;
+  }
   return (
     <WagmiProvider key={rpc} config={config}>
       <RainbowKitProvider
@@ -43,7 +69,7 @@ function RouteComponent() {
           accentColorForeground: "white",
           borderRadius: "medium",
         })}
-        initialChain={foundry}
+        initialChain={chain}
       >
         <Topbar showConnectButton />
         <ConnectionStateUpdater rpc={rpc} />
