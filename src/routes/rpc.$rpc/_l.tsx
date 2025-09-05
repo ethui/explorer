@@ -4,10 +4,13 @@ import {
   getDefaultConfig,
 } from "@rainbow-me/rainbowkit";
 import { Outlet, createFileRoute } from "@tanstack/react-router";
+import { useMemo } from "react";
 import { http, WagmiProvider, webSocket } from "wagmi";
-import { foundry } from "wagmi/chains";
 import { Topbar } from "#/components/Topbar";
 import { useConnectionState } from "#/hooks/useConnectionState";
+import { useChainId } from "#/hooks/useChainId";
+import { defineChain } from "viem";
+import { foundry } from "viem/chains";
 
 export const Route = createFileRoute("/rpc/$rpc/_l")({
   loader: async ({ params }) => {
@@ -18,23 +21,39 @@ export const Route = createFileRoute("/rpc/$rpc/_l")({
 
 function RouteComponent() {
   const rpc = Route.useLoaderData();
+  const { data: chainId, isLoading: isLoadingChainId } = useChainId(rpc);
 
   const transport =
     rpc.startsWith("ws://") || rpc.startsWith("wss://")
       ? webSocket(rpc)
       : http(rpc);
 
-  const config = getDefaultConfig({
-    appName: "Ethui Explorer",
-    projectId: "ethui-explorer",
-    chains: [foundry],
+  const chain = useMemo(() => {
+    return chainId
+      ? defineChain({
+          ...foundry,
+          id: chainId,
+        })
+      : foundry;
+  }, [chainId]);
 
-    transports: {
-      [foundry.id]: transport,
-    },
-    ssr: true,
-  });
+  const config = useMemo(
+    () =>
+      getDefaultConfig({
+        appName: "Ethui Explorer",
+        projectId: "ethui-explorer",
+        chains: [chain],
+        transports: {
+          [chain.id]: transport,
+        },
+        ssr: true,
+      }),
+    [chain, transport],
+  );
 
+  if (isLoadingChainId) {
+    return null;
+  }
   return (
     <WagmiProvider key={rpc} config={config}>
       <RainbowKitProvider
@@ -43,7 +62,7 @@ function RouteComponent() {
           accentColorForeground: "white",
           borderRadius: "medium",
         })}
-        initialChain={foundry}
+        initialChain={chain}
       >
         <Topbar showConnectButton />
         <ConnectionStateUpdater rpc={rpc} />
