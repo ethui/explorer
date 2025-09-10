@@ -23,7 +23,7 @@ const RAINBOW_KIT_THEME = darkTheme({
 const WEBSOCKET_CONFIG = {
   reconnect: false,
   retryCount: 1,
-} as const;
+};
 
 export const Route = createFileRoute("/rpc/$rpc/_l")({
   loader: async ({ params }) => {
@@ -86,7 +86,6 @@ function RouteComponent() {
     );
   }
 
-  // Main app with providers
   return (
     <WagmiProvider key={rpc} config={config}>
       <RainbowKitProvider theme={RAINBOW_KIT_THEME} initialChain={chain}>
