@@ -25,6 +25,8 @@ export function useConnectionState({ rpc }: { rpc: string }) {
     emitOnBegin: true,
     emitMissed: true,
     poll: true,
+    pollingInterval: 1000,
+    enabled: true, // Will be handled by wagmi's error handling
     onBlockNumber,
     onError,
   });

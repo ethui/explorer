@@ -9,8 +9,10 @@ import { defineChain } from "viem";
 import { foundry } from "viem/chains";
 import { http, WagmiProvider, webSocket } from "wagmi";
 import { Topbar } from "#/components/Topbar";
+import { GlobalMessage } from "#/components/GlobalMessage";
 import { useChainId } from "#/hooks/useChainId";
 import { useConnectionState } from "#/hooks/useConnectionState";
+import { LoadingSpinner } from "#/components/LoadingSpinner";
 
 export const Route = createFileRoute("/rpc/$rpc/_l")({
   loader: async ({ params }) => {
@@ -25,15 +27,19 @@ function RouteComponent() {
   const transport = useMemo(
     () =>
       rpc.startsWith("ws://") || rpc.startsWith("wss://")
-        ? webSocket(rpc)
+        ? webSocket(rpc, {
+            reconnect: false,
+            retryCount: 1,
+          })
         : http(rpc),
     [rpc],
   );
 
-  const { data: chainId, isLoading: isLoadingChainId } = useChainId(
-    rpc,
-    transport,
-  );
+  const {
+    data: chainId,
+    isLoading: isLoadingChainId,
+    error: chainIdError,
+  } = useChainId(rpc, transport);
 
   const chain = useMemo(() => {
     return chainId
@@ -58,9 +64,30 @@ function RouteComponent() {
     [chain, transport],
   );
 
-  if (isLoadingChainId) {
-    return null;
+  if (!chainId && chainIdError) {
+    return (
+      <>
+        <Topbar showConnectButton={false} />
+        <div className="flex items-center justify-center p-8">
+          <GlobalMessage
+            type="error"
+            title="Invalid RPC"
+            description={`Unable to connect to the RPC endpoint: ${rpc}. ${chainIdError.message}`}
+          />
+        </div>
+      </>
+    );
   }
+
+  if (isLoadingChainId) {
+    return (
+      <>
+        <Topbar showConnectButton={!!chainId} />
+        <LoadingSpinner />
+      </>
+    );
+  }
+
   return (
     <WagmiProvider key={rpc} config={config}>
       <RainbowKitProvider
@@ -71,7 +98,7 @@ function RouteComponent() {
         })}
         initialChain={chain}
       >
-        <Topbar showConnectButton />
+        <Topbar showConnectButton={!!chainId} />
         <ConnectionStateUpdater rpc={rpc} />
         <div className="flex flex-col justify-center gap-2">
           <div className="flex-grow overflow-hidden">
