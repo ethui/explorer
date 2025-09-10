@@ -13,5 +13,8 @@ export function useChainId(rpc: string, transport: Transport) {
       return chainId;
     },
     enabled: !!rpc && !!transport,
+    retry: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
   });
 }

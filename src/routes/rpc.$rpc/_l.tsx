@@ -8,9 +8,22 @@ import { useMemo } from "react";
 import { defineChain } from "viem";
 import { foundry } from "viem/chains";
 import { http, WagmiProvider, webSocket } from "wagmi";
+import { GlobalMessage } from "#/components/GlobalMessage";
+import { LoadingSpinner } from "#/components/LoadingSpinner";
 import { Topbar } from "#/components/Topbar";
 import { useChainId } from "#/hooks/useChainId";
 import { useConnectionState } from "#/hooks/useConnectionState";
+
+const RAINBOW_KIT_THEME = darkTheme({
+  accentColor: "#000000",
+  accentColorForeground: "white",
+  borderRadius: "medium",
+});
+
+const WEBSOCKET_CONFIG = {
+  reconnect: false,
+  retryCount: 1,
+};
 
 export const Route = createFileRoute("/rpc/$rpc/_l")({
   loader: async ({ params }) => {
@@ -22,27 +35,18 @@ export const Route = createFileRoute("/rpc/$rpc/_l")({
 function RouteComponent() {
   const rpc = Route.useLoaderData();
 
-  const transport = useMemo(
-    () =>
-      rpc.startsWith("ws://") || rpc.startsWith("wss://")
-        ? webSocket(rpc)
-        : http(rpc),
-    [rpc],
-  );
+  const transport = useMemo(() => {
+    const isWebSocket = rpc.startsWith("ws://") || rpc.startsWith("wss://");
+    return isWebSocket ? webSocket(rpc, WEBSOCKET_CONFIG) : http(rpc);
+  }, [rpc]);
 
-  const { data: chainId, isLoading: isLoadingChainId } = useChainId(
-    rpc,
-    transport,
-  );
+  const {
+    data: chainId,
+    isLoading: isLoadingChainId,
+    error: chainIdError,
+  } = useChainId(rpc, transport);
 
-  const chain = useMemo(() => {
-    return chainId
-      ? defineChain({
-          ...foundry,
-          id: chainId,
-        })
-      : foundry;
-  }, [chainId]);
+  const chain = chainId ? defineChain({ ...foundry, id: chainId }) : foundry;
 
   const config = useMemo(
     () =>
@@ -59,19 +63,33 @@ function RouteComponent() {
   );
 
   if (isLoadingChainId) {
-    return null;
+    return (
+      <>
+        <Topbar showConnectButton={false} />
+        <LoadingSpinner />
+      </>
+    );
   }
+
+  if (!chainId && chainIdError) {
+    return (
+      <>
+        <Topbar showConnectButton={false} />
+        <div className="flex items-center justify-center p-8">
+          <GlobalMessage
+            type="error"
+            title="Invalid RPC"
+            description={`Unable to connect to the RPC endpoint: ${rpc}. ${chainIdError.message}`}
+          />
+        </div>
+      </>
+    );
+  }
+
   return (
     <WagmiProvider key={rpc} config={config}>
-      <RainbowKitProvider
-        theme={darkTheme({
-          accentColor: "#000000",
-          accentColorForeground: "white",
-          borderRadius: "medium",
-        })}
-        initialChain={chain}
-      >
-        <Topbar showConnectButton />
+      <RainbowKitProvider theme={RAINBOW_KIT_THEME} initialChain={chain}>
+        <Topbar showConnectButton={!!chainId} />
         <ConnectionStateUpdater rpc={rpc} />
         <div className="flex flex-col justify-center gap-2">
           <div className="flex-grow overflow-hidden">
