@@ -26,8 +26,8 @@ export function GlobalMessage({
   const config = messageConfig[type];
 
   return (
-    <div className="text-center space-y-4">
-      <h1 className={`text-2xl font-bold ${config.titleColor}`}>{title}</h1>
+    <div className="space-y-4 text-center">
+      <h1 className={`font-bold text-2xl ${config.titleColor}`}>{title}</h1>
       <p className="text-muted-foreground">{description}</p>
     </div>
   );

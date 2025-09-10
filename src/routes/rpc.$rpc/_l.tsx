@@ -8,11 +8,22 @@ import { useMemo } from "react";
 import { defineChain } from "viem";
 import { foundry } from "viem/chains";
 import { http, WagmiProvider, webSocket } from "wagmi";
-import { Topbar } from "#/components/Topbar";
 import { GlobalMessage } from "#/components/GlobalMessage";
+import { LoadingSpinner } from "#/components/LoadingSpinner";
+import { Topbar } from "#/components/Topbar";
 import { useChainId } from "#/hooks/useChainId";
 import { useConnectionState } from "#/hooks/useConnectionState";
-import { LoadingSpinner } from "#/components/LoadingSpinner";
+
+const RAINBOW_KIT_THEME = darkTheme({
+  accentColor: "#000000",
+  accentColorForeground: "white",
+  borderRadius: "medium",
+});
+
+const WEBSOCKET_CONFIG = {
+  reconnect: false,
+  retryCount: 1,
+} as const;
 
 export const Route = createFileRoute("/rpc/$rpc/_l")({
   loader: async ({ params }) => {
@@ -24,13 +35,10 @@ export const Route = createFileRoute("/rpc/$rpc/_l")({
 function RouteComponent() {
   const rpc = Route.useLoaderData();
 
-  const transport =
-    rpc.startsWith("ws://") || rpc.startsWith("wss://")
-      ? webSocket(rpc, {
-          reconnect: false,
-          retryCount: 1,
-        })
-      : http(rpc);
+  const transport = useMemo(() => {
+    const isWebSocket = rpc.startsWith("ws://") || rpc.startsWith("wss://");
+    return isWebSocket ? webSocket(rpc, WEBSOCKET_CONFIG) : http(rpc);
+  }, [rpc]);
 
   const {
     data: chainId,
@@ -38,22 +46,30 @@ function RouteComponent() {
     error: chainIdError,
   } = useChainId(rpc, transport);
 
-  const chain = chainId
-    ? defineChain({
-        ...foundry,
-        id: chainId,
-      })
-    : foundry;
+  const chain = chainId ? defineChain({ ...foundry, id: chainId }) : foundry;
 
-  const config = getDefaultConfig({
-    appName: "Ethui Explorer",
-    projectId: "ethui-explorer",
-    chains: [chain],
-    transports: {
-      [chain.id]: transport,
-    },
-    ssr: true,
-  });
+  const config = useMemo(
+    () =>
+      getDefaultConfig({
+        appName: "Ethui Explorer",
+        projectId: "ethui-explorer",
+        chains: [chain],
+        transports: {
+          [chain.id]: transport,
+        },
+        ssr: true,
+      }),
+    [chain, transport],
+  );
+
+  if (isLoadingChainId) {
+    return (
+      <>
+        <Topbar showConnectButton={false} />
+        <LoadingSpinner />
+      </>
+    );
+  }
 
   if (!chainId && chainIdError) {
     return (
@@ -70,25 +86,10 @@ function RouteComponent() {
     );
   }
 
-  if (isLoadingChainId) {
-    return (
-      <>
-        <Topbar showConnectButton={!!chainId} />
-        <LoadingSpinner />
-      </>
-    );
-  }
-
+  // Main app with providers
   return (
     <WagmiProvider key={rpc} config={config}>
-      <RainbowKitProvider
-        theme={darkTheme({
-          accentColor: "#000000",
-          accentColorForeground: "white",
-          borderRadius: "medium",
-        })}
-        initialChain={chain}
-      >
+      <RainbowKitProvider theme={RAINBOW_KIT_THEME} initialChain={chain}>
         <Topbar showConnectButton={!!chainId} />
         <ConnectionStateUpdater rpc={rpc} />
         <div className="flex flex-col justify-center gap-2">
