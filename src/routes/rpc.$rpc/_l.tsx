@@ -24,16 +24,13 @@ export const Route = createFileRoute("/rpc/$rpc/_l")({
 function RouteComponent() {
   const rpc = Route.useLoaderData();
 
-  const transport = useMemo(
-    () =>
-      rpc.startsWith("ws://") || rpc.startsWith("wss://")
-        ? webSocket(rpc, {
-            reconnect: false,
-            retryCount: 1,
-          })
-        : http(rpc),
-    [rpc],
-  );
+  const transport =
+    rpc.startsWith("ws://") || rpc.startsWith("wss://")
+      ? webSocket(rpc, {
+          reconnect: false,
+          retryCount: 1,
+        })
+      : http(rpc);
 
   const {
     data: chainId,
@@ -41,28 +38,22 @@ function RouteComponent() {
     error: chainIdError,
   } = useChainId(rpc, transport);
 
-  const chain = useMemo(() => {
-    return chainId
-      ? defineChain({
-          ...foundry,
-          id: chainId,
-        })
-      : foundry;
-  }, [chainId]);
+  const chain = chainId
+    ? defineChain({
+        ...foundry,
+        id: chainId,
+      })
+    : foundry;
 
-  const config = useMemo(
-    () =>
-      getDefaultConfig({
-        appName: "Ethui Explorer",
-        projectId: "ethui-explorer",
-        chains: [chain],
-        transports: {
-          [chain.id]: transport,
-        },
-        ssr: true,
-      }),
-    [chain, transport],
-  );
+  const config = getDefaultConfig({
+    appName: "Ethui Explorer",
+    projectId: "ethui-explorer",
+    chains: [chain],
+    transports: {
+      [chain.id]: transport,
+    },
+    ssr: true,
+  });
 
   if (!chainId && chainIdError) {
     return (
