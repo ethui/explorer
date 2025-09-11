@@ -37,7 +37,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.56.1",
-    "react-hot-toast": "^2.5.2",
+    "react-hot-toast": "^2.6.0",
     "tailwind-merge": "^3.0.2",
     "tailwindcss": "4.0.11",
     "titleize": "^4.0.0",
