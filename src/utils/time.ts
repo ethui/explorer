@@ -10,7 +10,7 @@ export function formatRelativeTime(timestamp: bigint): string {
   const date = new Date(Number(timestamp) * 1000);
   const diff = Date.now() - date.getTime();
 
-  if (diff < 60000) {
+  if (diff < 60000 && diff > -60000) {
     return formatDistanceToNowStrict(date, { unit: "second", addSuffix: true });
   }
 
