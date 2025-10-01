@@ -55,7 +55,7 @@
     "@tanstack/router-plugin": "^1.131.3",
     "@types/cheerio": "^0.22.35",
     "@types/lodash-es": "^4.17.12",
-    "@types/node": "^24.3.0",
+    "@types/node": "^24.6.1",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^5.0.2",
