@@ -24,6 +24,19 @@
   animation-delay: 0.8s;
 }
 
+/* Ensure parent containers have full height */
+html,
+body {
+  height: 100% !important;
+}
+
+[data-rk] {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 100vh !important;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

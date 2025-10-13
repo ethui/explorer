@@ -6,6 +6,7 @@ import { isAddress, parseAbiItem } from "viem";
 import { useChainId } from "wagmi";
 import { z } from "zod";
 import { AddressView } from "#/components/AddressView";
+import { useLatestAddresses } from "#/hooks/useLatestAddresses";
 import type { UseContractExecutionReturn } from "../hooks/useContractExecution";
 import { ResultDisplay } from "./ResultDisplay";
 import {
@@ -92,6 +93,8 @@ export function ContractExecutionForm({
     execution.execute({ callData });
   };
 
+  const latestAddresses = useLatestAddresses();
+
   return (
     <FormProvider {...form}>
       <div className="space-y-6">
@@ -100,6 +103,7 @@ export function ContractExecutionForm({
         {isWrite && !execution.isConnected && <ConnectWalletAlert />}
 
         <AbiItemFormWithPreview
+          addresses={latestAddresses}
           key={parsedAbiFunction?.name || signature || "raw"}
           onChange={(data) => {
             const callData = data.data?.toString() ?? undefined;
