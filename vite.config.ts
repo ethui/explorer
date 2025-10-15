@@ -16,4 +16,7 @@ export default defineConfig({
     tailwindcss(),
     viteReact(),
   ],
+  ssr: {
+    noExternal: ["@rainbow-me/rainbowkit"],
+  },
 });
