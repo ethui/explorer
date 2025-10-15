@@ -193,8 +193,9 @@ function InputDetails({ transaction }: { transaction: Transaction }) {
           {abi.abi && transaction.to && (
             <Button variant="outline" size="sm" className="bg-accent" asChild>
               <Link
-                to="/rpc/$rpc/address/$address"
-                params={{ address: transaction.to }}
+                from="/rpc/$rpc/tx/$tx"
+                to="../../address/$address"
+                params={{ address: transaction.to.toString() }}
                 search={{ callData: transaction.input }}
               >
                 Resend

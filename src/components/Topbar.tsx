@@ -19,14 +19,14 @@ export function Topbar({
 
   const handleDisconnect = () => {
     reset();
-    (navigate as any)({
+    navigate({
       to: "/",
     });
   };
 
   const handleLogoClick = () => {
     if (rpc) {
-      (navigate as any)({
+      navigate({
         to: "/rpc/$rpc",
         params: { rpc },
       });
@@ -73,7 +73,7 @@ function SearchBar({ currRpc }: { currRpc: string }) {
 
     if (!searchTerm) return;
 
-    (navigate as any)({
+    navigate({
       to: `/rpc/${btoa(currRpc)}/search`,
       search: { q: searchTerm },
     });

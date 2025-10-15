@@ -33,7 +33,10 @@ function RouteComponent() {
     <PageContainer header="Transactions">
       <span className="pb-8 text-sm">
         For Block{" "}
-        <LinkText to="/rpc/$rpc/block/$blockNumber" params={{ blockNumber }}>
+        <LinkText
+          to="/rpc/$rpc/block/$blockNumber"
+          params={{ blockNumber: blockNumber.toString() }}
+        >
           {blockNumber}
         </LinkText>
       </span>
