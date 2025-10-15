@@ -1,10 +1,11 @@
-FROM node:22-alpine
+FROM node:22-slim
 
 WORKDIR /app
 
 COPY package.json yarn.lock ./
 
-RUN corepack enable yarn && yarn i --frozen-lockfile --production
+RUN corepack enable yarn
+RUN yarn install
 
 COPY . .
 
