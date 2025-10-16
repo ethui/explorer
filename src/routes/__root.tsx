@@ -17,7 +17,7 @@ import Toast from "#/components/Toast";
 import { seo } from "#/utils/seo";
 
 export interface RouteContext {
-  breadcrumb?: string;
+  queryClient: QueryClient;
 }
 
 export const Route = createRootRouteWithContext<RouteContext>()({

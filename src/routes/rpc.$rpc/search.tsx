@@ -1,4 +1,4 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, notFound, redirect } from "@tanstack/react-router";
 import { isAddress, isHash } from "viem";
 import { z } from "zod";
 import { isBlockNumber } from "#/utils/validators";
@@ -38,10 +38,7 @@ export const Route = createFileRoute("/rpc/$rpc/search")({
         params: { rpc: params.rpc, tx: searchTerm },
       });
     } else {
-      throw redirect({
-        to: "/rpc/$rpc/not-found",
-        params: { rpc: params.rpc },
-      });
+      throw notFound;
     }
   },
   component: () => null,

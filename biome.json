@@ -4,6 +4,7 @@
       "**/*.gen.ts",
       "*.generated.ts",
       ".vercel",
+      ".nitro",
       ".vinxi",
       "dist",
       "app.config.timestamp_*"
