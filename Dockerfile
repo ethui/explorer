@@ -13,6 +13,7 @@ RUN yarn install --immutable
 COPY . .
 
 ENV NODE_ENV=production
+ENV VITE_TARGET=docker
 RUN yarn build
 
 EXPOSE 3000
