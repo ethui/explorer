@@ -12,9 +12,7 @@ export default defineConfig({
     tsConfigPaths({
       projects: ["./tsconfig.json"],
     }),
-    tanstackStart({
-      srcDirectory: "src",
-    }),
+    tanstackStart(),
     tailwindcss(),
     viteReact(),
   ],
