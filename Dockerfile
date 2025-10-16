@@ -3,9 +3,10 @@ FROM node:22-slim
 WORKDIR /app
 
 COPY package.json yarn.lock ./
+COPY .yarn .yarn
 
 RUN corepack enable yarn
-RUN yarn install
+RUN yarn install --immutable
 
 COPY . .
 
