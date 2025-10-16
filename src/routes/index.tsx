@@ -29,7 +29,7 @@ function RouteComponent() {
     const rpcUrl = data.url;
     const encodedRpc = btoa(rpcUrl);
 
-    (navigate as any)({
+    navigate({
       to: "/rpc/$rpc",
       params: { rpc: encodedRpc },
     });
