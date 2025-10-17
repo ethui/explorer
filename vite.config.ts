@@ -5,6 +5,14 @@ import viteReact from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import tsConfigPaths from "vite-tsconfig-paths";
 
+const target = process.env.VITE_TARGET;
+
+const nitroConfig: Record<string, any> = {};
+
+if (target !== "docker") {
+  nitroConfig.preset = "vercel";
+}
+
 export default defineConfig({
   server: {
     port: 3000,
@@ -14,9 +22,7 @@ export default defineConfig({
       projects: ["./tsconfig.json"],
     }),
     tanstackStart(),
-    nitroV2Plugin({
-      preset: "vercel",
-    }),
+    nitroV2Plugin(nitroConfig),
     tailwindcss(),
     viteReact(),
   ],
