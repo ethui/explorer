@@ -26,7 +26,7 @@ export function AddressLink({
       to="/rpc/$rpc/address/$address"
       params={{ address }}
       tooltip={address}
-      className="flex flex-row items-center gap-1"
+      className="flex w-fit flex-row items-center gap-1"
     >
       {showIcon && isContract && (
         <FileCode2 size={16} className="text-muted-foreground" />
