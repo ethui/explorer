@@ -1,9 +1,9 @@
-import { ContractFunctionsList } from "@ethui/ui/components/contract-execution/contract-execution-tabs/index.js";
+import { ContractExecutionTabs } from "@ethui/ui/components/contract-execution/contract-execution-tabs";
 import { Button } from "@ethui/ui/components/shadcn/button";
 import { Card } from "@ethui/ui/components/shadcn/card";
 import { useParams } from "@tanstack/react-router";
 import type { Address } from "viem";
-import { useAccount, useChainId } from "wagmi";
+import { useChainId } from "wagmi";
 import { AddressView } from "#/components/AddressView";
 import { AbiDialogForm } from "#/components/Forms/AbiDialogForm";
 import useAbi from "#/hooks/useAbi";
@@ -39,7 +39,7 @@ export function ContractInteractionForm({
   const chainId = useChainId();
 
   const { rpc } = useParams({ strict: false });
-  const { address: accountAddress } = useAccount();
+
   const latestAddresses = useLatestAddresses();
   const execution = useContractExecution(address);
   const { abi } = useAbi({ address });
@@ -49,18 +49,17 @@ export function ContractInteractionForm({
       <Card className="min-h-[600px] w-[1000px] rounded-lg border bg-card p-6 shadow-sm">
         <h2 className="mb-6 font-semibold text-2xl">Contract Interaction</h2>
 
-        <ContractFunctionsList
+        <ContractExecutionTabs
           abi={abi || []}
           address={address}
           chainId={chainId}
-          sender={accountAddress}
           addresses={latestAddresses}
           requiresConnection={true}
           isConnected={execution.isConnected}
           onQuery={(params) =>
-            execution.simulateAsync({
-              abiFunction: params.abiFunction,
-              callData: params.callData,
+            execution.callAsync({
+              data: params.callData,
+              value: params.value,
               msgSender: params.msgSender,
             })
           }
@@ -68,26 +67,12 @@ export function ContractInteractionForm({
             execution.executeAsync({ callData: params.callData })
           }
           onSimulate={(params) =>
-            execution.simulateAsync({
-              abiFunction: params.abiFunction,
-              callData: params.callData,
-              msgSender: params.msgSender,
-            })
-          }
-          onRawCall={(params) =>
             execution.callAsync({
-              data: params.data,
+              data: params.callData,
               value: params.value,
               msgSender: params.msgSender,
             })
           }
-          onRawTransaction={(params) =>
-            execution.executeAsync({
-              callData: params.data,
-              value: params.value,
-            })
-          }
-          enableSignature={true}
           NoAbiComponent={() => <NoAbiComponent address={address} />}
           addressRenderer={(addr) => <AddressView address={addr} />}
           onHashClick={(hash) => {

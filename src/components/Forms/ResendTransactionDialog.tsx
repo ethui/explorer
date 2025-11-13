@@ -1,8 +1,4 @@
 import { ResendTransaction } from "@ethui/ui/components/contract-execution/resend-transaction/index";
-import type {
-  ExecutionParams,
-  RawCallParams,
-} from "@ethui/ui/components/contract-execution/shared/types";
 import {
   Dialog,
   DialogContent,
@@ -11,6 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@ethui/ui/components/shadcn/dialog";
+import { useParams } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import type { Abi, Address, Hex } from "viem";
 import { useAccount } from "wagmi";
@@ -25,7 +22,6 @@ interface ResendTransactionDialogProps {
   abi?: Abi;
   chainId: number;
   sender?: Address;
-  onHashClick?: (hash: string) => void;
 }
 
 export function ResendTransactionDialog({
@@ -36,41 +32,12 @@ export function ResendTransactionDialog({
   abi,
   chainId,
   sender,
-  onHashClick,
 }: ResendTransactionDialogProps) {
   const execution = useContractExecution(to);
   const { address: connectedAddress, isConnected } = useAccount();
+
+  const { rpc } = useParams({ strict: false });
   const addresses = useLatestAddresses();
-
-  const handleQuery = async (params: ExecutionParams) => {
-    return await execution.callAsync({
-      data: params.callData,
-      value: params.value,
-      msgSender: params.msgSender,
-    });
-  };
-
-  const handleWrite = async (params: ExecutionParams) => {
-    return await execution.executeAsync({
-      callData: params.callData,
-      value: params.value,
-    });
-  };
-
-  const handleSimulate = async (params: ExecutionParams) => {
-    return await execution.simulateAsync({
-      abiFunction: params.abiFunction,
-      callData: params.callData,
-      msgSender: params.msgSender,
-    });
-  };
-
-  const handleRawTransaction = async (params: RawCallParams) => {
-    return await execution.executeAsync({
-      callData: params.data,
-      value: params.value,
-    });
-  };
 
   const addressRenderer = (addr: Address) => {
     const addressData = addresses.find((a) => a.address === addr);
@@ -98,12 +65,30 @@ export function ResendTransactionDialog({
             addresses={addresses}
             requiresConnection={true}
             isConnected={isConnected}
-            onQuery={handleQuery}
-            onWrite={handleWrite}
-            onSimulate={handleSimulate}
-            onRawTransaction={handleRawTransaction}
+            onQuery={(params) =>
+              execution.callAsync({
+                data: params.callData,
+                value: params.value,
+                msgSender: params.msgSender,
+              })
+            }
+            onWrite={(params) =>
+              execution.executeAsync({
+                callData: params.callData,
+                value: params.value,
+              })
+            }
+            onSimulate={(params) =>
+              execution.callAsync({
+                data: params.callData,
+                value: params.value,
+                msgSender: params.msgSender,
+              })
+            }
             addressRenderer={addressRenderer}
-            onHashClick={onHashClick}
+            onHashClick={(hash) => {
+              window.open(`/rpc/${rpc || ""}/tx/${hash}`, "_blank");
+            }}
           />
         </div>
       </DialogContent>
