@@ -1327,7 +1327,7 @@ __metadata:
   resolution: "@ethui/site@workspace:."
   dependencies:
     "@biomejs/biome": "npm:^1.9.4"
-    "@ethui/ui": "npm:^0.0.125"
+    "@ethui/ui": "npm:^0.0.134"
     "@hookform/resolvers": "npm:^5.2.1"
     "@mdx-js/react": "npm:^3.1.0"
     "@mdx-js/rollup": "npm:^3.1.0"
@@ -1382,9 +1382,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@ethui/ui@npm:^0.0.125":
-  version: 0.0.125
-  resolution: "@ethui/ui@npm:0.0.125"
+"@ethui/ui@npm:^0.0.134":
+  version: 0.0.134
+  resolution: "@ethui/ui@npm:0.0.134"
   dependencies:
     "@ethui/abiparse": "npm:^0.0.4"
     "@fontsource/source-code-pro": "npm:^5.2.5"
@@ -1414,18 +1414,15 @@ __metadata:
     tailwind-merge: "npm:^3.3.0"
     tailwindcss-animate: "npm:^1.0.7"
   peerDependencies:
-    "@hookform/resolvers": ^5.2.1
-    "@tailwindcss/postcss": 4.1.5
-    "@tanstack/react-query": ^5.85.6
+    "@tailwindcss/postcss": ^4.1
+    "@tanstack/react-query": ^5.85
     "@types/react": ^19
     "@types/react-dom": ^19
     react: ^19
     react-dom: ^19
-    react-hook-form: ^7.59.0
-    tailwindcss: ^4.1.5
+    tailwindcss: ^4.1
     viem: ^2.31
-    zod: ^3.0
-  checksum: 10c0/4a56c0977685926d86378e6a8f1d81fb1dde2aa9ced6e2d9ea00a02b389f459426391a4ff9fd625ee1b294733042854116172dac41a49479a538595e40d7717f
+  checksum: 10c0/1c43d4d071a70b82b3a6a663f181369aa27314f0bab4f7199274be4ae0ba0d094bb844a5bc1b6ad33320faf3bf82d1578a45c7fe200f2b825d4ef3b0f0853702
   languageName: node
   linkType: hard
 
