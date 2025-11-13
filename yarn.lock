@@ -1327,7 +1327,7 @@ __metadata:
   resolution: "@ethui/site@workspace:."
   dependencies:
     "@biomejs/biome": "npm:^1.9.4"
-    "@ethui/ui": "npm:^0.0.134"
+    "@ethui/ui": "npm:^0.0.136"
     "@hookform/resolvers": "npm:^5.2.1"
     "@mdx-js/react": "npm:^3.1.0"
     "@mdx-js/rollup": "npm:^3.1.0"
@@ -1382,9 +1382,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@ethui/ui@npm:^0.0.134":
-  version: 0.0.134
-  resolution: "@ethui/ui@npm:0.0.134"
+"@ethui/ui@npm:^0.0.136":
+  version: 0.0.136
+  resolution: "@ethui/ui@npm:0.0.136"
   dependencies:
     "@ethui/abiparse": "npm:^0.0.4"
     "@fontsource/source-code-pro": "npm:^5.2.5"
@@ -1422,7 +1422,7 @@ __metadata:
     react-dom: ^19
     tailwindcss: ^4.1
     viem: ^2.31
-  checksum: 10c0/1c43d4d071a70b82b3a6a663f181369aa27314f0bab4f7199274be4ae0ba0d094bb844a5bc1b6ad33320faf3bf82d1578a45c7fe200f2b825d4ef3b0f0853702
+  checksum: 10c0/443d1f460a65faa96c2c7b2c454e3155473d3c56142f5288fe2e6db6e31050ed606b8af0c067f68c201ec07edfc448d1a05bda9d206273a046cdae5fd71da179
   languageName: node
   linkType: hard
 

@@ -1,4 +1,4 @@
-import { ContractFunctionsList } from "@ethui/ui/components/contract-execution";
+import { ContractFunctionsList } from "@ethui/ui/components/contract-execution/contract-execution-tabs/index.js";
 import { Button } from "@ethui/ui/components/shadcn/button";
 import { Card } from "@ethui/ui/components/shadcn/card";
 import { useParams } from "@tanstack/react-router";
