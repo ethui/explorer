@@ -5,6 +5,7 @@
       "*.generated.ts",
       ".vercel",
       ".nitro",
+      ".output",
       ".vinxi",
       "dist",
       "app.config.timestamp_*"

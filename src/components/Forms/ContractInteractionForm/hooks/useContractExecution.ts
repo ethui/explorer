@@ -1,23 +1,31 @@
 import { useMutation } from "@tanstack/react-query";
-import { useCallback, useState } from "react";
 import toast from "react-hot-toast";
-import { type AbiFunction, decodeFunctionData } from "viem";
+import {
+  type AbiFunction,
+  decodeFunctionData,
+  encodeFunctionResult,
+} from "viem";
 import type { Address } from "viem";
 import { useAccount, usePublicClient, useWalletClient } from "wagmi";
-import { stringifyWithBigInt } from "#/utils/formatters";
-import type { Result } from "../components/ResultDisplay";
+
 export interface UseContractExecutionReturn {
-  simulate: (params: {
+  simulateAsync: (params: {
     abiFunction: AbiFunction;
     callData: string;
     msgSender?: Address | undefined;
-  }) => void;
-  execute: (params: { callData: string }) => void;
+  }) => Promise<`0x${string}`>;
+  callAsync: (params: {
+    data: `0x${string}`;
+    value?: bigint;
+    msgSender?: Address;
+  }) => Promise<`0x${string}`>;
+  executeAsync: (params: {
+    callData: string;
+    value?: bigint;
+  }) => Promise<`0x${string}`>;
   isConnected: boolean;
   isSimulating: boolean;
   isExecuting: boolean;
-  result: any;
-  resetResult: () => void;
 }
 
 const isWriteFunction = (abiFunction: AbiFunction): boolean =>
@@ -25,12 +33,11 @@ const isWriteFunction = (abiFunction: AbiFunction): boolean =>
   abiFunction.stateMutability !== "pure";
 
 export function useContractExecution(address: Address) {
-  const [result, setResult] = useState<Result | undefined>(undefined);
   const publicClient = usePublicClient();
   const { data: walletClient } = useWalletClient();
   const { isConnected, address: accountAddress } = useAccount();
 
-  const { mutate: simulate, isPending: isSimulating } = useMutation({
+  const { mutateAsync: simulateAsync, isPending: isSimulating } = useMutation({
     mutationFn: async ({
       abiFunction,
       callData,
@@ -39,15 +46,13 @@ export function useContractExecution(address: Address) {
       abiFunction: AbiFunction;
       callData: string;
       msgSender?: string;
-    }) => {
+    }): Promise<`0x${string}`> => {
       if (!callData || !publicClient) throw new Error("Missing required data");
 
       const { args } = decodeFunctionData({
         abi: [abiFunction],
         data: callData as Address,
       });
-
-      const isWrite = isWriteFunction(abiFunction);
 
       const result = await publicClient.simulateContract({
         abi: [abiFunction],
@@ -56,89 +61,95 @@ export function useContractExecution(address: Address) {
         args,
         account: msgSender ? (msgSender as Address) : accountAddress,
       });
-      const formattedResult = stringifyWithBigInt(result);
-      const cleanResult = isWrite
-        ? undefined
-        : (result.result as any)?.toString();
 
-      return {
-        type: isWrite ? "simulation" : "call",
-        data: formattedResult,
-        cleanResult,
-      };
+      const encoded = encodeFunctionResult({
+        abi: [abiFunction],
+        functionName: abiFunction.name,
+        result: result.result,
+      });
+
+      return encoded;
     },
-    onSuccess: (data, variables) => {
-      setResult(data as Result);
+    onSuccess: (_data, variables) => {
       const isWrite = isWriteFunction(variables.abiFunction);
       toast.success(isWrite ? "Simulation successful" : "Call successful");
     },
     onError: (error, variables) => {
       const isWrite = isWriteFunction(variables.abiFunction);
-      setResult({
-        type: isWrite ? "simulation" : "call",
-        data: stringifyWithBigInt({
-          error: error instanceof Error ? error.message : String(error),
-          status: "reverted",
-        }),
-      });
       toast.error(isWrite ? "Simulation failed" : "Call failed");
+      throw error;
     },
   });
 
-  const { mutate: execute, isPending: isExecuting } = useMutation({
-    mutationFn: async ({ callData }: { callData: string }) => {
+  const { mutateAsync: callAsync } = useMutation({
+    mutationFn: async ({
+      data,
+      value,
+      msgSender,
+    }: {
+      data: `0x${string}`;
+      value?: bigint;
+      msgSender?: Address;
+    }): Promise<`0x${string}`> => {
+      if (!publicClient) throw new Error("Missing public client");
+
+      const result = await publicClient.call({
+        to: address,
+        data,
+        value,
+        account: msgSender || accountAddress,
+      });
+
+      return result.data || "0x";
+    },
+    onSuccess: () => {
+      toast.success("Call successful");
+    },
+    onError: (error) => {
+      toast.error("Call failed");
+      throw error;
+    },
+  });
+
+  const { mutateAsync: executeAsync, isPending: isExecuting } = useMutation({
+    mutationFn: async ({
+      callData,
+      value,
+    }: {
+      callData: string;
+      value?: bigint;
+    }): Promise<`0x${string}`> => {
       if (!callData || !publicClient || !walletClient)
         throw new Error("Missing required data");
 
       const hash = await walletClient.sendTransaction({
         data: callData as Address,
         to: address,
-      });
-
-      setResult({
-        type: "execution",
-        data: "",
-        hash: hash,
+        value,
       });
 
       toast.promise(publicClient.waitForTransactionReceipt({ hash }), {
         loading: "Waiting for transaction to be executed",
+        success: "Transaction executed",
+        error: "Transaction failed",
       });
 
-      const receipt = await publicClient.waitForTransactionReceipt({ hash });
-      return {
-        type: "execution" as const,
-        data: stringifyWithBigInt(receipt),
-        hash: hash,
-      };
-    },
-    onSuccess: (data) => {
-      setResult(data);
-      toast.success("Transaction executed");
+      await publicClient.waitForTransactionReceipt({ hash });
+
+      return hash;
     },
     onError: (error) => {
-      setResult({
-        type: "execution",
-        data: stringifyWithBigInt({
-          error: error instanceof Error ? error.message : String(error),
-          status: "reverted",
-        }),
-      });
       toast.error("Transaction failed");
+      throw error;
     },
   });
 
-  const resetResult = useCallback(() => {
-    setResult(undefined);
-  }, []);
-
   return {
-    result,
-    simulate,
-    execute,
+    simulateAsync,
+    callAsync,
+    executeAsync,
     isSimulating,
     isExecuting,
     isConnected,
-    resetResult,
   };
 }

@@ -7,7 +7,6 @@ import {
   DropdownMenuTrigger,
 } from "@ethui/ui/components/shadcn/dropdown-menu";
 import { SolidityCall } from "@ethui/ui/components/solidity-call";
-import { Link } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
@@ -28,6 +27,7 @@ import {
 import { AddressLink } from "#/components/AddressLink";
 import { AddressView } from "#/components/AddressView";
 import { Chip } from "#/components/Chip";
+import { ResendTransactionDialog } from "#/components/Forms/ResendTransactionDialog";
 import { LinkText } from "#/components/LinkText";
 import { LoadingSpinner } from "#/components/LoadingSpinner";
 import useAbi from "#/hooks/useAbi";
@@ -142,6 +142,7 @@ export default function Overview({ tx }: { tx: Hash }) {
 
 function InputDetails({ transaction }: { transaction: Transaction }) {
   const abi = useAbi({ address: transaction.to ?? "0x" });
+  const chainId = useChainId();
   const isTransfer = transaction.input === "0x";
 
   const [displayMode, setDisplayMode] = useState<
@@ -190,17 +191,23 @@ function InputDetails({ transaction }: { transaction: Transaction }) {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          {abi.abi && transaction.to && (
-            <Button variant="outline" size="sm" className="bg-accent" asChild>
-              <Link
-                from="/rpc/$rpc/tx/$tx"
-                to="../../address/$address"
-                params={{ address: transaction.to.toString() }}
-                search={{ callData: transaction.input }}
-              >
-                Resend
-              </Link>
-            </Button>
+          {transaction.to && (
+            <ResendTransactionDialog
+              trigger={
+                <Button variant="outline" size="sm" className="bg-accent">
+                  Resend
+                </Button>
+              }
+              to={transaction.to}
+              input={transaction.input}
+              value={transaction.value}
+              abi={abi.abi}
+              chainId={chainId}
+              sender={transaction.from}
+              onHashClick={(hash) => {
+                window.open(`/rpc/${chainId}/tx/${hash}`, "_blank");
+              }}
+            />
           )}
         </div>
       )}
