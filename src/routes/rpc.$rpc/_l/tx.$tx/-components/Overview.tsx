@@ -27,7 +27,7 @@ import {
 import { AddressLink } from "#/components/AddressLink";
 import { AddressView } from "#/components/AddressView";
 import { Chip } from "#/components/Chip";
-import { ResendTransactionDialog } from "#/components/Forms/ResendTransactionDialog";
+import { ResendTransactionDialog } from "#/components/Forms/ResendTransactionDialogForm";
 import { LinkText } from "#/components/LinkText";
 import { LoadingSpinner } from "#/components/LoadingSpinner";
 import useAbi from "#/hooks/useAbi";

@@ -1,17 +1,17 @@
 import { ContractExecutionTabs } from "@ethui/ui/components/contract-execution/contract-execution-tabs";
 import { Button } from "@ethui/ui/components/shadcn/button";
 import { Card } from "@ethui/ui/components/shadcn/card";
-import { useParams } from "@tanstack/react-router";
 import type { Address } from "viem";
 import { useChainId } from "wagmi";
 import { AddressView } from "#/components/AddressView";
 import { AbiDialogForm } from "#/components/Forms/AbiDialogForm";
 import useAbi from "#/hooks/useAbi";
+import { useContractExecution } from "#/hooks/useContractExecution";
 import { useLatestAddresses } from "#/hooks/useLatestAddresses";
-import { useContractExecution } from "./hooks/useContractExecution";
-interface ContractInteractionFormProps {
+import { useConnectionStore } from "#/store/connection";
+
+interface ContractTabProps {
   address: Address;
-  callData?: string;
 }
 
 function NoAbiComponent({ address }: { address: Address }) {
@@ -32,13 +32,10 @@ function NoAbiComponent({ address }: { address: Address }) {
   );
 }
 
-export function ContractInteractionForm({
-  address,
-  callData: _callData,
-}: ContractInteractionFormProps) {
+export function ContractTab({ address }: ContractTabProps) {
   const chainId = useChainId();
 
-  const { rpc } = useParams({ strict: false });
+  const { rpc } = useConnectionStore();
 
   const latestAddresses = useLatestAddresses();
   const execution = useContractExecution(address);
@@ -76,8 +73,8 @@ export function ContractInteractionForm({
           NoAbiComponent={() => <NoAbiComponent address={address} />}
           addressRenderer={(addr) => <AddressView address={addr} />}
           onHashClick={(hash) => {
-            const url = `/rpc/${rpc || ""}/tx/${hash}`;
-            window.open(url, "_blank");
+            const url = `/rpc/${btoa(rpc ?? "")}/tx/${hash}`;
+            window.open(url, "_blank", "noopener,noreferrer");
           }}
         />
       </Card>

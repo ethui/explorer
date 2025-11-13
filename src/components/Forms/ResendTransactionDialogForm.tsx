@@ -12,7 +12,7 @@ import type { ReactNode } from "react";
 import type { Abi, Address, Hex } from "viem";
 import { useAccount } from "wagmi";
 import { useLatestAddresses } from "#/hooks/useLatestAddresses";
-import { useContractExecution } from "./ContractInteractionForm/hooks/useContractExecution";
+import { useContractExecution } from "../../hooks/useContractExecution";
 
 interface ResendTransactionDialogProps {
   trigger: ReactNode;
