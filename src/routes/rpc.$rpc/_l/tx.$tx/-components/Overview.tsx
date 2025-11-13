@@ -204,9 +204,6 @@ function InputDetails({ transaction }: { transaction: Transaction }) {
               abi={abi.abi}
               chainId={chainId}
               sender={transaction.from}
-              onHashClick={(hash) => {
-                window.open(`/rpc/${chainId}/tx/${hash}`, "_blank");
-              }}
             />
           )}
         </div>
