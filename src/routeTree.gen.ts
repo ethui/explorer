@@ -16,8 +16,8 @@ import { Route as RpcRpcSearchRouteImport } from './routes/rpc.$rpc/search'
 import { Route as RpcRpcLRouteImport } from './routes/rpc.$rpc/_l'
 import { Route as RpcRpcLIndexRouteImport } from './routes/rpc.$rpc/_l/index'
 import { Route as RpcRpcLBlockBlockNumberRouteImport } from './routes/rpc.$rpc/_l/block.$blockNumber'
-import { Route as RpcRpcLAddressAddressRouteImport } from './routes/rpc.$rpc/_l/address.$address'
 import { Route as RpcRpcLTxTxIndexRouteImport } from './routes/rpc.$rpc/_l/tx.$tx/index'
+import { Route as RpcRpcLAddressAddressIndexRouteImport } from './routes/rpc.$rpc/_l/address.$address/index'
 
 const RpcRpcRouteImport = createFileRoute('/rpc/$rpc')()
 
@@ -50,32 +50,33 @@ const RpcRpcLBlockBlockNumberRoute = RpcRpcLBlockBlockNumberRouteImport.update({
   path: '/block/$blockNumber',
   getParentRoute: () => RpcRpcLRoute,
 } as any)
-const RpcRpcLAddressAddressRoute = RpcRpcLAddressAddressRouteImport.update({
-  id: '/address/$address',
-  path: '/address/$address',
-  getParentRoute: () => RpcRpcLRoute,
-} as any)
 const RpcRpcLTxTxIndexRoute = RpcRpcLTxTxIndexRouteImport.update({
   id: '/tx/$tx/',
   path: '/tx/$tx/',
   getParentRoute: () => RpcRpcLRoute,
 } as any)
+const RpcRpcLAddressAddressIndexRoute =
+  RpcRpcLAddressAddressIndexRouteImport.update({
+    id: '/address/$address/',
+    path: '/address/$address/',
+    getParentRoute: () => RpcRpcLRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/rpc/$rpc': typeof RpcRpcLRouteWithChildren
   '/rpc/$rpc/search': typeof RpcRpcSearchRoute
   '/rpc/$rpc/': typeof RpcRpcLIndexRoute
-  '/rpc/$rpc/address/$address': typeof RpcRpcLAddressAddressRoute
   '/rpc/$rpc/block/$blockNumber': typeof RpcRpcLBlockBlockNumberRoute
+  '/rpc/$rpc/address/$address': typeof RpcRpcLAddressAddressIndexRoute
   '/rpc/$rpc/tx/$tx': typeof RpcRpcLTxTxIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/rpc/$rpc': typeof RpcRpcLIndexRoute
   '/rpc/$rpc/search': typeof RpcRpcSearchRoute
-  '/rpc/$rpc/address/$address': typeof RpcRpcLAddressAddressRoute
   '/rpc/$rpc/block/$blockNumber': typeof RpcRpcLBlockBlockNumberRoute
+  '/rpc/$rpc/address/$address': typeof RpcRpcLAddressAddressIndexRoute
   '/rpc/$rpc/tx/$tx': typeof RpcRpcLTxTxIndexRoute
 }
 export interface FileRoutesById {
@@ -85,8 +86,8 @@ export interface FileRoutesById {
   '/rpc/$rpc/_l': typeof RpcRpcLRouteWithChildren
   '/rpc/$rpc/search': typeof RpcRpcSearchRoute
   '/rpc/$rpc/_l/': typeof RpcRpcLIndexRoute
-  '/rpc/$rpc/_l/address/$address': typeof RpcRpcLAddressAddressRoute
   '/rpc/$rpc/_l/block/$blockNumber': typeof RpcRpcLBlockBlockNumberRoute
+  '/rpc/$rpc/_l/address/$address/': typeof RpcRpcLAddressAddressIndexRoute
   '/rpc/$rpc/_l/tx/$tx/': typeof RpcRpcLTxTxIndexRoute
 }
 export interface FileRouteTypes {
@@ -96,16 +97,16 @@ export interface FileRouteTypes {
     | '/rpc/$rpc'
     | '/rpc/$rpc/search'
     | '/rpc/$rpc/'
-    | '/rpc/$rpc/address/$address'
     | '/rpc/$rpc/block/$blockNumber'
+    | '/rpc/$rpc/address/$address'
     | '/rpc/$rpc/tx/$tx'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/rpc/$rpc'
     | '/rpc/$rpc/search'
-    | '/rpc/$rpc/address/$address'
     | '/rpc/$rpc/block/$blockNumber'
+    | '/rpc/$rpc/address/$address'
     | '/rpc/$rpc/tx/$tx'
   id:
     | '__root__'
@@ -114,8 +115,8 @@ export interface FileRouteTypes {
     | '/rpc/$rpc/_l'
     | '/rpc/$rpc/search'
     | '/rpc/$rpc/_l/'
-    | '/rpc/$rpc/_l/address/$address'
     | '/rpc/$rpc/_l/block/$blockNumber'
+    | '/rpc/$rpc/_l/address/$address/'
     | '/rpc/$rpc/_l/tx/$tx/'
   fileRoutesById: FileRoutesById
 }
@@ -168,13 +169,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RpcRpcLBlockBlockNumberRouteImport
       parentRoute: typeof RpcRpcLRoute
     }
-    '/rpc/$rpc/_l/address/$address': {
-      id: '/rpc/$rpc/_l/address/$address'
-      path: '/address/$address'
-      fullPath: '/rpc/$rpc/address/$address'
-      preLoaderRoute: typeof RpcRpcLAddressAddressRouteImport
-      parentRoute: typeof RpcRpcLRoute
-    }
     '/rpc/$rpc/_l/tx/$tx/': {
       id: '/rpc/$rpc/_l/tx/$tx/'
       path: '/tx/$tx'
@@ -182,20 +176,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RpcRpcLTxTxIndexRouteImport
       parentRoute: typeof RpcRpcLRoute
     }
+    '/rpc/$rpc/_l/address/$address/': {
+      id: '/rpc/$rpc/_l/address/$address/'
+      path: '/address/$address'
+      fullPath: '/rpc/$rpc/address/$address'
+      preLoaderRoute: typeof RpcRpcLAddressAddressIndexRouteImport
+      parentRoute: typeof RpcRpcLRoute
+    }
   }
 }
 
 interface RpcRpcLRouteChildren {
   RpcRpcLIndexRoute: typeof RpcRpcLIndexRoute
-  RpcRpcLAddressAddressRoute: typeof RpcRpcLAddressAddressRoute
   RpcRpcLBlockBlockNumberRoute: typeof RpcRpcLBlockBlockNumberRoute
+  RpcRpcLAddressAddressIndexRoute: typeof RpcRpcLAddressAddressIndexRoute
   RpcRpcLTxTxIndexRoute: typeof RpcRpcLTxTxIndexRoute
 }
 
 const RpcRpcLRouteChildren: RpcRpcLRouteChildren = {
   RpcRpcLIndexRoute: RpcRpcLIndexRoute,
-  RpcRpcLAddressAddressRoute: RpcRpcLAddressAddressRoute,
   RpcRpcLBlockBlockNumberRoute: RpcRpcLBlockBlockNumberRoute,
+  RpcRpcLAddressAddressIndexRoute: RpcRpcLAddressAddressIndexRoute,
   RpcRpcLTxTxIndexRoute: RpcRpcLTxTxIndexRoute,
 }
 

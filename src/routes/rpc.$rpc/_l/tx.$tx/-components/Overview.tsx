@@ -27,7 +27,7 @@ import {
 import { AddressLink } from "#/components/AddressLink";
 import { AddressView } from "#/components/AddressView";
 import { Chip } from "#/components/Chip";
-import { ResendTransactionDialog } from "#/components/Forms/ResendTransactionDialog";
+import { ResendTransactionDialog } from "#/components/Forms/ResendTransactionDialogForm";
 import { LinkText } from "#/components/LinkText";
 import { LoadingSpinner } from "#/components/LoadingSpinner";
 import useAbi from "#/hooks/useAbi";
@@ -204,9 +204,6 @@ function InputDetails({ transaction }: { transaction: Transaction }) {
               abi={abi.abi}
               chainId={chainId}
               sender={transaction.from}
-              onHashClick={(hash) => {
-                window.open(`/rpc/${chainId}/tx/${hash}`, "_blank");
-              }}
             />
           )}
         </div>
