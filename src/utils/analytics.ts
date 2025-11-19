@@ -1,4 +1,4 @@
-import { init, trackEvent as aptabaseTrackEvent } from "@aptabase/web";
+import { trackEvent as aptabaseTrackEvent, init } from "@aptabase/web";
 
 let isInitialized = false;
 

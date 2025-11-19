@@ -14,8 +14,8 @@ import appCss from "#/app.css?url";
 import { DefaultCatchBoundary } from "#/components/DefaultCatchBoundary";
 import { NotFound } from "#/components/NotFound";
 import Toast from "#/components/Toast";
-import { seo } from "#/utils/seo";
 import { initializeAnalytics } from "#/utils/analytics";
+import { seo } from "#/utils/seo";
 
 export interface RouteContext {
   queryClient: QueryClient;
