@@ -15,6 +15,7 @@ import { DefaultCatchBoundary } from "#/components/DefaultCatchBoundary";
 import { NotFound } from "#/components/NotFound";
 import Toast from "#/components/Toast";
 import { seo } from "#/utils/seo";
+import { initializeAnalytics } from "#/utils/analytics";
 
 export interface RouteContext {
   queryClient: QueryClient;
@@ -75,6 +76,10 @@ function RootComponent() {
 
 function ClientProviders({ children }: { children: React.ReactNode }) {
   const [queryClient] = React.useState(() => new QueryClient());
+
+  React.useEffect(() => {
+    initializeAnalytics();
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>

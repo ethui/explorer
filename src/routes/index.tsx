@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { type FieldValues, useForm } from "react-hook-form";
 import { z } from "zod";
+import { trackEvent } from "#/utils/analytics";
 
 export const Route = createFileRoute("/")({
   component: RouteComponent,
@@ -28,6 +29,8 @@ function RouteComponent() {
   const handleRpcSubmit = (data: FieldValues) => {
     const rpcUrl = data.url;
     const encodedRpc = btoa(rpcUrl);
+
+    trackEvent("connect_rpc", { url: rpcUrl });
 
     navigate({
       to: "/rpc/$rpc",
