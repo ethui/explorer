@@ -2,7 +2,7 @@ import { ContractExecutionTabs } from "@ethui/ui/components/contract-execution/c
 import { Button } from "@ethui/ui/components/shadcn/button";
 import { Card } from "@ethui/ui/components/shadcn/card";
 import type { Address } from "viem";
-import { useChainId } from "wagmi";
+import { useAccount, useChainId } from "wagmi";
 import { AddressView } from "#/components/AddressView";
 import { AbiDialogForm } from "#/components/Forms/AbiDialogForm";
 import useAbi from "#/hooks/useAbi";
@@ -38,6 +38,7 @@ export function ContractTab({ address }: ContractTabProps) {
   const { rpc } = useConnectionStore();
 
   const latestAddresses = useLatestAddresses();
+  const { address: connectedAddress } = useAccount();
   const execution = useContractExecution(address);
   const { abi } = useAbi({ address });
 
@@ -47,8 +48,9 @@ export function ContractTab({ address }: ContractTabProps) {
         <h2 className="mb-6 font-semibold text-2xl">Contract Interaction</h2>
 
         <ContractExecutionTabs
-          abi={abi || []}
+          abi={abi ?? []}
           address={address}
+          sender={connectedAddress}
           chainId={chainId}
           addresses={latestAddresses}
           requiresConnection={true}
