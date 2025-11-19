@@ -65,17 +65,11 @@ export function ResendTransactionDialog({
             addresses={addresses}
             requiresConnection={true}
             isConnected={isConnected}
-            onQuery={(params) =>
-              execution.callAsync({
-                data: params.callData,
-                value: params.value,
-                msgSender: params.msgSender,
-              })
-            }
             onWrite={(params) =>
               execution.executeAsync({
                 callData: params.callData,
                 value: params.value,
+                msgSender: params.msgSender,
               })
             }
             onSimulate={(params) =>

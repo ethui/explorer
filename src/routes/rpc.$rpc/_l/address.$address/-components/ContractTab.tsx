@@ -63,7 +63,11 @@ export function ContractTab({ address }: ContractTabProps) {
             })
           }
           onWrite={(params) =>
-            execution.executeAsync({ callData: params.callData })
+            execution.executeAsync({
+              callData: params.callData,
+              value: params.value,
+              msgSender: params.msgSender,
+            })
           }
           onSimulate={(params) =>
             execution.callAsync({
