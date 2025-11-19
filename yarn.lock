@@ -29,6 +29,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@aptabase/web@npm:^0.4.3":
+  version: 0.4.3
+  resolution: "@aptabase/web@npm:0.4.3"
+  checksum: 10c0/9a95c6fca77b87988bfffa4642f7364cf4792302adb932815b52c57fc49b82e4684168736062c371b2a83216740aed3475c7ffda0dfb7ea6a5d4bb5c0c728555
+  languageName: node
+  linkType: hard
+
 "@babel/code-frame@npm:7.26.2":
   version: 7.26.2
   resolution: "@babel/code-frame@npm:7.26.2"
@@ -1326,6 +1333,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@ethui/site@workspace:."
   dependencies:
+    "@aptabase/web": "npm:^0.4.3"
     "@biomejs/biome": "npm:^1.9.4"
     "@ethui/ui": "npm:^0.0.139"
     "@hookform/resolvers": "npm:^5.2.1"

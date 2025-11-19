@@ -14,6 +14,7 @@ import appCss from "#/app.css?url";
 import { DefaultCatchBoundary } from "#/components/DefaultCatchBoundary";
 import { NotFound } from "#/components/NotFound";
 import Toast from "#/components/Toast";
+import { initializeAnalytics } from "#/utils/analytics";
 import { seo } from "#/utils/seo";
 
 export interface RouteContext {
@@ -75,6 +76,10 @@ function RootComponent() {
 
 function ClientProviders({ children }: { children: React.ReactNode }) {
   const [queryClient] = React.useState(() => new QueryClient());
+
+  React.useEffect(() => {
+    initializeAnalytics();
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
