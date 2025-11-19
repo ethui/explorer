@@ -56,9 +56,11 @@ export function useContractExecution(address: Address) {
     mutationFn: async ({
       callData,
       value,
+      msgSender,
     }: {
       callData: string;
       value?: bigint;
+      msgSender?: Address;
     }): Promise<`0x${string}`> => {
       if (!callData || !publicClient || !walletClient)
         throw new Error("Missing required data");
@@ -66,6 +68,7 @@ export function useContractExecution(address: Address) {
       const hash = await walletClient.sendTransaction({
         data: callData as Address,
         to: address,
+        account: msgSender || accountAddress,
         value,
       });
 
