@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { useConnectionStore } from "#/store/connection";
+import { trackPageView } from "#/utils/analytics";
 import { Card } from "../-components/Card";
 import { LatestBlocks } from "../-components/LatestBlocks";
 import { LatestTransactions } from "../-components/LatestTransactions";
@@ -13,6 +15,10 @@ export const Route = createFileRoute("/rpc/$rpc/_l/")({
 function RouteComponent() {
   const rpc = Route.useParams().rpc;
   const { blockNumber } = useConnectionStore();
+
+  useEffect(() => {
+    trackPageView("rpc_dashboard");
+  }, []);
 
   if (blockNumber === null) return null;
 

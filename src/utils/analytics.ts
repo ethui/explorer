@@ -31,3 +31,7 @@ export function trackEvent(
     console.error("Failed to track event:", error);
   }
 }
+
+export function trackPageView(page: string) {
+  trackEvent("page_view", { page });
+}
