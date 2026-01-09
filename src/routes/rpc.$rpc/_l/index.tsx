@@ -3,6 +3,8 @@ import { useConnectionStore } from "#/store/connection";
 import { Card } from "../-components/Card";
 import { LatestBlocks } from "../-components/LatestBlocks";
 import { LatestTransactions } from "../-components/LatestTransactions";
+import { trackPageView } from "#/utils/analytics";
+import { useEffect } from "react";
 
 const ITEMS_TO_SHOW = 6;
 
@@ -13,6 +15,10 @@ export const Route = createFileRoute("/rpc/$rpc/_l/")({
 function RouteComponent() {
   const rpc = Route.useParams().rpc;
   const { blockNumber } = useConnectionStore();
+
+  useEffect(() => {
+    trackPageView("rpc_dashboard");
+  }, []);
 
   if (blockNumber === null) return null;
 
