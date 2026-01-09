@@ -1,10 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { useConnectionStore } from "#/store/connection";
+import { trackPageView } from "#/utils/analytics";
 import { Card } from "../-components/Card";
 import { LatestBlocks } from "../-components/LatestBlocks";
 import { LatestTransactions } from "../-components/LatestTransactions";
-import { trackPageView } from "#/utils/analytics";
-import { useEffect } from "react";
 
 const ITEMS_TO_SHOW = 6;
 
